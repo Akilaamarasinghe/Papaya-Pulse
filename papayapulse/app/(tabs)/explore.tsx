@@ -1,112 +1,147 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../context/ThemeContext';
+import { Colors } from '../../constants/theme';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+export default function ExploreScreen() {
+  const { currentTheme, t, language } = useTheme();
+  const colors = Colors[currentTheme];
 
-export default function TabTwoScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: colors.text }]}>{t('explore')}</Text>
+        <Text style={[styles.subtitle, { color: colors.placeholder }]}>
+          {language === 'si' ? 'Papaya Pulse විශේෂාංග සහ තොරතුරු' : 'Papaya Pulse Features & Information'}
+        </Text>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="leaf" size={32} color={colors.primary} />
+        <Text style={[styles.cardTitle, { color: colors.text }]}>
+          {language === 'si' ? 'වර්ධන අවධිය' : 'Growth Stage'}
+        </Text>
+        <Text style={[styles.cardText, { color: colors.placeholder }]}>
+          {language === 'si' 
+            ? 'AI බලයෙන් යුත් රූප විශ්ලේෂණය භාවිතයෙන් ඔබේ පැපොල් පැල වල වර්ධන අවධිය හඳුනා ගන්න.'
+            : 'Identify the growth stage of your papaya plants using AI-powered image analysis.'}
+        </Text>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="star" size={32} color={colors.primary} />
+        <Text style={[styles.cardTitle, { color: colors.text }]}>
+          {language === 'si' ? 'ගුණාත්මක ශ්‍රේණිගත කිරීම' : 'Quality Grading'}
+        </Text>
+        <Text style={[styles.cardText, { color: colors.placeholder }]}>
+          {language === 'si'
+            ? 'ඔබේ පැපොල් ඵල වල ගුණාත්මකභාවය ස්වයංක්‍රීයව තක්සේරු කර වඩා හොඳ මිල ගණන් ලබා ගන්න.'
+            : 'Automatically assess the quality of your papaya fruits for better pricing.'}
+        </Text>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="trending-up" size={32} color={colors.primary} />
+        <Text style={[styles.cardTitle, { color: colors.text }]}>
+          {language === 'si' ? 'වෙළඳපල මිල' : 'Market Prices'}
+        </Text>
+        <Text style={[styles.cardText, { color: colors.placeholder }]}>
+          {language === 'si'
+            ? 'ඔබේ ප්‍රදේශයේ නවතම වෙළඳපල මිල ගණන් සහ ප්‍රවණතා බලන්න.'
+            : 'View the latest market prices and trends in your region.'}
+        </Text>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="medkit" size={32} color={colors.primary} />
+        <Text style={[styles.cardTitle, { color: colors.text }]}>
+          {language === 'si' ? 'රෝග හඳුනා ගැනීම' : 'Disease Detection'}
+        </Text>
+        <Text style={[styles.cardText, { color: colors.placeholder }]}>
+          {language === 'si'
+            ? 'කොළ රෝග ඉක්මනින් හඳුනාගෙන ප්‍රතිකාර නිර්දේශ ලබා ගන්න.'
+            : 'Detect leaf diseases early and get treatment recommendations.'}
+        </Text>
+      </View>
+
+      <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="information-circle" size={24} color={colors.primary} />
+        <View style={styles.infoContent}>
+          <Text style={[styles.infoTitle, { color: colors.text }]}>
+            {language === 'si' ? 'උපදෙස්' : 'Tip'}
+          </Text>
+          <Text style={[styles.infoText, { color: colors.placeholder }]}>
+            {language === 'si'
+              ? 'හොඳම ප්‍රතිඵල සඳහා දිවා ආලෝකයේ දී පැහැදිලි ඡායාරූප ගන්න.'
+              : 'Take clear photos in daylight for best results.'}
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
   },
-  titleContainer: {
+  header: {
+    padding: 20,
+    paddingTop: 60,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+  },
+  card: {
+    margin: 20,
+    marginTop: 0,
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  cardText: {
+    fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  infoCard: {
+    margin: 20,
+    marginTop: 0,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+  },
+  infoContent: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
