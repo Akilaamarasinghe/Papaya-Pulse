@@ -9,6 +9,24 @@ import { LeafPredictionHistory, SeverityLevel } from '../../types';
 
 const HISTORY_KEY = 'leaf_disease_history';
 
+const formatPercent = (value?: number) => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return '—';
+  }
+  return `${(value * 100).toFixed(1)}%`;
+};
+
+const formatStageLabel = (label?: string | null) => {
+  if (!label) {
+    return null;
+  }
+  return label
+    .replace(/[_-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export default function LeafHistoryScreen() {
   const { t, language } = useTheme();
   const [history, setHistory] = useState<LeafPredictionHistory[]>([]);
@@ -63,42 +81,53 @@ export default function LeafHistoryScreen() {
     });
   };
 
-  const renderHistoryItem = ({ item }: { item: LeafPredictionHistory }) => (
-    <TouchableOpacity 
-      style={styles.historyItem}
-      onPress={() => {
-        router.push({
-          pathname: '/leaf/result' as any,
-          params: {
-            data: JSON.stringify({
-              disease: item.disease,
-              disease_confidence: item.disease_confidence,
-              severity: item.severity,
-              severity_confidence: item.severity_confidence,
-            }),
-          },
-        });
-      }}
-    >
-      {item.imageUri && (
-        <Image source={{ uri: item.imageUri }} style={styles.thumbnail} />
-      )}
-      <View style={styles.itemContent}>
-        <Text style={[styles.diseaseText, { color: getDiseaseColor(item.disease) }]}>
-          {item.disease}
-        </Text>
-        <Text style={styles.confidenceText}>
-          Confidence: {(item.disease_confidence * 100).toFixed(1)}%
-        </Text>
-        {item.disease !== 'Healthy' && item.disease !== 'NotPapaya' && (
-          <Text style={[styles.severityText, { color: getSeverityColor(item.severity) }]}>
-            Severity: {item.severity}
-          </Text>
+  const renderHistoryItem = ({ item }: { item: LeafPredictionHistory }) => {
+    const stageLabel = formatStageLabel(item.stage_label);
+    const isNotLeaf = item.is_leaf === false || item.disease === 'NotPapaya';
+
+    return (
+      <TouchableOpacity 
+        style={styles.historyItem}
+        onPress={() => {
+          router.push({
+            pathname: '/leaf/result' as any,
+            params: {
+              data: JSON.stringify(item),
+            },
+          });
+        }}
+      >
+        {item.imageUri && (
+          <Image source={{ uri: item.imageUri }} style={styles.thumbnail} />
         )}
-        <Text style={styles.dateText}>{formatDate(item.timestamp)}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+        <View style={styles.itemContent}>
+          <View style={styles.headerRow}>
+            <Text style={[styles.diseaseText, { color: getDiseaseColor(item.disease) }]}>
+              {isNotLeaf ? 'Not Papaya Leaf' : item.disease}
+            </Text>
+            <View style={[styles.statusBadge, isNotLeaf ? styles.errorBadge : styles.successBadge]}>
+              <Text style={styles.badgeText}>{isNotLeaf ? 'Retake' : 'Valid'}</Text>
+            </View>
+          </View>
+          <Text style={styles.confidenceText}>
+            Model confidence: {formatPercent(item.disease_confidence)}
+          </Text>
+          {!isNotLeaf && item.disease !== 'Healthy' && (
+            <Text style={[styles.severityText, { color: getSeverityColor(item.severity) }]}>
+              Severity: {item.severity} ({formatPercent(item.severity_confidence)})
+            </Text>
+          )}
+          {stageLabel && !isNotLeaf && (
+            <Text style={styles.stageText}>Stage: {stageLabel}</Text>
+          )}
+          <Text style={styles.leafConfidenceText}>
+            Leaf check: {formatPercent(item.leaf_confidence)} / Not leaf: {formatPercent(item.not_leaf_confidence)}
+          </Text>
+          <Text style={styles.dateText}>{formatDate(item.timestamp)}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
@@ -215,10 +244,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   diseaseText: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  successBadge: {
+    backgroundColor: '#E0F7EC',
+  },
+  errorBadge: {
+    backgroundColor: '#FFE9E6',
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#333',
   },
   confidenceText: {
     fontSize: 14,
@@ -229,6 +279,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 2,
+  },
+  stageText: {
+    fontSize: 13,
+    color: '#444',
+    marginBottom: 2,
+  },
+  leafConfidenceText: {
+    fontSize: 12,
+    color: '#777',
+    marginBottom: 4,
   },
   dateText: {
     fontSize: 12,

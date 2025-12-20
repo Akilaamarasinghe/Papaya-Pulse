@@ -112,6 +112,17 @@ export interface LeafDiseaseResponse {
   disease_confidence: number;
   severity: SeverityLevel;
   severity_confidence: number;
+  is_leaf?: boolean;
+  leaf_confidence?: number;
+  not_leaf_confidence?: number;
+  stage_label?: string | null;
+  stage_confidence?: number;
+  model_metadata?: {
+    model_version: string | null;
+    inference_time_ms: number | null;
+    served_by?: string | null;
+  } | null;
+  raw_payload?: Record<string, unknown> | null;
 }
 
 export interface LeafPredictionHistory extends LeafDiseaseResponse {
