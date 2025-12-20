@@ -62,6 +62,24 @@ const diseaseAdvisory: Record<DiseaseType, { description: string; treatment: str
   },
 };
 
+const formatPercent = (value?: number) => {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return '—';
+  }
+  return `${(value * 100).toFixed(1)}%`;
+};
+
+const formatStageLabel = (label?: string | null) => {
+  if (!label) {
+    return 'Not provided';
+  }
+  return label
+    .replace(/[_-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export default function LeafResultScreen() {
   const params = useLocalSearchParams();
   const data: LeafDiseaseResponse = params.data 
@@ -81,6 +99,9 @@ export default function LeafResultScreen() {
 
   const { disease, disease_confidence, severity, severity_confidence } = data;
   const advisory = diseaseAdvisory[disease];
+  const isNotLeaf = data.is_leaf === false || disease === 'NotPapaya';
+  const showSeverity = !isNotLeaf && disease !== 'Healthy' && severity !== 'unknown' && severity_confidence > 0;
+  const showStage = !isNotLeaf && Boolean(data.stage_label);
 
   const getSeverityColor = (sev: SeverityLevel) => {
     switch (sev) {
@@ -103,27 +124,74 @@ export default function LeafResultScreen() {
         <View style={styles.resultCard}>
           <Text style={styles.resultLabel}>Detection Result</Text>
           <Text style={[styles.diseaseValue, { color: getDiseaseColor() }]}>
-            {disease === 'NotPapaya' ? 'Not a Papaya Leaf' : disease}
+            {isNotLeaf ? 'Not a Papaya Leaf' : disease}
           </Text>
           <View style={styles.confidenceBox}>
-            <Text style={styles.confidenceLabel}>Confidence</Text>
-            <Text style={styles.confidenceValue}>
-              {(disease_confidence * 100).toFixed(1)}%
-            </Text>
+            <Text style={styles.confidenceLabel}>Model Confidence</Text>
+            <Text style={styles.confidenceValue}>{formatPercent(disease_confidence)}</Text>
           </View>
 
-          {disease !== 'Healthy' && disease !== 'NotPapaya' && (
+          {showSeverity && (
             <View style={[styles.severityBox, { backgroundColor: getSeverityColor(severity) + '20' }]}>
               <Text style={styles.severityLabel}>Severity Level</Text>
               <Text style={[styles.severityValue, { color: getSeverityColor(severity) }]}>
                 {severity.toUpperCase()}
               </Text>
               <Text style={styles.severityConfidence}>
-                ({(severity_confidence * 100).toFixed(1)}% confidence)
+                ({formatPercent(severity_confidence)} confidence)
               </Text>
             </View>
           )}
         </View>
+
+        <View style={styles.sectionCard}>
+          <Text style={styles.sectionTitle}>Leaf Verification</Text>
+          <View style={styles.metricRow}>
+            <View style={styles.metricItem}>
+              <Text style={styles.metricLabel}>Leaf Confidence</Text>
+              <Text style={styles.metricValue}>{formatPercent(data.leaf_confidence)}</Text>
+            </View>
+            <View style={styles.metricItem}>
+              <Text style={styles.metricLabel}>Not Leaf</Text>
+              <Text style={styles.metricValue}>{formatPercent(data.not_leaf_confidence)}</Text>
+            </View>
+          </View>
+          <Text style={styles.sectionHint}>
+            {isNotLeaf
+              ? 'Please retake the photo ensuring a papaya leaf fills most of the frame.'
+              : 'Great! The model is confident that the uploaded image is a papaya leaf.'}
+          </Text>
+        </View>
+
+        {showStage && (
+          <View style={styles.sectionCard}>
+            <Text style={styles.sectionTitle}>Disease Stage Insight</Text>
+            <Text style={styles.stageValue}>{formatStageLabel(data.stage_label)}</Text>
+            <Text style={styles.stageConfidence}>Confidence: {formatPercent(data.stage_confidence)}</Text>
+          </View>
+        )}
+
+        {data.model_metadata && (
+          <View style={styles.sectionCard}>
+            <Text style={styles.sectionTitle}>Model Details</Text>
+            <View style={styles.metricRow}>
+              <View style={styles.metricItem}>
+                <Text style={styles.metricLabel}>Version</Text>
+                <Text style={styles.metricValue}>
+                  {data.model_metadata.model_version || '—'}
+                </Text>
+              </View>
+              <View style={styles.metricItem}>
+                <Text style={styles.metricLabel}>Latency</Text>
+                <Text style={styles.metricValue}>
+                  {data.model_metadata.inference_time_ms
+                    ? `${data.model_metadata.inference_time_ms} ms`
+                    : '—'}
+                </Text>
+              </View>
+            </View>
+          </View>
+        )}
 
         {advisory && (
           <>
@@ -246,6 +314,52 @@ const styles = StyleSheet.create({
   severityConfidence: {
     fontSize: 12,
     color: '#666',
+  },
+  sectionCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
+  metricItem: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  metricLabel: {
+    fontSize: 13,
+    color: '#777',
+    marginBottom: 4,
+  },
+  metricValue: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111',
+  },
+  sectionHint: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#555',
+    lineHeight: 20,
+  },
+  stageValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#333',
+  },
+  stageConfidence: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
   },
   descriptionCard: {
     backgroundColor: '#fff',
