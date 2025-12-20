@@ -1,0 +1,16 @@
+{
+  "district": {
+    "0": "Hambanthota",
+    "1": "Galle",
+    "2": "Matara"
+  },
+  "variety": {
+    "0": "readLady",
+    "1": "solo"
+  },
+  "farmer_grade": {
+    "1": "Grade 1 (Best)",
+    "2": "Grade 2 (Medium)",
+    "3": "Grade 3 (Lowest)"
+  }
+}

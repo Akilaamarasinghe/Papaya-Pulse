@@ -53,14 +53,15 @@ export interface HarvestPredictionResponse {
 // Quality Grader Types
 export type PapayaVariety = 'RedLady' | 'Tenim' | 'Solo';
 export type MaturityLevel = 'unmature' | 'half-mature' | 'mature';
-export type QualityGrade = 'A' | 'B' | 'C';
+export type QualityGrade = 'I' | 'II' | 'III';
+export type QualityCategory = 'Best Quality' | 'factory outlet';
 
 export interface FarmerQualityRequest {
   farmer_id: string;
   district: District;
   variety: PapayaVariety;
   maturity: MaturityLevel;
-  temperature: number;
+  quality_category: QualityCategory;
   days_since_picked: number;
 }
 

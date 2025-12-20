@@ -60,8 +60,10 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Papaya Pulse API Server running on port ${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🌐 Access at: http://localhost:${PORT}`);
+  console.log(`📱 Mobile access: Find your IP with 'ipconfig' (Windows) or 'ifconfig' (Mac/Linux)`);
+  console.log(`   Then use: http://YOUR_IP:${PORT}`);
 });

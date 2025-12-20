@@ -8,7 +8,7 @@ import { LabeledInput } from '../../components/shared/LabeledInput';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { Dropdown } from '../../components/shared/Dropdown';
 import api from '../../config/api';
-import { District, PapayaVariety, MaturityLevel, FarmerQualityRequest, FarmerQualityResponse } from '../../types';
+import { District, PapayaVariety, MaturityLevel, QualityCategory, FarmerQualityRequest, FarmerQualityResponse } from '../../types';
 
 export default function FarmerInputScreen() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export default function FarmerInputScreen() {
     district: user?.district || 'Galle' as District,
     variety: 'RedLady' as PapayaVariety,
     maturity: 'mature' as MaturityLevel,
-    temperature: '',
+    quality_category: 'Best Quality' as QualityCategory,
     days_since_picked: '',
   });
 
@@ -38,6 +38,11 @@ export default function FarmerInputScreen() {
     { label: 'Unmature', value: 'unmature' as MaturityLevel },
     { label: 'Half-Mature', value: 'half-mature' as MaturityLevel },
     { label: 'Mature', value: 'mature' as MaturityLevel },
+  ];
+
+  const qualityCategoryOptions = [
+    { label: 'Best Quality', value: 'Best Quality' as QualityCategory },
+    { label: 'Factory Outlet', value: 'factory outlet' as QualityCategory },
   ];
 
   const pickImage = async () => {
@@ -66,15 +71,14 @@ export default function FarmerInputScreen() {
       return;
     }
 
-    if (!formData.temperature || !formData.days_since_picked) {
+    if (!formData.days_since_picked) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
 
-    const temperature = parseFloat(formData.temperature);
     const daysSincePicked = parseInt(formData.days_since_picked);
 
-    if (isNaN(temperature) || isNaN(daysSincePicked)) {
+    if (isNaN(daysSincePicked)) {
       Alert.alert('Error', 'Please enter valid numbers');
       return;
     }
@@ -91,7 +95,7 @@ export default function FarmerInputScreen() {
       formDataToSend.append('district', formData.district);
       formDataToSend.append('variety', formData.variety);
       formDataToSend.append('maturity', formData.maturity);
-      formDataToSend.append('temperature', temperature.toString());
+      formDataToSend.append('quality_category', formData.quality_category);
       formDataToSend.append('days_since_picked', daysSincePicked.toString());
 
       const response = await api.post<FarmerQualityResponse>(
@@ -146,12 +150,11 @@ export default function FarmerInputScreen() {
         onChange={(value) => setFormData({ ...formData, maturity: value })}
       />
 
-      <LabeledInput
-        label="Temperature (°C)"
-        value={formData.temperature}
-        onChangeText={(text) => setFormData({ ...formData, temperature: text })}
-        placeholder="e.g., 26"
-        keyboardType="decimal-pad"
+      <Dropdown
+        label="Quality Category"
+        value={formData.quality_category}
+        options={qualityCategoryOptions}
+        onChange={(value) => setFormData({ ...formData, quality_category: value })}
       />
 
       <LabeledInput
@@ -170,7 +173,7 @@ export default function FarmerInputScreen() {
       )}
 
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : 'Take Photo of Damaged Areas'}
+        title={imageUri ? 'Retake Photo' : 'Take Photo of Papaya fruit '}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
