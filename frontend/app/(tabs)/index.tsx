@@ -84,35 +84,57 @@ export default function HomeScreen() {
       </Animated.View>
 
       <View style={styles.modules}>
-        <Card
-          title={t('growthStage')}
-          icon="leaf"
-          description={t('growthStageDesc')}
-          onPress={() => router.push('/growth' as any)}
-        />
-
-        <Card
-          title={t('qualityCheck')}
-          icon="star"
-          description={t('qualityCheckDesc')}
-          onPress={() => router.push('/quality' as any)}
-        />
-
+        {/* Farmer Dashboard - Shows all 4 options */}
         {user.role === 'farmer' && (
-          <Card
-            title={t('marketPrice')}
-            icon="cash"
-            description={t('marketPriceDesc')}
-            onPress={() => router.push('/market' as any)}
-          />
+          <>
+            <Card
+              title={t('growthStage')}
+              icon="leaf"
+              description={t('growthStageDesc')}
+              onPress={() => router.push('/growth' as any)}
+            />
+
+            <Card
+              title={t('qualityCheck')}
+              icon="star"
+              description={t('qualityCheckDesc')}
+              onPress={() => router.push('/quality' as any)}
+            />
+
+            <Card
+              title={t('marketPrice')}
+              icon="cash"
+              description={t('marketPriceDesc')}
+              onPress={() => router.push('/market' as any)}
+            />
+
+            <Card
+              title={t('leafDisease')}
+              icon="scan"
+              description={t('leafDiseaseDesc')}
+              onPress={() => router.push('/leaf' as any)}
+            />
+          </>
         )}
 
-        <Card
-          title={t('leafDisease')}
-          icon="scan"
-          description={t('leafDiseaseDesc')}
-          onPress={() => router.push('/leaf' as any)}
-        />
+        {/* Customer Dashboard - Shows only Quality Check and Market Prediction */}
+        {user.role === 'customer' && (
+          <>
+            <Card
+              title={t('qualityCheck')}
+              icon="star"
+              description={t('qualityCheckDesc')}
+              onPress={() => router.push('/quality' as any)}
+            />
+
+            <Card
+              title={t('marketPrice')}
+              icon="cash"
+              description={t('marketPriceDesc')}
+              onPress={() => router.push('/market' as any)}
+            />
+          </>
+        )}
       </View>
     </ScreenContainer>
   );
