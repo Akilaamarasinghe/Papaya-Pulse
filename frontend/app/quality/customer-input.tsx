@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { LabeledInput } from '../../components/shared/LabeledInput';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
@@ -9,6 +10,7 @@ import api from '../../config/api';
 import { CustomerQualityResponse } from '../../types';
 
 export default function CustomerInputScreen() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [weight, setWeight] = useState('');
@@ -21,16 +23,27 @@ export default function CustomerInputScreen() {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: 'images',
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.8,
-    });
+    Alert.alert(
+      'Photo Instructions',
+      'Please take a clear photo showing the FULL papaya (entire fruit visible) for accurate quality assessment.',
+      [
+        {
+          text: 'OK, Got it',
+          onPress: async () => {
+            const result = await ImagePicker.launchCameraAsync({
+              mediaTypes: 'images',
+              allowsEditing: true,
+              aspect: [4, 3],
+              quality: 0.8,
+            });
 
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
+            if (!result.canceled) {
+              setImageUri(result.assets[0].uri);
+            }
+          }
+        }
+      ]
+    );
   };
 
   const submitGrading = async () => {
@@ -91,6 +104,16 @@ export default function CustomerInputScreen() {
         <Text style={styles.subtitle}>Check papaya quality before buying</Text>
       </View>
 
+      <View style={styles.instructionBox}>
+        <Text style={styles.instructionTitle}>📸 Photo Instructions:</Text>
+        <Text style={styles.instructionText}>
+          • Show the FULL papaya (entire fruit visible){'\n'}
+          • Ensure good lighting{'\n'}
+          • Capture from a clear angle{'\n'}
+          • Include the whole papaya in frame
+        </Text>
+      </View>
+
       {imageUri && (
         <View style={styles.imageContainer}>
           <Text style={styles.imageLabel}>Papaya Photo</Text>
@@ -99,7 +122,7 @@ export default function CustomerInputScreen() {
       )}
 
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : 'Take Photo of Papaya'}
+        title={imageUri ? 'Retake Photo' : 'Take Photo of Full Papaya'}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
@@ -114,7 +137,7 @@ export default function CustomerInputScreen() {
       />
 
       <PrimaryButton
-        title="Check Quality"
+        title="Check Quality & Taste Prediction"
         onPress={submitGrading}
         loading={loading}
         disabled={!imageUri}
@@ -143,6 +166,23 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  instructionBox: {
+    backgroundColor: '#E6F4FE',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  instructionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2196F3',
+    marginBottom: 8,
+  },
+  instructionText: {
+    fontSize: 14,
+    color: '#555',
+    lineHeight: 20,
   },
   imageContainer: {
     marginBottom: 16,

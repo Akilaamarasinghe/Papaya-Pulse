@@ -10,6 +10,7 @@ export default function FarmerResultScreen() {
   const data: FarmerQualityResponse = params.data 
     ? JSON.parse(params.data as string) 
     : null;
+  const category = (params.category as string) || 'best';
 
   if (!data) {
     return (
@@ -26,6 +27,9 @@ export default function FarmerResultScreen() {
 
   const getGradeColor = () => {
     switch (grade) {
+      case 'I': return '#4CAF50';
+      case 'II': return '#FF9800';
+      case 'III': return '#F44336';
       case 'A': return '#4CAF50';
       case 'B': return '#FF9800';
       case 'C': return '#F44336';
@@ -33,18 +37,35 @@ export default function FarmerResultScreen() {
     }
   };
 
+  const getGradeLabel = () => {
+    if (grade === 'I' || grade === 'A') return 'Grade I - Best Quality';
+    if (grade === 'II' || grade === 'B') return 'Grade II - Good Quality';
+    if (grade === 'III' || grade === 'C') return 'Grade III - Acceptable Quality';
+    return `Grade ${grade}`;
+  };
+
+  const getCategoryTitle = () => {
+    return category === 'best' ? 'Best Quality Papayas' : 'Factory Outlet Papayas';
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+        <View style={styles.headerCard}>
+          <Text style={styles.categoryTitle}>{getCategoryTitle()}</Text>
+          <Text style={styles.categorySubtitle}>Grading Result</Text>
+        </View>
+
         <View style={styles.gradeCard}>
           <Text style={styles.gradeLabel}>Quality Grade</Text>
           <Text style={[styles.gradeValue, { color: getGradeColor() }]}>
             {grade}
           </Text>
+          <Text style={styles.gradeLabelText}>{getGradeLabel()}</Text>
           <View style={styles.probabilityBox}>
-            <Text style={styles.probabilityLabel}>Damage Probability</Text>
+            <Text style={styles.probabilityLabel}>Confidence Score</Text>
             <Text style={styles.probabilityValue}>
-              {(damage_probability * 100).toFixed(1)}%
+              {((1 - damage_probability) * 100).toFixed(1)}%
             </Text>
           </View>
         </View>
@@ -60,17 +81,26 @@ export default function FarmerResultScreen() {
         </View>
 
         <View style={styles.recommendationCard}>
-          <Text style={styles.sectionTitle}>Recommendation</Text>
+          <Text style={styles.sectionTitle}>Recommendations</Text>
           <Text style={styles.recommendationText}>
-            {grade === 'A' && 'Excellent quality! Perfect for premium market pricing.'}
-            {grade === 'B' && 'Good quality. Suitable for standard market with minor considerations.'}
-            {grade === 'C' && 'Fair quality. Consider quick sale or processing options.'}
+            {(grade === 'I' || grade === 'A') && category === 'best' && 
+              'Excellent! These papayas meet premium standards. Perfect for best quality market segment with optimal pricing.'}
+            {(grade === 'II' || grade === 'B') && category === 'best' && 
+              'Good quality papayas. Can be marketed as best quality with minor considerations. Competitive pricing expected.'}
+            {(grade === 'III' || grade === 'C') && category === 'best' && 
+              'Consider regrading as factory outlet. May not meet best quality standards for optimal returns.'}
+            {(grade === 'I' || grade === 'A') && category === 'factory' && 
+              'High quality for factory processing! Minimal damage detected. Suitable for premium factory contracts.'}
+            {(grade === 'II' || grade === 'B') && category === 'factory' && 
+              'Good for factory outlet. Acceptable quality for processing. Standard factory pricing expected.'}
+            {(grade === 'III' || grade === 'C') && category === 'factory' && 
+              'Acceptable for factory processing. Consider quick sale. May receive lower processing rates.'}
           </Text>
         </View>
 
         <PrimaryButton
-          title="Done"
-          onPress={() => router.back()}
+          title="Back to Quality Grader"
+          onPress={() => router.push('/quality')}
           style={styles.button}
         />
       </ScrollView>
@@ -100,6 +130,23 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 20,
   },
+  headerCard: {
+    backgroundColor: '#2196F3',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  categoryTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  categorySubtitle: {
+    fontSize: 16,
+    color: '#E3F2FD',
+  },
   gradeCard: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -120,6 +167,11 @@ const styles = StyleSheet.create({
   gradeValue: {
     fontSize: 72,
     fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  gradeLabelText: {
+    fontSize: 16,
+    color: '#666',
     marginBottom: 16,
   },
   probabilityBox: {
@@ -137,7 +189,7 @@ const styles = StyleSheet.create({
   probabilityValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#4CAF50',
   },
   explanationCard: {
     backgroundColor: '#fff',

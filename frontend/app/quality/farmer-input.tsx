@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { LabeledInput } from '../../components/shared/LabeledInput';
@@ -12,13 +12,17 @@ import { District, PapayaVariety, MaturityLevel, QualityCategory, FarmerQualityR
 
 export default function FarmerInputScreen() {
   const { user } = useAuth();
+  const params = useLocalSearchParams();
+  const category = (params.category as string) || 'best'; // 'best' or 'factory'
+  const qualityCategory: QualityCategory = category === 'best' ? 'Best Quality' : 'factory outlet';
+  
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     district: user?.district || 'Galle' as District,
     variety: 'RedLady' as PapayaVariety,
     maturity: 'mature' as MaturityLevel,
-    quality_category: 'Best Quality' as QualityCategory,
+    quality_category: qualityCategory,
     days_since_picked: '',
   });
 
@@ -38,11 +42,6 @@ export default function FarmerInputScreen() {
     { label: 'Unmature', value: 'unmature' as MaturityLevel },
     { label: 'Half-Mature', value: 'half-mature' as MaturityLevel },
     { label: 'Mature', value: 'mature' as MaturityLevel },
-  ];
-
-  const qualityCategoryOptions = [
-    { label: 'Best Quality', value: 'Best Quality' as QualityCategory },
-    { label: 'Factory Outlet', value: 'factory outlet' as QualityCategory },
   ];
 
   const pickImage = async () => {
@@ -66,8 +65,10 @@ export default function FarmerInputScreen() {
   };
 
   const submitGrading = async () => {
+    const photoType = category === 'best' ? 'papaya color' : 'damaged areas';
+    
     if (!imageUri) {
-      Alert.alert('Error', 'Please take a photo of damaged areas');
+      Alert.alert('Error', `Please take a photo of ${photoType}`);
       return;
     }
 
@@ -78,8 +79,8 @@ export default function FarmerInputScreen() {
 
     const daysSincePicked = parseInt(formData.days_since_picked);
 
-    if (isNaN(daysSincePicked)) {
-      Alert.alert('Error', 'Please enter valid numbers');
+    if (isNaN(daysSincePicked) || daysSincePicked < 1 || daysSincePicked > 7) {
+      Alert.alert('Error', 'Days since picked must be between 1 and 7 for freshness');
       return;
     }
 
@@ -112,6 +113,7 @@ export default function FarmerInputScreen() {
         pathname: '/quality/farmer-result' as any,
         params: {
           data: JSON.stringify(response.data),
+          category: category,
         },
       });
     } catch (error: any) {
@@ -122,11 +124,31 @@ export default function FarmerInputScreen() {
     }
   };
 
+  const getPhotoLabel = () => {
+    if (category === 'best') {
+      return 'Papaya Color Photo';
+    } else {
+      return 'Damaged Areas Photo';
+    }
+  };
+
+  const getPhotoInstruction = () => {
+    if (category === 'best') {
+      return 'Take a clear photo showing the papaya color';
+    } else {
+      return 'Take a photo showing any damaged areas';
+    }
+  };
+
   return (
     <ScreenContainer>
       <View style={styles.header}>
-        <Text style={styles.title}>Farmer Quality Grading</Text>
-        <Text style={styles.subtitle}>Enter papaya details for grading</Text>
+        <Text style={styles.title}>
+          {category === 'best' ? 'Best Quality' : 'Factory Outlet'} Grading
+        </Text>
+        <Text style={styles.subtitle}>
+          Enter papaya details for {category === 'best' ? 'premium' : 'factory outlet'} grading
+        </Text>
       </View>
 
       <Dropdown
@@ -150,15 +172,8 @@ export default function FarmerInputScreen() {
         onChange={(value) => setFormData({ ...formData, maturity: value })}
       />
 
-      <Dropdown
-        label="Quality Category"
-        value={formData.quality_category}
-        options={qualityCategoryOptions}
-        onChange={(value) => setFormData({ ...formData, quality_category: value })}
-      />
-
       <LabeledInput
-        label="Days Since Picked"
+        label="Days Since Picked (1-7 for freshness)"
         value={formData.days_since_picked}
         onChangeText={(text) => setFormData({ ...formData, days_since_picked: text })}
         placeholder="e.g., 2"
@@ -167,20 +182,24 @@ export default function FarmerInputScreen() {
 
       {imageUri && (
         <View style={styles.imageContainer}>
-          <Text style={styles.imageLabel}>Damaged Areas Photo</Text>
+          <Text style={styles.imageLabel}>{getPhotoLabel()}</Text>
           <Image source={{ uri: imageUri }} style={styles.image} />
         </View>
       )}
 
+      <View style={styles.instructionBox}>
+        <Text style={styles.instructionText}>{getPhotoInstruction()}</Text>
+      </View>
+
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : 'Take Photo of Papaya fruit '}
+        title={imageUri ? 'Retake Photo' : `Take Photo of ${category === 'best' ? 'Papaya Color' : 'Damaged Areas'}`}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
       />
 
       <PrimaryButton
-        title="Submit for Grading"
+        title="Generate Grade"
         onPress={submitGrading}
         loading={loading}
         disabled={!imageUri}
@@ -209,6 +228,17 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  instructionBox: {
+    backgroundColor: '#E6F4FE',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  instructionText: {
+    fontSize: 14,
+    color: '#2196F3',
+    fontWeight: '500',
   },
   imageContainer: {
     marginBottom: 16,
