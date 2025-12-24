@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Papaya Quality Dataset - Color Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .stats {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #5568d3;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .color-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .color-code {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .color-count {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        th:last-child {
+            text-align: center;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .color-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-preview {
+            width: 50px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .color-text {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .color-picker-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 35px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .reset-btn {
+            padding: 6px 12px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #ff5252;
+        }
+
+        .export-btn {
+            background: #51cf66;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .export-btn:hover {
+            background: #40c057;
+        }
+
+        .modified-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .grade-1 {
+            background: linear-gradient(135deg, #ffd93d 0%, #ffaa00 100%);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(255, 170, 0, 0.3);
+        }
+
+        .grade-2 {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
+        }
+
+        .grade-3 {
+            background: linear-gradient(135deg, #fab1a0 0%, #e17055 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(225, 112, 85, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .no-data-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥭 Papaya Quality Dataset - Color Viewer</h1>
+        <div class="stats" id="stats">
+            Load a CSV file to view data
+        </div>
+
+        <div class="controls">
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".csv">
+                <label for="fileInput" class="file-input-label">📁 Load CSV File</label>
+            </div>
+
+            <div class="filter-group">
+                <label for="colorFilter">Filter by Color:</label>
+                <select id="colorFilter">
+                    <option value="">All Colors</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="gradeFilter">Filter by Grade:</label>
+                <select id="gradeFilter">
+                    <option value="">All Grades</option>
+                    <option value="Grade 1">Grade 1</option>
+                    <option value="Grade 2">Grade 2</option>
+                    <option value="Grade 3">Grade 3</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="searchInput">Search:</label>
+                <input type="text" id="searchInput" placeholder="Search in all columns...">
+            </div>
+
+            <button class="export-btn" id="exportBtn" style="display: none;">💾 Export Modified CSV</button>
+        </div>
+
+        <div id="colorLegend" class="color-legend" style="display: none;"></div>
+
+        <div class="data-table-wrapper">
+            <div class="no-data">
+                <div class="no-data-icon">📊</div>
+                <p>Please load the CSV file to view the papaya quality data with color codes</p>
+            </div>
+            <table id="dataTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>District</th>
+                        <th>Variety</th>
+                        <th>Maturity</th>
+                        <th>Days Since Plucked</th>
+                        <th>Color</th>
+                        <th>Grade</th>
+                        <th>Change Color</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let allData = [];
+        let uniqueColors = {};
+        let originalColors = [];
+        let modifiedRows = new Set();
+
+        // Define grade mappings based on color codes
+        const GRADE_1_COLORS = [
+            '#1E950F', '#6B8E23', '#374E09', '#6D9A37',
+            ' #0f4a16'
+        ];
+
+        const GRADE_2_COLORS = [
+            '#E8E121', '#9CD035', '#CEE425', '#acbe35',
+            '#87a033', '#D8DB0F', '#ABE60A' , '#D0DF07' ,'#acc336'
+        ];
+
+        const GRADE_3_COLORS = [
+            '#FFA500', '#FF990A', '#FF8C00', '#FD963A', '#FFA83E', '#E56717'
+        ];
+
+        // Define color ranges for each grade for better matching
+        const GRADE_RANGES = {
+            'Grade 1': {
+                colors: GRADE_1_COLORS,
+                label: 'Grade 1 - Green color range only - unmatured',
+                description: 'Unmatured'
+            },
+            'Grade 2': {
+                colors: GRADE_2_COLORS,
+                label: 'Grade 2 - Green and Yellow between color range - half_mature',
+                description: 'Less ripe, half-matured'
+            },
+            'Grade 3': {
+                colors: GRADE_3_COLORS,
+                label: 'Grade 3 -orange color range - matured',
+                description: 'Matured'
+            }
+        };
+
+        // Calculate grade based on color code
+        function calculateGrade(color) {
+            const colorUpper = color.toUpperCase();
+            
+            // Check Grade I colors (Yellow-Orange - best ripening)
+            if (GRADE_1_COLORS.includes(colorUpper)) {
+                return 'Grade 1';
+            }
+            
+            // Check Grade II colors (Green - less ripe)
+            if (GRADE_2_COLORS.includes(colorUpper)) {
+                return 'Grade 2';
+            }
+            
+            // Check Grade III colors (Red-Orange - over ripe)
+            if (GRADE_3_COLORS.includes(colorUpper)) {
+                return 'Grade 3';
+            }
+            
+            // If color is not in any predefined list, return null
+            return null;
+        }
+
+        // Load file
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const csv = event.target.result;
+                parseCSV(csv);
+                displayData(allData);
+                updateColorLegend();
+                updateColorFilter();
+                updateStats();
+            };
+            reader.readAsText(file);
+        });
+
+        // Parse CSV
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            allData = [];
+            uniqueColors = {};
+            originalColors = [];
+            modifiedRows.clear();
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const values = line.split(',');
+                if (values.length >= 5) {
+                    const color = values[4].trim().toUpperCase();
+                    const grade = calculateGrade(color);
+                    
+                    const row = {
+                        district: values[0].trim(),
+                        variety: values[1].trim(),
+                        maturity: values[2].trim(),
+                        days: values[3].trim(),
+                        color: color,
+                        grade: grade,
+                        originalIndex: i - 1
+                    };
+                    allData.push(row);
+                    originalColors.push(color);
+
+                    // Count colors
+                    if (uniqueColors[color]) {
+                        uniqueColors[color]++;
+                    } else {
+                        uniqueColors[color] = 1;
+                    }
+                }
+            }
+        }
+
+        // Display data in table
+        function displayData(data) {
+            const tableBody = document.getElementById('tableBody');
+            const table = document.getElementById('dataTable');
+            const noData = document.querySelector('.no-data');
+
+            if (data.length === 0) {
+                table.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+
+            table.style.display = 'table';
+            noData.style.display = 'none';
+            tableBody.innerHTML = '';
+
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.dataset.originalIndex = row.originalIndex;
+                
+                const isModified = modifiedRows.has(row.originalIndex);
+                const modifiedIndicator = isModified ? '<span class="modified-indicator"></span>' : '';
+                
+                const gradeClass = row.grade === 'Grade 1' ? 'grade-1' : 
+                                   row.grade === 'Grade 2' ? 'grade-2' : 'grade-3';
+                
+                const gradeDisplay = row.grade ? `<span class="grade-badge ${gradeClass}">${row.grade}</span>` : '<span style="color: #999;">N/A</span>';
+                
+                tr.innerHTML = `
+                    <td>${row.district}</td>
+                    <td>${row.variety}</td>
+                    <td>${row.maturity}</td>
+                    <td>${row.days}</td>
+                    <td>
+                        <div class="color-cell">
+                            <div class="color-preview" style="background-color: ${row.color}"></div>
+                            <span class="color-text">${row.color}${modifiedIndicator}</span>
+                        </div>
+                    </td>
+                    <td>
+                        ${gradeDisplay}
+                    </td>
+                    <td>
+                        <div class="color-picker-wrapper">
+                            <input type="color" class="color-picker" value="${row.color}" data-row-index="${row.originalIndex}">
+                            <button class="reset-btn" data-row-index="${row.originalIndex}" title="Reset to original color">↻</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Add event listeners to color pickers
+            document.querySelectorAll('.color-picker').forEach(picker => {
+                picker.addEventListener('change', handleColorChange);
+            });
+
+            // Add event listeners to reset buttons
+            document.querySelectorAll('.reset-btn').forEach(btn => {
+                btn.addEventListener('click', handleColorReset);
+            });
+        }
+
+        // Update color legend
+        function updateColorLegend() {
+            const legend = document.getElementById('colorLegend');
+            legend.innerHTML = '';
+            legend.style.display = 'flex';
+            legend.style.flexDirection = 'column';
+            legend.style.gap = '20px';
+
+            // Display color ranges for each grade
+            Object.values(GRADE_RANGES).forEach(gradeRange => {
+                const gradeContainer = document.createElement('div');
+                gradeContainer.style.display = 'flex';
+                gradeContainer.style.flexDirection = 'column';
+                gradeContainer.style.gap = '10px';
+                gradeContainer.style.padding = '15px';
+                gradeContainer.style.borderRadius = '8px';
+                
+                // Color grade header
+                const gradeHeader = document.createElement('div');
+                gradeHeader.style.fontWeight = 'bold';
+                gradeHeader.style.fontSize = '14px';
+                gradeHeader.style.color = '#333';
+                gradeHeader.textContent = gradeRange.label;
+                gradeContainer.appendChild(gradeHeader);
+                
+                gradeHeader.title = gradeRange.description;
+                
+                // Color boxes for this grade
+                const colorBoxesContainer = document.createElement('div');
+                colorBoxesContainer.style.display = 'flex';
+                colorBoxesContainer.style.gap = '10px';
+                colorBoxesContainer.style.flexWrap = 'wrap';
+                
+                gradeRange.colors.forEach(color => {
+                    const count = uniqueColors[color] || 0;
+                    const item = document.createElement('div');
+                    item.className = 'color-item';
+                    item.style.flexDirection = 'column';
+                    item.style.alignItems = 'center';
+                    item.innerHTML = `
+                        <div class="color-box" style="background-color: ${color}; width: 50px; height: 50px;"></div>
+                        <div class="color-code" style="font-size: 12px;">${color}</div>
+                        <div class="color-count">${count} rows</div>
+                    `;
+                    colorBoxesContainer.appendChild(item);
+                });
+                
+                gradeContainer.appendChild(colorBoxesContainer);
+                legend.appendChild(gradeContainer);
+            });
+        }
+
+        // Update color filter dropdown
+        function updateColorFilter() {
+            const select = document.getElementById('colorFilter');
+            select.innerHTML = '<option value="">All Colors</option>';
+
+            const sortedColors = Object.keys(uniqueColors).sort();
+            sortedColors.forEach(color => {
+                const option = document.createElement('option');
+                option.value = color;
+                const grade = calculateGrade(color);
+                const gradeLabel = grade ? ` - ${grade}` : '';
+                option.textContent = `${color}${gradeLabel} (${uniqueColors[color]} rows)`;
+                select.appendChild(option);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const stats = document.getElementById('stats');
+            
+            const gradeCount = {
+                'Grade 1': allData.filter(r => r.grade === 'Grade 1').length,
+                'Grade 2': allData.filter(r => r.grade === 'Grade 2').length,
+                'Grade 3': allData.filter(r => r.grade === 'Grade 3').length,
+                'Unclassified': allData.filter(r => !r.grade).length
+            };
+            
+            const gradePercentages = {
+                'Grade 1': allData.length > 0 ? ((gradeCount['Grade 1'] / allData.length) * 100).toFixed(1) : 0,
+                'Grade 2': allData.length > 0 ? ((gradeCount['Grade 2'] / allData.length) * 100).toFixed(1) : 0,
+                'Grade 3': allData.length > 0 ? ((gradeCount['Grade 3'] / allData.length) * 100).toFixed(1) : 0
+            };
+            
+            stats.innerHTML = `
+                <div><strong>Total Rows:</strong> ${allData.length}</div>
+                <div style="margin-top: 10px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <div><span style="color: #FFA500;">● Grade 1 (Yellow/Orange):</span> ${gradeCount['Grade 1']} rows (${gradePercentages['Grade 1']}%)</div>
+                    <div><span style="color: #6B8E23;">● Grade 2 (Green):</span> ${gradeCount['Grade 2']} rows (${gradePercentages['Grade 2']}%)</div>
+                    <div><span style="color: #E65A19;">● Grade 3 (Red/Orange):</span> ${gradeCount['Grade 3']} rows (${gradePercentages['Grade 3']}%)</div>
+                    ${gradeCount['Unclassified'] > 0 ? `<div><span style="color: #999;">● Unclassified:</span> ${gradeCount['Unclassified']} rows</div>` : ''}
+                </div>
+            `;
+        }
+
+        // Filter by color
+        document.getElementById('colorFilter').addEventListener('change', function() {
+            filterData();
+        });
+
+        // Filter by grade
+        document.getElementById('gradeFilter').addEventListener('change', function() {
+            filterData();
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterData();
+        });
+
+        // Filter data based on color, grade, and search
+        function filterData() {
+            const selectedColor = document.getElementById('colorFilter').value;
+            const selectedGrade = document.getElementById('gradeFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filteredData = allData;
+
+            if (selectedColor) {
+                filteredData = filteredData.filter(row => row.color === selectedColor);
+            }
+
+            if (selectedGrade) {
+                filteredData = filteredData.filter(row => row.grade === selectedGrade);
+            }
+
+            if (searchTerm) {
+                filteredData = filteredData.filter(row => {
+                    return row.district.toLowerCase().includes(searchTerm) ||
+                           row.variety.toLowerCase().includes(searchTerm) ||
+                           row.maturity.toLowerCase().includes(searchTerm) ||
+                           row.days.toLowerCase().includes(searchTerm) ||
+                           row.color.toLowerCase().includes(searchTerm) ||
+                           (row.grade && row.grade.toLowerCase().includes(searchTerm));
+                });
+            }
+
+            displayData(filteredData);
+        }
+
+        // Handle color change
+        function handleColorChange(e) {
+            const newColor = e.target.value.toUpperCase();
+            const rowIndex = parseInt(e.target.dataset.rowIndex);
+            
+            // Update the data and recalculate grade
+            allData[rowIndex].color = newColor;
+            allData[rowIndex].grade = calculateGrade(newColor);
+            modifiedRows.add(rowIndex);
+            
+            // Update the display
+            const tr = document.querySelector(`tr[data-original-index="${rowIndex}"]`);
+            if (tr) {
+                const colorPreview = tr.querySelector('.color-preview');
+                const colorText = tr.querySelector('.color-text');
+                const gradeBadge = tr.querySelector('.grade-badge');
+                
+                colorPreview.style.backgroundColor = newColor;
+                colorText.innerHTML = `${newColor}<span class="modified-indicator"></span>`;
+                
+                // Update grade badge
+                if (allData[rowIndex].grade) {
+                    gradeBadge.textContent = allData[rowIndex].grade;
+                    gradeBadge.className = 'grade-badge ' + 
+                        (allData[rowIndex].grade === 'Grade 1' ? 'grade-1' : 
+                         allData[rowIndex].grade === 'Grade 2' ? 'grade-2' : 'grade-3');
+                } else {
+                    gradeBadge.outerHTML = '<span style="color: #999;">N/A</span>';
+                }
+            }
+            
+            // Show export button
+            document.getElementById('exportBtn').style.display = 'block';
+            
+            // Update color legend, filter, and stats
+            updateColorCounts();
+            updateColorLegend();
+            updateColorFilter();
+            updateStats();
+        }
+
+        // Handle color reset
+        function handleColorReset(e) {
+            const rowIndex = parseInt(e.target.dataset.rowIndex);
+            const originalColor = originalColors[rowIndex];
+            
+            // Update the data and recalculate grade
+            allData[rowIndex].color = originalColor;
+            allData[rowIndex].grade = calculateGrade(originalColor);
+            modifiedRows.delete(rowIndex);
+            
+            // Update the display
+            const tr = document.querySelector(`tr[data-original-index="${rowIndex}"]`);
+            if (tr) {
+                const colorPreview = tr.querySelector('.color-preview');
+                const colorText = tr.querySelector('.color-text');
+                const colorPicker = tr.querySelector('.color-picker');
+                const gradeCell = tr.cells[5];
+                
+                colorPreview.style.backgroundColor = originalColor;
+                colorText.textContent = originalColor;
+                colorPicker.value = originalColor;
+                
+                // Update grade badge
+                if (allData[rowIndex].grade) {
+                    const gradeClass = allData[rowIndex].grade === 'Grade 1' ? 'grade-1' : 
+                                      allData[rowIndex].grade === 'Grade 2' ? 'grade-2' : 'grade-3';
+                    gradeCell.innerHTML = `<span class="grade-badge ${gradeClass}">${allData[rowIndex].grade}</span>`;
+                } else {
+                    gradeCell.innerHTML = '<span style="color: #999;">N/A</span>';
+                }
+            }
+            
+            // Hide export button if no modifications
+            if (modifiedRows.size === 0) {
+                document.getElementById('exportBtn').style.display = 'none';
+            }
+            
+            // Update color legend, filter, and stats
+            updateColorCounts();
+            updateColorLegend();
+            updateColorFilter();
+            updateStats();
+        }
+
+        // Update color counts after modifications
+        function updateColorCounts() {
+            uniqueColors = {};
+            allData.forEach(row => {
+                const color = row.color;
+                if (uniqueColors[color]) {
+                    uniqueColors[color]++;
+                } else {
+                    uniqueColors[color] = 1;
+                }
+            });
+        }
+
+        // Export modified CSV
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            let csvContent = 'District,Variety,Maturity,Days_since_plucked,Color,Grade\n';
+            
+            allData.forEach(row => {
+                const gradeValue = row.grade || '';
+                csvContent += `${row.district},${row.variety},${row.maturity},${row.days},${row.color},${gradeValue}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'papaya_dataset_modified.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert(`✅ Modified CSV exported successfully!\nModified rows: ${modifiedRows.size}`);
+        });
+
+        // Auto-load the CSV file if it's in the same directory
+        window.addEventListener('load', function() {
+            // Try to load the default file
+            const defaultFile = 'pp1_papaya_quality_dataset.csv';
+            fetch(defaultFile)
+                .then(response => {
+                    if (!response.ok) throw new Error('File not found');
+                    return response.text();
+                })
+                .then(csv => {
+                    parseCSV(csv);
+                    displayData(allData);
+                    updateColorLegend();
+                    updateColorFilter();
+                    updateStats();
+                })
+                .catch(err => {
+                    console.log('Default file not found. Please use the file picker.');
+                });
+        });
+    </script>
+</body>
+</html>

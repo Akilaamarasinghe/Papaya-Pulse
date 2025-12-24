@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
@@ -66,11 +66,22 @@ export default function CustomerInputScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('file', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'papaya.jpg',
-      } as any);
+      
+      // Handle file differently for web and mobile
+      if (Platform.OS === 'web') {
+        // For web, fetch the image as blob
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        formData.append('file', blob, 'papaya.jpg');
+      } else {
+        // For mobile, use the native format
+        formData.append('file', {
+          uri: imageUri,
+          type: 'image/jpeg',
+          name: 'papaya.jpg',
+        } as any);
+      }
+      
       formData.append('weight', weightNum.toString());
 
       const response = await api.post<CustomerQualityResponse>(
