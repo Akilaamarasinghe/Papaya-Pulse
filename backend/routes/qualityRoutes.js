@@ -9,9 +9,8 @@ const PredictionLog = require('../models/PredictionLog');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ML Service URLs
-const ML_GRADING_SERVICE = process.env.ML_GRADING_SERVICE || 'http://localhost:5000';
-const ML_IMAGE_SERVICE = process.env.ML_IMAGE_SERVICE || 'http://localhost:5001';
+// ML Service URL - New ML service for quality grading
+const ML_QUALITY_SERVICE = process.env.ML_QUALITY_SERVICE || 'http://localhost:5000';
 
 // POST /api/quality/farmer - Farmer quality grading
 router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) => {
@@ -29,35 +28,6 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       return res.status(400).json({ error: 'Image file is required' });
     }
 
-    // Step 1: Send image to IM service for color and texture analysis
-    let imageAnalysis;
-    try {
-      const imageFormData = new FormData();
-      imageFormData.append('image', req.file.buffer, {
-        filename: 'papaya.jpg',
-        contentType: req.file.mimetype,
-      });
-
-      const imageResponse = await axios.post(
-        `${ML_IMAGE_SERVICE}/predict`,
-        imageFormData,
-        {
-          headers: imageFormData.getHeaders(),
-          timeout: 30000,
-        }
-      );
-
-      imageAnalysis = imageResponse.data;
-    } catch (imageError) {
-      console.error('Image analysis error:', imageError.message);
-      // Fallback to default values if image service fails
-      imageAnalysis = {
-        prediction: 'Type A',
-        confidence: '75%',
-        explanation: 'Using default analysis due to service unavailability'
-      };
-    }
-
     // Map frontend values to ML service format
     const districtMap = {
       'Hambanthota': 0,
@@ -71,34 +41,43 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       'Tenim': 1 // Map Tenim to Solo for now
     };
 
-    // Determine color and texture from image type
-    const color = imageAnalysis.prediction === 'Type A' ? '#f09439' : '#e47647';
-    const texture = imageAnalysis.prediction === 'Type A' ? '75.0' : '65.0';
+    const maturityMap = {
+      'unmature': 0,
+      'half-mature': 1,
+      'mature': 2
+    };
 
-    // Step 2: Send data to ML grading service
-    let mlGrading;
+    // Call the new ML quality service
+    let mlResponse;
     try {
-      const gradingPayload = {
+      const formData = new FormData();
+      
+      // Prepare the data JSON payload
+      const dataPayload = {
         district: districtMap[district] || 1,
         variety: varietyMap[variety] || 0,
-        color: color,
-        texture: texture,
-        maturity: parseFloat(maturity) || 75.0,
-        damage: imageAnalysis.prediction === 'Type B' ? 3.0 : 1.0,
+        maturity: maturityMap[maturity] || 2,
+        days_since_plucked: parseInt(days_since_picked) || 1,
       };
 
-      const gradingResponse = await axios.post(
-        `${ML_GRADING_SERVICE}/papaya_grade_predict`,
-        gradingPayload,
+      formData.append('data', JSON.stringify(dataPayload));
+      formData.append('file', req.file.buffer, {
+        filename: 'papaya.jpg',
+        contentType: req.file.mimetype,
+      });
+
+      const mlServiceResponse = await axios.post(
+        `${ML_QUALITY_SERVICE}/predict`,
+        formData,
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: formData.getHeaders(),
           timeout: 30000,
         }
       );
 
-      mlGrading = gradingResponse.data;
-    } catch (gradingError) {
-      console.error('Grading error:', gradingError.message);
+      mlResponse = mlServiceResponse.data;
+    } catch (mlError) {
+      console.error('ML service error:', mlError.message);
       // Fallback to mock grading if ML service fails
       const damageProbabilities = {
         'unmature': 0.15,
@@ -110,49 +89,37 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       const damageProbability = Math.min(baseProb + ageEffect, 0.95);
 
       let grade;
-      if (damageProbability < 0.2) grade = 'I';
-      else if (damageProbability < 0.4) grade = 'II';
-      else grade = 'III';
+      if (damageProbability < 0.2) grade = '1';
+      else if (damageProbability < 0.4) grade = '2';
+      else grade = '3';
 
-      mlGrading = {
-        prediction_label: grade === 'I' ? 'Grade 1 (Best)' : grade === 'II' ? 'Grade 2 (Medium)' : 'Grade 3 (Lowest)',
-        prediction_confidence_percent: `${(100 - damageProbability * 100).toFixed(2)}%`,
-        farmer_friendly_explanation: `Based on maturity level and days since picked, the fruit quality is estimated as ${grade}.`
+      mlResponse = {
+        predicted_grade: grade,
+        confidence: 1 - damageProbability,
+        all_probabilities: {
+          '1': 0.33,
+          '2': 0.33,
+          '3': 0.34
+        },
+        extracted_color: '#f09439',
+        explanation: {
+          explanation: `Based on maturity level and days since picked, the fruit quality is estimated as Grade ${grade}.`,
+          feature_contributions: [],
+          top_features: []
+        }
       };
     }
 
-    // Map ML prediction to our grade system (I, II, III)
-    let grade;
-    if (mlGrading.prediction_label.includes('Grade 1') || mlGrading.prediction_label.includes('Best')) {
-      grade = 'I';
-    } else if (mlGrading.prediction_label.includes('Grade 2') || mlGrading.prediction_label.includes('Medium')) {
-      grade = 'II';
-    } else {
-      grade = 'III';
-    }
-
-    // Extract confidence percentage
-    const confidenceMatch = mlGrading.prediction_confidence_percent?.match(/([0-9.]+)/);
-    const confidence = confidenceMatch ? parseFloat(confidenceMatch[1]) / 100 : 0.85;
-
-    // Build explanation array
-    const explanation = [
-      mlGrading.farmer_friendly_explanation || 'Quality analysis completed.',
-      `Image Analysis: ${imageAnalysis.explanation || imageAnalysis.prediction}`,
-      `Confidence: ${mlGrading.prediction_confidence_percent || '85%'}`,
-      quality_category === 'Best Quality' 
-        ? 'Selected for best quality market segment.'
-        : 'Selected for factory outlet segment.',
-    ];
-
-    if (mlGrading.temperature_used) {
-      explanation.push(`Average temperature considered: ${mlGrading.temperature_used}°C`);
-    }
-
+    // Build response using new ML service data
     const response = {
-      grade,
-      damage_probability: 1 - confidence,
-      explanation,
+      predicted_grade: mlResponse.predicted_grade,
+      confidence: mlResponse.confidence,
+      all_probabilities: mlResponse.all_probabilities,
+      extracted_color: mlResponse.extracted_color,
+      explanation: mlResponse.explanation.explanation,
+      feature_contributions: mlResponse.explanation.feature_contributions,
+      top_features: mlResponse.explanation.top_features,
+      quality_category: quality_category,
     };
 
     // Log prediction
@@ -161,8 +128,9 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       type: 'farmer_quality',
       input: {
         ...req.body,
-        image_analysis: imageAnalysis.prediction,
-        ml_grade: mlGrading.prediction_label,
+        district_code: districtMap[district],
+        variety_code: varietyMap[variety],
+        maturity_code: maturityMap[maturity],
       },
       output: response,
     });

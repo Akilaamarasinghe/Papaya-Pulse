@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
@@ -68,11 +68,21 @@ export default function LeafScanScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('file', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'leaf.jpg',
-      } as any);
+      
+      // Handle file differently for web and mobile
+      if (Platform.OS === 'web') {
+        // For web, fetch the image as blob
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        formData.append('file', blob, 'leaf.jpg');
+      } else {
+        // For mobile, use the native format
+        formData.append('file', {
+          uri: imageUri,
+          type: 'image/jpeg',
+          name: 'leaf.jpg',
+        } as any);
+      }
 
       const response = await api.post<LeafDiseaseResponse>('/leaf/predict', formData, {
         headers: {

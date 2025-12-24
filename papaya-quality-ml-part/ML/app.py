@@ -1,197 +1,214 @@
 from flask import Flask, request, jsonify
-import joblib
+from flask_cors import CORS
 import numpy as np
 import pandas as pd
-import requests
-from pathlib import Path
-from datetime import datetime, timedelta
-import shap
+import joblib
 import json
-import traceback
+from PIL import Image
+import io
+import warnings
+warnings.filterwarnings('ignore')
 
-# ================= CONFIG =================
-MODEL_DIR = Path("ml_models")
-MODEL_PATH = MODEL_DIR / "model.joblib"
-ENC_PATH = MODEL_DIR / "encoders.joblib"
-SHAP_BG_PATH = MODEL_DIR / "shap_background.npy"
-LABELS_PATH = Path("data_mapping.json")  # Using data_mapping.json instead
-
-FEATURES = ["district", "variety", "color", "texture", "maturity", "damage", "temperature"]
-CAT = ["district", "variety", "color", "texture"]
-NUM = ["maturity", "damage", "temperature"]
-
-# ================= APP =================
 app = Flask(__name__)
+CORS(app)
 
-model = joblib.load(MODEL_PATH)
-encoders = joblib.load(ENC_PATH)
-shap_bg = np.load(SHAP_BG_PATH)
+try:
+    model = joblib.load('models/papaya_grade_model.pkl')
+    label_encoder = joblib.load('models/label_encoder.pkl')
+    with open('models/model_metadata.json', 'r') as f:
+        metadata = json.load(f)
+except FileNotFoundError as e:
+    print(f"Error loading model files: {e}")
+    model = None
+    label_encoder = None
+    metadata = None
 
-with open(LABELS_PATH, "r", encoding="utf-8") as f:
-    LABELS = json.load(f)
-
-explainer = shap.TreeExplainer(model, data=shap_bg)
-
-# ================= HELPERS =================
-def clean_cat(x):
-    if x is None:
-        return "unknown"
-    s = str(x).strip()
-    return s if s else "unknown"
-
-def geocode(name):
+def get_dominant_color(image_file):
     try:
-        r = requests.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": name, "format": "json", "limit": 1},
-            headers={"User-Agent": "PapayaGrader"},
-            timeout=10
-        )
-        d = r.json()
-        if not d:
-            return None
-        return float(d[0]["lat"]), float(d[0]["lon"])
-    except:
-        return None
-
-def get_temp(district):
-    coords = geocode(district)
-    if coords is None:
-        return None
-
-    lat, lon = coords
-    end = (datetime.utcnow() - timedelta(days=1)).date()
-    start = end - timedelta(days=2)
-
-    try:
-        r = requests.get(
-            "https://api.open-meteo.com/v1/forecast",
-            params={
-                "latitude": lat,
-                "longitude": lon,
-                "start_date": start.isoformat(),
-                "end_date": end.isoformat(),
-                "hourly": "temperature_2m",
-                "timezone": "UTC"
-            },
-            timeout=15
-        )
-
-        temps = r.json().get("hourly", {}).get("temperature_2m", [])
-        if not temps:
-            return None
-
-        avg = sum(temps) / len(temps)
-        if avg < 10 or avg > 45:
-            return None
-
-        return round(avg, 2)
-    except:
-        return None
-
-def friendly(pred, shap_vals):
-    boosts, drops = [], []
-
-    for feat, sv in zip(FEATURES, shap_vals):
-        if sv > 0.01:
-            boosts.append(feat)
-        elif sv < -0.01:
-            drops.append(feat)
-
-    s1 = "These factors improved the fruit quality: " + (", ".join(boosts) if boosts else "none") + "."
-    s2 = "These factors slightly reduced the quality: " + (", ".join(drops) if drops else "none") + "."
-
-    if pred == "Best Quality":
-        s3 = "Overall, this papaya is top-tier quality."
-    elif pred == "Medium Quality":
-        s3 = "Overall, the fruit is good but not perfect."
-    else:
-        s3 = "Overall, the fruit quality is low due to multiple issues."
-
-    return f"{s1} {s2} {s3}"
-
-# ================= ROUTE =================
-@app.route("/papaya_grade_predict", methods=["POST"])
-def predict():
-    try:
-        p = request.get_json(force=True)
-
-        dist_map = LABELS["district"]
-        var_map = LABELS["variety"]
-        grade_map = LABELS["farmer_grade"]
-
-        dist_rev = {v: k for k, v in dist_map.items()}
-        var_rev = {v: k for k, v in var_map.items()}
-
-        district = dist_rev.get(int(p["district"]), "unknown")
-        variety = var_rev.get(int(p["variety"]), "unknown")
-        color = clean_cat(p.get("color"))
-        texture = clean_cat(p.get("texture"))
+        img = Image.open(image_file)
+        img = img.convert('RGB')
+        img = img.resize((150, 150))
+        pixels = np.array(img).reshape(-1, 3)
         
-        # Handle maturity - can be text or number
-        maturity_input = p.get("maturity", 75.0)
-        if isinstance(maturity_input, str):
-            maturity_map = {
-                'unmature': 50.0,
-                'half-mature': 75.0,
-                'mature': 90.0
-            }
-            maturity = maturity_map.get(maturity_input.lower(), 75.0)
-        else:
-            maturity = float(maturity_input)
-            
-        damage = float(p["damage"])
-
-        temperature = get_temp(district)
-        if temperature is None:
-            return jsonify({"error": "Unable to fetch valid temperature"}), 400
-
-        row = [district, variety, color, texture, maturity, damage, temperature]
-        df = pd.DataFrame([row], columns=FEATURES)
-
-        for feat in CAT:
-            le = encoders[feat]
-            val = df.at[0, feat]
-            if val not in le.classes_:
-                le.classes_ = np.append(le.classes_, val)
-            df[feat] = le.transform(df[feat].astype(str))
-
-        df[NUM] = df[NUM].astype(float)
-
-        pred_value = int(model.predict(df)[0])
-        proba = model.predict_proba(df)[0]
-
-        classes = list(model.classes_)
-        idx = classes.index(pred_value)
-
-        confidence = f"{round(proba[idx] * 100, 2)}%"
-        pred_label = grade_map.get(str(pred_value), "Unknown")
-
-        shap_values = explainer.shap_values(df)
-
-        if isinstance(shap_values, list):
-            shap_vals = shap_values[idx][0]
-        else:
-            shap_vals = shap_values[0]
-
-        shap_vals = np.array(shap_vals).reshape(-1).tolist()
-
-        explanation = friendly(pred_label, shap_vals)
-
-
-        return jsonify({
-            "prediction_label": pred_label,
-            "prediction_confidence_percent": confidence,
-            "temperature_used": temperature,
-            "farmer_friendly_explanation": explanation
-        })
-
+        center_y, center_x = 75, 75
+        radius = 50
+        center_pixels = []
+        for y in range(max(0, center_y - radius), min(150, center_y + radius)):
+            for x in range(max(0, center_x - radius), min(150, center_x + radius)):
+                if (x - center_x)**2 + (y - center_y)**2 <= radius**2:
+                    center_pixels.append(img.getpixel((x, y)))
+        
+        if center_pixels:
+            pixels = np.array(center_pixels)
+        
+        non_extreme = pixels[
+            (pixels[:, 0] > 10) & (pixels[:, 0] < 245) &
+            (pixels[:, 1] > 10) & (pixels[:, 1] < 245) &
+            (pixels[:, 2] > 10) & (pixels[:, 2] < 245)
+        ]
+        
+        if len(non_extreme) > 0:
+            pixels = non_extreme
+        
+        avg_color = np.median(pixels, axis=0).astype(int)
+        
+        hex_color = '#{:02X}{:02X}{:02X}'.format(avg_color[0], avg_color[1], avg_color[2])
+        return hex_color
     except Exception as e:
-        return jsonify({
-            "error": str(e),
-            "trace": traceback.format_exc()
-        }), 500
+        raise ValueError(f"Error processing image: {str(e)}")
 
-# ================= MAIN =================
-if __name__ == "__main__":
-    app.run(debug=True)
+def hex_to_rgb(hex_color):
+    hex_color = str(hex_color).lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+def get_shap_explanation(input_features, prediction_idx, predicted_class):
+    try:
+        import shap
+        feature_names = ['district', 'variety', 'maturity', 'days_since_plucked', 'R', 'G', 'B']
+        
+        explainer = shap.TreeExplainer(model)
+        shap_values = explainer.shap_values(input_features)
+        
+        if isinstance(shap_values, list):
+            num_classes = len(shap_values)
+            if prediction_idx >= num_classes:
+                prediction_idx = 0
+            shap_values_for_pred = np.array(shap_values[prediction_idx]).flatten()
+        else:
+            if len(shap_values.shape) == 3:
+                shap_values_for_pred = shap_values[0, :, prediction_idx]
+            else:
+                shap_values_for_pred = shap_values[0]
+        
+        base_value = explainer.expected_value
+        if isinstance(base_value, (list, np.ndarray)):
+            base_value = float(base_value[prediction_idx]) if len(base_value) > prediction_idx else float(base_value[0])
+        else:
+            base_value = float(base_value)
+        
+        feature_contributions = []
+        for i, feature_name in enumerate(feature_names):
+            contribution = float(shap_values_for_pred[i])
+            feature_value = float(input_features[0][i])
+            feature_contributions.append({
+                'feature': feature_name,
+                'value': feature_value,
+                'contribution': contribution,
+                'abs_contribution': abs(contribution)
+            })
+        
+        feature_contributions.sort(key=lambda x: x['abs_contribution'], reverse=True)
+        
+        top_features = feature_contributions[:3]
+        
+        explanation_text = f"The model predicted Grade {predicted_class} based on these key factors: "
+        
+        for i, feat in enumerate(top_features, 1):
+            impact = "increases" if feat['contribution'] > 0 else "decreases"
+            explanation_text += f"{i}. {feat['feature'].replace('_', ' ').title()} (value: {feat['value']:.2f}) {impact} the likelihood of this grade (impact: {feat['contribution']:.4f}). "
+        
+        return {
+            'base_value': base_value,
+            'feature_contributions': feature_contributions,
+            'top_features': top_features,
+            'explanation': explanation_text
+        }
+    except ImportError:
+        return {
+            'base_value': 0,
+            'feature_contributions': [],
+            'top_features': [],
+            'explanation': 'SHAP explanations not available. Install shap package for detailed explanations.'
+        }
+    except Exception as e:
+        return {
+            'base_value': 0,
+            'feature_contributions': [],
+            'top_features': [],
+            'explanation': f'Explanation generation failed: {str(e)}'
+        }
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    if model is None or label_encoder is None:
+        return jsonify({'error': 'Model not loaded. Please run train.py first.'}), 500
+    
+    try:
+        data_json = request.form.get('data')
+        if not data_json:
+            return jsonify({'error': 'Missing data field'}), 400
+        
+        data = json.loads(data_json)
+        
+        required_fields = ['district', 'variety', 'maturity', 'days_since_plucked']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'error': f'Missing required field: {field}'}), 400
+        
+        if 'file' not in request.files:
+            return jsonify({'error': 'Image file is required'}), 400
+        
+        image_file = request.files['file']
+        if image_file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        hex_color = get_dominant_color(image_file)
+        
+        district = int(data['district'])
+        variety = int(data['variety'])
+        maturity = int(data['maturity'])
+        days_since_plucked = int(data['days_since_plucked'])
+        
+        r, g, b = hex_to_rgb(hex_color)
+        
+        input_features = pd.DataFrame([[district, variety, maturity, days_since_plucked, r, g, b]], 
+                                      columns=metadata['feature_names'])
+        
+        prediction = model.predict(input_features)
+        prediction_proba = model.predict_proba(input_features)
+        
+        predicted_grade = str(label_encoder.inverse_transform(prediction)[0])
+        confidence = float(prediction_proba[0][prediction[0]])
+        
+        all_probabilities = {}
+        for i, grade in enumerate(label_encoder.classes_):
+            all_probabilities[str(grade)] = float(prediction_proba[0][i])
+        
+        input_features_array = input_features.values
+        shap_explanation = get_shap_explanation(input_features_array, prediction[0], predicted_grade)
+        
+        response = {
+            'predicted_grade': predicted_grade,
+            'confidence': confidence,
+            'all_probabilities': all_probabilities,
+            'extracted_color': hex_color,
+            'explanation': shap_explanation
+        }
+        
+        return jsonify(response), 200
+        
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Invalid JSON in data field'}), 400
+    except ValueError as e:
+        return jsonify({'error': f'Invalid data type: {str(e)}'}), 400
+    except Exception as e:
+        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
+
+@app.route('/health', methods=['GET'])
+def health():
+    status = {
+        'status': 'healthy' if model is not None else 'unhealthy',
+        'model_loaded': model is not None,
+        'label_encoder_loaded': label_encoder is not None,
+        'metadata_loaded': metadata is not None
+    }
+    return jsonify(status), 200 if model is not None else 503
+
+@app.route('/model-info', methods=['GET'])
+def model_info():
+    if metadata is None:
+        return jsonify({'error': 'Model metadata not loaded'}), 500
+    return jsonify(metadata), 200
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)

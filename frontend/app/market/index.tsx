@@ -8,7 +8,7 @@ import { LabeledInput } from '../../components/shared/LabeledInput';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { Dropdown } from '../../components/shared/Dropdown';
 import api from '../../config/api';
-import { District, PapayaVariety, QualityGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../types';
+import { District, PapayaVariety, MarketGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../types';
 
 export default function MarketIndexScreen() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export default function MarketIndexScreen() {
     district: user?.district || 'Galle' as District,
     variety: 'RedLady' as PapayaVariety,
     cultivation_method: 'Organic' as CultivationMethod,
-    quality_grade: 'A' as QualityGrade,
+    quality_grade: 'A' as MarketGrade,
     total_harvest_count: '',
     avg_weight_per_fruit: '',
     expected_selling_date: '',
@@ -62,9 +62,9 @@ export default function MarketIndexScreen() {
   ];
 
   const gradeOptions = [
-    { label: 'Grade A', value: 'A' as QualityGrade },
-    { label: 'Grade B', value: 'B' as QualityGrade },
-    { label: 'Grade C', value: 'C' as QualityGrade },
+    { label: 'Grade A', value: 'A' as MarketGrade },
+    { label: 'Grade B', value: 'B' as MarketGrade },
+    { label: 'Grade C', value: 'C' as MarketGrade },
   ];
 
   const predictPrice = async () => {
