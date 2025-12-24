@@ -21,10 +21,10 @@ export default function MarketPredictFormScreen() {
     district: user?.district || 'Galle' as District,
     variety: 'RedLady' as PapayaVariety,
     cultivation_method: 'Organic' as CultivationMethod,
-    quality_grade: 'A' as QualityGrade,
+    quality_grade: (category === 'best' ? 'I' : 'A') as QualityGrade,
     total_harvest_count: '',
     avg_weight_per_fruit: '',
-    expected_selling_date: '',
+    expected_selling_date: 'today',
   });
 
   const districtOptions = [
@@ -44,11 +44,32 @@ export default function MarketPredictFormScreen() {
     { label: 'Inorganic', value: 'Inorganic' as CultivationMethod },
   ];
 
-  const gradeOptions = [
-    { label: 'Grade A', value: 'A' as QualityGrade },
-    { label: 'Grade B', value: 'B' as QualityGrade },
-    { label: 'Grade C', value: 'C' as QualityGrade },
-  ];
+  // Different options based on category
+  const gradeOptions = category === 'best'
+    ? [
+        { label: 'Grade I', value: 'I' as QualityGrade },
+        { label: 'Grade II', value: 'II' as QualityGrade },
+        { label: 'Grade III', value: 'III' as QualityGrade },
+      ]
+    : [
+        { label: 'Grade A', value: 'A' as QualityGrade },
+        { label: 'Grade B', value: 'B' as QualityGrade },
+      ];
+
+  const sellingDayOptions = category === 'best'
+    ? [
+        { label: 'Today', value: 'today' },
+        { label: '1 Day', value: '1day' },
+        { label: '2 Days', value: '2day' },
+        { label: '3 Days', value: '3day' },
+        { label: '4 Days', value: '4day' },
+        { label: '5 Days', value: '5day' },
+      ]
+    : [
+        { label: 'Today', value: 'today' },
+        { label: '1 Day', value: '1day' },
+        { label: '2 Days', value: '2day' },
+      ];
 
   const predictPrice = async () => {
     if (!formData.total_harvest_count || !formData.avg_weight_per_fruit || !formData.expected_selling_date) {
@@ -155,11 +176,11 @@ export default function MarketPredictFormScreen() {
         keyboardType="decimal-pad"
       />
 
-      <LabeledInput
+      <Dropdown
         label={t('expectedSellingDate')}
         value={formData.expected_selling_date}
-        onChangeText={(text) => setFormData({ ...formData, expected_selling_date: text })}
-        placeholder={t('egValue').replace('{value}', '2025-12-10')}
+        options={sellingDayOptions}
+        onChange={(value) => setFormData({ ...formData, expected_selling_date: value })}
       />
 
       <PrimaryButton
