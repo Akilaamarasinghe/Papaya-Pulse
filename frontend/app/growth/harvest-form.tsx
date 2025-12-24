@@ -121,9 +121,9 @@ export default function HarvestFormScreen() {
 
       <Dropdown
         label={t('plantingMonth')}
-        value={formData.planted_month}
+        value={formData.plant_month}
         options={monthOptions}
-        onChange={(value) => setFormData({ ...formData, planted_month: value })}
+        onChange={(value) => setFormData({ ...formData, plant_month: value })}
       />
 
       <Dropdown
