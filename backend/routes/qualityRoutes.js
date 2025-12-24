@@ -9,8 +9,9 @@ const PredictionLog = require('../models/PredictionLog');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ML Service URL - New ML service for quality grading
+// ML Service URLs
 const ML_QUALITY_SERVICE = process.env.ML_QUALITY_SERVICE || 'http://localhost:5000';
+const ML_IMAGE_SERVICE = process.env.ML_IMAGE_SERVICE || 'http://localhost:5001';
 
 // POST /api/quality/farmer - Farmer quality grading
 router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) => {
@@ -28,7 +29,79 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       return res.status(400).json({ error: 'Image file is required' });
     }
 
-    // Map frontend values to ML service format
+    // Factory Outlet - Use IM service only
+    if (quality_category === 'factory outlet') {
+      try {
+        const imageFormData = new FormData();
+        imageFormData.append('image', req.file.buffer, {
+          filename: 'papaya.jpg',
+          contentType: req.file.mimetype,
+        });
+
+        console.log('Calling IM service at:', `${ML_IMAGE_SERVICE}/predict`);
+        
+        const imageResponse = await axios.post(
+          `${ML_IMAGE_SERVICE}/predict`,
+          imageFormData,
+          {
+            headers: imageFormData.getHeaders(),
+            timeout: 30000,
+          }
+        );
+
+        const imageAnalysis = imageResponse.data;
+        
+        console.log('\n==========================================');
+        console.log('IM SERVICE RESPONSE RECEIVED');
+        console.log('==========================================');
+        console.log('Full response:', JSON.stringify(imageAnalysis, null, 2));
+        console.log('------------------------------------------');
+        console.log('prediction VALUE:', imageAnalysis.prediction);
+        console.log('prediction TYPE:', typeof imageAnalysis.prediction);
+        console.log('prediction LENGTH:', imageAnalysis.prediction?.length);
+        console.log('prediction EXACT:', `"${imageAnalysis.prediction}"`);
+        console.log('Is "Type A"?:', imageAnalysis.prediction === 'Type A');
+        console.log('Is "Type B"?:', imageAnalysis.prediction === 'Type B');
+        console.log('==========================================\n');
+        
+        // Build response from IM service
+        const response = {
+          prediction: imageAnalysis.prediction,
+          confidence: imageAnalysis.confidence,
+          explanation: imageAnalysis.explanation,
+          quality_category: quality_category,
+        };
+
+        console.log('\n==========================================');
+        console.log('SENDING TO FRONTEND');
+        console.log('==========================================');
+        console.log('Full response:', JSON.stringify(response, null, 2));
+        console.log('response.prediction:', response.prediction);
+        console.log('==========================================\n');
+
+        // Log prediction
+        await PredictionLog.create({
+          userId: req.user.uid,
+          type: 'farmer_quality',
+          input: {
+            farmer_id,
+            quality_category,
+          },
+          output: response,
+        });
+
+        return res.json(response);
+      } catch (imageError) {
+        console.error('Image analysis error:', imageError.message);
+        console.error('Error details:', imageError.response?.data || imageError);
+        return res.status(500).json({ 
+          error: 'Image analysis failed. Please ensure the IM service is running on port 5001.',
+          details: imageError.message
+        });
+      }
+    }
+
+    // Best Quality - Use ML grading service
     const districtMap = {
       'Hambanthota': 0,
       'Galle': 1,
@@ -38,7 +111,7 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
     const varietyMap = {
       'RedLady': 0,
       'Solo': 1,
-      'Tenim': 1 // Map Tenim to Solo for now
+      'Tenim': 1
     };
 
     const maturityMap = {

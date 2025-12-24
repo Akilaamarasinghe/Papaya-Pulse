@@ -45,6 +45,75 @@ export default function FarmerInputScreen() {
   ];
 
   const pickImage = async () => {
+    // For web platform, use file input directly
+    if (Platform.OS === 'web') {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+      
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+      return;
+    }
+
+    // For mobile: factory outlet allows both camera and gallery
+    if (category === 'factory') {
+      Alert.alert(
+        'Select Image',
+        'Choose how to add your papaya image',
+        [
+          {
+            text: 'Take Photo',
+            onPress: async () => {
+              const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+              if (!permissionResult.granted) {
+                Alert.alert('Permission Required', 'Camera permission is required');
+                return;
+              }
+              const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: 'images',
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 0.8,
+              });
+              if (!result.canceled) {
+                setImageUri(result.assets[0].uri);
+              }
+            }
+          },
+          {
+            text: 'Choose from Gallery',
+            onPress: async () => {
+              const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!permissionResult.granted) {
+                Alert.alert('Permission Required', 'Gallery permission is required');
+                return;
+              }
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: 'images',
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 0.8,
+              });
+              if (!result.canceled) {
+                setImageUri(result.assets[0].uri);
+              }
+            }
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ]
+      );
+      return;
+    }
+
+    // For mobile best quality, use camera only
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     
     if (!permissionResult.granted) {
@@ -72,16 +141,18 @@ export default function FarmerInputScreen() {
       return;
     }
 
-    if (!formData.days_since_picked) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
+    // For best quality, validate all fields
+    if (category === 'best') {
+      if (!formData.days_since_picked) {
+        Alert.alert('Error', 'Please fill in all fields');
+        return;
+      }
 
-    const daysSincePicked = parseInt(formData.days_since_picked);
-
-    if (isNaN(daysSincePicked) || daysSincePicked < 1 || daysSincePicked > 7) {
-      Alert.alert('Error', 'Days since picked must be between 1 and 7 for freshness');
-      return;
+      const daysSincePicked = parseInt(formData.days_since_picked);
+      if (isNaN(daysSincePicked) || daysSincePicked < 1 || daysSincePicked > 7) {
+        Alert.alert('Error', 'Days since picked must be between 1 and 7 for freshness');
+        return;
+      }
     }
 
     setLoading(true);
@@ -104,11 +175,15 @@ export default function FarmerInputScreen() {
       }
       
       formDataToSend.append('farmer_id', user?.uid || '');
-      formDataToSend.append('district', formData.district);
-      formDataToSend.append('variety', formData.variety);
-      formDataToSend.append('maturity', formData.maturity);
       formDataToSend.append('quality_category', formData.quality_category);
-      formDataToSend.append('days_since_picked', daysSincePicked.toString());
+
+      // For best quality, include all fields
+      if (category === 'best') {
+        formDataToSend.append('district', formData.district);
+        formDataToSend.append('variety', formData.variety);
+        formDataToSend.append('maturity', formData.maturity);
+        formDataToSend.append('days_since_picked', formData.days_since_picked);
+      }
 
       const response = await api.post<FarmerQualityResponse>(
         '/quality/farmer',
@@ -119,6 +194,14 @@ export default function FarmerInputScreen() {
           },
         }
       );
+
+      console.log('\n===== API RESPONSE RECEIVED =====');
+      console.log('Full Response:', JSON.stringify(response.data, null, 2));
+      console.log('response.data.prediction:', response.data.prediction);
+      console.log('response.data.predicted_grade:', response.data.predicted_grade);
+      console.log('Category:', category);
+      console.log('Quality Category:', formData.quality_category);
+      console.log('==================================\n');
 
       router.push({
         pathname: '/quality/farmer-result' as any,
@@ -147,7 +230,7 @@ export default function FarmerInputScreen() {
     if (category === 'best') {
       return 'Take a clear photo showing the papaya color';
     } else {
-      return 'Take a photo showing any damaged areas';
+      return 'Take or choose a photo showing the papaya (damaged areas visible)';
     }
   };
 
@@ -158,38 +241,45 @@ export default function FarmerInputScreen() {
           {category === 'best' ? 'Best Quality' : 'Factory Outlet'} Grading
         </Text>
         <Text style={styles.subtitle}>
-          Enter papaya details for {category === 'best' ? 'premium' : 'factory outlet'} grading
+          {category === 'best' 
+            ? 'Enter papaya details for premium grading' 
+            : 'Upload papaya image for factory outlet grading'}
         </Text>
       </View>
 
-      <Dropdown
-        label="District"
-        value={formData.district}
-        options={districtOptions}
-        onChange={(value) => setFormData({ ...formData, district: value })}
-      />
+      {/* Show input fields only for Best Quality */}
+      {category === 'best' && (
+        <>
+          <Dropdown
+            label="District"
+            value={formData.district}
+            options={districtOptions}
+            onChange={(value) => setFormData({ ...formData, district: value })}
+          />
 
-      <Dropdown
-        label="Variety"
-        value={formData.variety}
-        options={varietyOptions}
-        onChange={(value) => setFormData({ ...formData, variety: value })}
-      />
+          <Dropdown
+            label="Variety"
+            value={formData.variety}
+            options={varietyOptions}
+            onChange={(value) => setFormData({ ...formData, variety: value })}
+          />
 
-      <Dropdown
-        label="Maturity Level"
-        value={formData.maturity}
-        options={maturityOptions}
-        onChange={(value) => setFormData({ ...formData, maturity: value })}
-      />
+          <Dropdown
+            label="Maturity Level"
+            value={formData.maturity}
+            options={maturityOptions}
+            onChange={(value) => setFormData({ ...formData, maturity: value })}
+          />
 
-      <LabeledInput
-        label="Days Since Picked (1-7 for freshness)"
-        value={formData.days_since_picked}
-        onChangeText={(text) => setFormData({ ...formData, days_since_picked: text })}
-        placeholder="e.g., 2"
-        keyboardType="numeric"
-      />
+          <LabeledInput
+            label="Days Since Picked (1-7 for freshness)"
+            value={formData.days_since_picked}
+            onChangeText={(text) => setFormData({ ...formData, days_since_picked: text })}
+            placeholder="e.g., 2"
+            keyboardType="numeric"
+          />
+        </>
+      )}
 
       {imageUri && (
         <View style={styles.imageContainer}>
@@ -203,7 +293,7 @@ export default function FarmerInputScreen() {
       </View>
 
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : `Take Photo of ${category === 'best' ? 'Papaya Color' : 'Damaged Areas'}`}
+        title={imageUri ? 'Change Photo' : (Platform.OS === 'web' ? 'Choose Photo' : (category === 'factory' ? 'Add Photo' : 'Take Photo'))}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}

@@ -10,6 +10,18 @@ export default function FarmerResultScreen() {
   const data: FarmerQualityResponse = params.data ? JSON.parse(params.data as string) : null;
   const category = (params.category as string) || 'best'; // 'best' | 'factory'
 
+  console.log('\n======= RESULT SCREEN DEBUG START =======');
+  console.log('Raw params.data:', params.data);
+  console.log('Parsed data:', JSON.stringify(data, null, 2));
+  console.log('Category:', category);
+  console.log('data.prediction VALUE:', data?.prediction);
+  console.log('data.prediction TYPE:', typeof data?.prediction);
+  console.log('data.prediction LENGTH:', data?.prediction?.length);
+  console.log('data.prediction CHAR CODES:', data?.prediction?.split('').map(c => c.charCodeAt(0)));
+  console.log('Is Type A?', data?.prediction === 'Type A');
+  console.log('Is Type B?', data?.prediction === 'Type B');
+  console.log('======= RESULT SCREEN DEBUG END =======\n');
+
   if (!data) {
     return (
       <SafeAreaView style={styles.container}>
@@ -21,7 +33,89 @@ export default function FarmerResultScreen() {
     );
   }
 
-  const { predicted_grade, confidence, all_probabilities, extracted_color, explanation, top_features, quality_category } = data;
+  // Factory Outlet Result
+  if (category === 'factory' && data.prediction) {
+    // Extract and clean the prediction value
+    const predictionValue = String(data.prediction || '').trim();
+    
+    console.log('\n===== FACTORY OUTLET RENDERING =====');
+    console.log('Original data.prediction:', data.prediction);
+    console.log('Cleaned predictionValue:', predictionValue);
+    console.log('predictionValue === "Type A":', predictionValue === 'Type A');
+    console.log('predictionValue === "Type B":', predictionValue === 'Type B');
+    console.log('=====================================\n');
+    
+    const getTypeColor = () => {
+      const color = predictionValue === 'Type A' ? '#4CAF50' : '#FF9800';
+      console.log('getTypeColor - predictionValue:', predictionValue, '- Returning color:', color);
+      return color;
+    };
+    
+    const getTypeDescription = () => {
+      if (predictionValue === 'Type A') {
+        return 'Good quality for factory processing. Minimal damage detected.';
+      }
+      return 'Acceptable for factory processing. Some damage detected.';
+    };
+
+    // Parse confidence string like "85.5%"
+    const confidenceValue = typeof data.confidence === 'string' 
+      ? parseFloat((data.confidence as string).replace('%', '')) 
+      : ((data.confidence as number) || 0) * 100;
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+          <View style={styles.headerCard}>
+            <Text style={styles.categoryTitle}>Factory Outlet Papayas</Text>
+            <Text style={styles.categorySubtitle}>Image Analysis Result</Text>
+          </View>
+
+          <View style={styles.gradeCard}>
+            <Text style={styles.gradeLabel}>Quality Type</Text>
+            <View style={styles.gradeDisplay}>
+              <Text style={[styles.gradeValue, { color: getTypeColor(), fontSize: 48 }]}>
+                {predictionValue}
+              </Text>
+            </View>
+            <Text style={styles.gradeLabelText}>{predictionValue}</Text>
+            <Text style={styles.gradeDescription}>{getTypeDescription()}</Text>
+
+            <View style={styles.probabilityBox}>
+              <Text style={styles.probabilityLabel}>Confidence Score</Text>
+              <Text style={styles.probabilityValue}>{confidenceValue.toFixed(1)}%</Text>
+            </View>
+          </View>
+
+         
+
+          <View style={styles.explanationCard}>
+            <Text style={styles.sectionTitle}>AI Analysis</Text>
+            <Text style={styles.explanationText}>{data.explanation}</Text>
+          </View>
+
+          <View style={styles.recommendationCard}>
+            <Text style={styles.sectionTitle}>Recommendations</Text>
+            <Text style={styles.recommendationText}>
+              {predictionValue === 'Type A' &&
+                'Good quality for factory outlet. Suitable for processing with minimal preparation.'}
+              {predictionValue === 'Type B' &&
+                'Acceptable for factory processing. May require additional sorting or preparation.'}
+            </Text>
+          </View>
+
+          <PrimaryButton
+            title="Back to Quality Grader"
+            onPress={() => router.push('/quality')}
+            style={styles.button}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // Best Quality Result
+  const { predicted_grade, confidence, all_probabilities, extracted_color, explanation, top_features } = data;
   const grade = predicted_grade;
 
   const getGradeColor = () => {
@@ -63,7 +157,7 @@ export default function FarmerResultScreen() {
 
           <View style={styles.probabilityBox}>
             <Text style={styles.probabilityLabel}>Confidence Score</Text>
-            <Text style={styles.probabilityValue}>{(confidence * 100).toFixed(1)}%</Text>
+            <Text style={styles.probabilityValue}>{((confidence || 0) * 100).toFixed(1)}%</Text>
           </View>
         </View>
 
@@ -83,6 +177,7 @@ export default function FarmerResultScreen() {
         </View>
 
         {/* Grade Probabilities Card */}
+        {all_probabilities && (
         <View style={styles.probabilitiesCard}>
           <Text style={styles.sectionTitle}>Grade Probabilities</Text>
           {Object.entries(all_probabilities).map(([gradeKey, probability]) => (
@@ -93,7 +188,7 @@ export default function FarmerResultScreen() {
                   style={[
                     styles.progressFill,
                     {
-                      width: `${(probability * 100).toFixed(0)}%`,
+                      width: `${(probability * 100).toFixed(0)}%` as any,
                       backgroundColor: gradeKey === '1' ? '#4CAF50' : gradeKey === '2' ? '#FF9800' : '#F44336',
                     },
                   ]}
@@ -103,6 +198,7 @@ export default function FarmerResultScreen() {
             </View>
           ))}
         </View>
+        )}
 
         {/* AI Explanation Card */}
         <View style={styles.explanationCard}>
