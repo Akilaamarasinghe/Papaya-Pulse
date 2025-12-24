@@ -48,14 +48,14 @@ export default function MarketIndexScreen() {
       <Card
         title="Best Quality Papayas"
         icon="star-outline"
-        description="Grade premium papayas for best market pricing"
+        description="Predict market price for premium quality papayas"
         onPress={() => router.push('/market/predict-form?category=best' as any)}
       />
 
       <Card
         title="Factory Outlet Papayas"
         icon="business-outline"
-        description="Grade papayas suitable for factory processing"
+        description="Predict price for factory processing papayas"
         onPress={() => router.push('/market/predict-form?category=factory' as any)}
       />
     </ScreenContainer>
