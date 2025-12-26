@@ -34,6 +34,26 @@ export default function LeafScanScreen() {
     }
   };
 
+  const pickFromGallery = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert('Permission Required', 'Gallery permission is required');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
   const savePredictionToHistory = async (prediction: LeafDiseaseResponse, imageUri: string) => {
     try {
       const historyItem: LeafPredictionHistory = {
@@ -68,15 +88,12 @@ export default function LeafScanScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      
-      // Handle file differently for web and mobile
+
       if (Platform.OS === 'web') {
-        // For web, fetch the image as blob
         const response = await fetch(imageUri);
         const blob = await response.blob();
         formData.append('file', blob, 'leaf.jpg');
       } else {
-        // For mobile, use the native format
         formData.append('file', {
           uri: imageUri,
           type: 'image/jpeg',
@@ -124,6 +141,13 @@ export default function LeafScanScreen() {
       <PrimaryButton
         title={imageUri ? 'Retake Photo' : 'Open Camera & Take Photo'}
         onPress={pickImage}
+        variant="secondary"
+        style={styles.button}
+      />
+
+      <PrimaryButton
+        title="Upload Existing Photo"
+        onPress={pickFromGallery}
         variant="secondary"
         style={styles.button}
       />

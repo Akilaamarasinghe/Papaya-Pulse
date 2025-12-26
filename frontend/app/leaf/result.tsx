@@ -6,59 +6,24 @@ import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { LeafDiseaseResponse, DiseaseType, SeverityLevel } from '../../types';
 
 // Disease advisory information
-const diseaseAdvisory: Record<DiseaseType, { description: string; treatment: string[] }> = {
+const diseaseAdvisory: Record<DiseaseType, { description: string }> = {
   'Anthracnose': {
     description: 'A fungal disease causing dark, sunken lesions on leaves and fruits.',
-    treatment: [
-      'Remove and destroy infected plant parts',
-      'Apply copper-based fungicides',
-      'Ensure proper drainage and air circulation',
-      'Avoid overhead irrigation',
-    ],
   },
   'Curl': {
     description: 'Leaf curling caused by viral infection, often spread by insects.',
-    treatment: [
-      'Remove infected plants to prevent spread',
-      'Control insect vectors (aphids, whiteflies)',
-      'Use resistant varieties',
-      'Maintain field hygiene',
-    ],
   },
   'Mite disease': {
     description: 'Damage caused by mites feeding on leaf tissues.',
-    treatment: [
-      'Apply miticides or neem oil',
-      'Release predatory mites',
-      'Maintain proper humidity levels',
-      'Remove heavily infested leaves',
-    ],
   },
   'Ringspot': {
     description: 'Viral disease causing ring-shaped spots and stunted growth.',
-    treatment: [
-      'No cure available - remove infected plants',
-      'Control aphid vectors',
-      'Use virus-free planting material',
-      'Implement strict sanitation practices',
-    ],
   },
   'Healthy': {
     description: 'Your papaya leaf appears healthy with no visible diseases.',
-    treatment: [
-      'Continue regular monitoring',
-      'Maintain good cultural practices',
-      'Ensure balanced nutrition',
-      'Keep optimal watering schedule',
-    ],
   },
   'NotPapaya': {
     description: 'This does not appear to be a papaya leaf.',
-    treatment: [
-      'Please take a photo of an actual papaya leaf',
-      'Ensure the entire leaf is visible',
-      'Use good lighting for better detection',
-    ],
   },
 };
 
@@ -194,26 +159,13 @@ export default function LeafResultScreen() {
         )}
 
         {advisory && (
-          <>
-            <View style={styles.descriptionCard}>
-              <Text style={styles.sectionTitle}>About This {disease === 'Healthy' ? 'Result' : 'Disease'}</Text>
-              <Text style={styles.descriptionText}>{advisory.description}</Text>
-            </View>
-
-            <View style={styles.treatmentCard}>
-              <Text style={styles.sectionTitle}>
-                {disease === 'Healthy' ? 'Recommendations' : disease === 'NotPapaya' ? 'Instructions' : 'Treatment & Prevention'}
-              </Text>
-              {advisory.treatment.map((step, index) => (
-                <View key={index} style={styles.treatmentItem}>
-                  <View style={styles.stepNumber}>
-                    <Text style={styles.stepNumberText}>{index + 1}</Text>
-                  </View>
-                  <Text style={styles.treatmentText}>{step}</Text>
-                </View>
-              ))}
-            </View>
-          </>
+          <View style={styles.descriptionCard}>
+            <Text style={styles.sectionTitle}>About This {disease === 'Healthy' ? 'Result' : 'Disease'}</Text>
+            <Text style={styles.descriptionText}>{advisory.description}</Text>
+            <Text style={styles.sectionHint}>
+              Detailed treatment guidance will appear here once agronomy recommendations are connected.
+            </Text>
+          </View>
         )}
 
         <PrimaryButton
@@ -379,41 +331,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   descriptionText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#333',
-  },
-  treatmentCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  treatmentItem: {
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#FF6B35',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  stepNumberText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  treatmentText: {
-    flex: 1,
     fontSize: 16,
     lineHeight: 24,
     color: '#333',
