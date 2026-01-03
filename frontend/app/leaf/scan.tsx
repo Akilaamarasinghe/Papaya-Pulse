@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
@@ -24,6 +24,26 @@ export default function LeafScanScreen() {
 
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const pickFromGallery = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permissionResult.granted) {
+      Alert.alert('Permission Required', 'Gallery permission is required');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
@@ -68,11 +88,18 @@ export default function LeafScanScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('file', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'leaf.jpg',
-      } as any);
+
+      if (Platform.OS === 'web') {
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        formData.append('file', blob, 'leaf.jpg');
+      } else {
+        formData.append('file', {
+          uri: imageUri,
+          type: 'image/jpeg',
+          name: 'leaf.jpg',
+        } as any);
+      }
 
       const response = await api.post<LeafDiseaseResponse>('/leaf/predict', formData, {
         headers: {
@@ -114,6 +141,13 @@ export default function LeafScanScreen() {
       <PrimaryButton
         title={imageUri ? 'Retake Photo' : 'Open Camera & Take Photo'}
         onPress={pickImage}
+        variant="secondary"
+        style={styles.button}
+      />
+
+      <PrimaryButton
+        title="Upload Existing Photo"
+        onPress={pickFromGallery}
         variant="secondary"
         style={styles.button}
       />

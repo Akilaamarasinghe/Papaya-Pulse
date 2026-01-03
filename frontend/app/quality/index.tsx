@@ -10,51 +10,55 @@ export default function QualityIndexScreen() {
   const { user } = useAuth();
   const { t, language } = useTheme();
 
+  // If no user, don't show anything
+  if (!user) {
+    return (
+      <ScreenContainer>
+        <View style={styles.header}>
+          <Text style={styles.title}>Please Login</Text>
+          <Text style={styles.subtitle}>You need to login to access this feature</Text>
+        </View>
+      </ScreenContainer>
+    );
+  }
+
   return (
     <ScreenContainer>
       <View style={styles.header}>
         <Text style={styles.title}>{t('papayaQualityGrader')}</Text>
         <Text style={styles.subtitle}>
-          {user?.role === 'farmer' 
-            ? t('gradeYourHarvest')
-            : t('checkBeforeBuying')}
+          {user.role === 'farmer' 
+            ? 'Select papaya category to grade'
+            : 'Check papaya quality before buying'}
         </Text>
       </View>
 
-      {user?.role === 'farmer' && (
-        <Card
-          title={t('farmerGrading')}
-          icon="leaf-outline"
-          description={language === 'si' ? 'ප්‍රශස්ත වෙළඳපල මිල ගණන් සඳහා පැපොල් ශ්‍රේණිගත කරන්න' : 'Grade papayas for optimal market pricing'}
-          onPress={() => router.push('/quality/farmer-input' as any)}
-        />
+      {/* FARMER SIDE - Show two category options */}
+      {user.role === 'farmer' && (
+        <>
+          <Card
+            title="Best Quality Papayas"
+            icon="star-outline"
+            description="Grade premium papayas for best market pricing"
+            onPress={() => router.push('/quality/farmer-input?category=best' as any)}
+          />
+
+          <Card
+            title="Factory Outlet Papayas"
+            icon="business-outline"
+            description="Grade papayas suitable for factory processing"
+            onPress={() => router.push('/quality/farmer-input?category=factory' as any)}
+          />
+        </>
       )}
 
-      {user?.role === 'customer' && (
+      {/* CUSTOMER SIDE - Show single option */}
+      {user.role === 'customer' && (
         <Card
-          title={t('customerGrading')}
+          title="Check Papaya Quality"
           icon="checkmark-circle-outline"
-          description={language === 'si' ? 'මිලදී ගැනීමට පෙර පැපොල් ගුණාත්මකභාවය තහවුරු කරන්න' : 'Verify papaya quality before purchase'}
+          description="Verify papaya quality, taste prediction, and ripeness"
           onPress={() => router.push('/quality/customer-input' as any)}
-        />
-      )}
-
-      {/* Both can access both features if needed */}
-      {user?.role === 'farmer' && (
-        <Card
-          title={t('customerGrading')}
-          icon="checkmark-circle-outline"
-          description={language === 'si' ? 'ගැනුම්කරුගේ දෘෂ්ටිකෝණයෙන් ගුණාත්මකභාවය පරීක්ෂා කරන්න' : 'Check quality from buyer\'s perspective'}
-          onPress={() => router.push('/quality/customer-input' as any)}
-        />
-      )}
-
-      {user?.role === 'customer' && (
-        <Card
-          title={t('farmerGrading')}
-          icon="leaf-outline"
-          description={language === 'si' ? 'ගොවි ශ්‍රේණිගත කිරීමේ ක්‍රියාවලිය ගැන ඉගෙන ගන්න' : 'Learn about farmer grading process'}
-          onPress={() => router.push('/quality/farmer-input' as any)}
         />
       )}
     </ScreenContainer>
@@ -76,3 +80,4 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 });
+

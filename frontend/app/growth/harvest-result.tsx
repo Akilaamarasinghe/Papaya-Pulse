@@ -25,6 +25,17 @@ export default function HarvestResultScreen() {
   }
 
   const { predictions, farmer_explanation } = data;
+  
+  // Calculate harvest month
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  const today = new Date();
+  const harvestDate = new Date(today.getTime() + predictions.harvest_days_remaining * 24 * 60 * 60 * 1000);
+  const harvestMonthName = monthNames[harvestDate.getMonth()];
+  const harvestYear = harvestDate.getFullYear();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,13 +64,27 @@ export default function HarvestResultScreen() {
                 {predictions.harvest_days_remaining} {t('language') === 'si' ? 'දින' : 'days'}
               </Text>
             </View>
+
+            <View style={styles.predictionItem}>
+              <Text style={styles.predictionLabel}>Expected Harvest Month</Text>
+              <Text style={styles.predictionValue}>
+                {harvestMonthName} {harvestYear}
+              </Text>
+            </View>
           </View>
         </View>
 
         <View style={styles.explanationCard}>
           <Text style={styles.sectionTitle}>{t('explanation')}</Text>
           {farmer_explanation.map((line, index) => (
-            <Text key={index} style={styles.explanationText}>
+            <Text 
+              key={index} 
+              style={[
+                styles.explanationText,
+                line.trim() === '' && styles.emptyLine,
+                line.startsWith('-') && styles.bulletPoint
+              ]}
+            >
               {line}
             </Text>
           ))}
@@ -148,6 +173,13 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#333',
     marginBottom: 12,
+  },
+  emptyLine: {
+    marginBottom: 4,
+  },
+  bulletPoint: {
+    marginLeft: 8,
+    color: '#555',
   },
   button: {
     marginTop: 8,
