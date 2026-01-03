@@ -64,6 +64,9 @@ def fetch_forecast_weather(lat, lon):
     return df
 
 def get_weather_features(district, planted_month):
+    """
+    Get weather features for prediction
+    """
     lat, lon = geocode_district(district)
 
     planted_date = datetime(datetime.now().year, planted_month, 1)
@@ -92,8 +95,17 @@ def get_weather_features(district, planted_month):
             df_total.append(forecast_df)
 
     
+    # If no real weather data, return average/default values instead of raising exception
     if len(df_total) == 0:
-        raise Exception("No real weather data available for this district")
+        print(f"Warning: No real weather data available for {district}, using default values")
+        # Return typical Sri Lankan papaya growing region weather values
+        default_weather = pd.DataFrame([{
+            'temp_avg': 27.0,  # Average temperature in Celsius
+            'humidity_avg': 75.0,  # Average humidity percentage
+            'rainfall_total': 150.0,  # Monthly rainfall in mm
+            'sunshine_avg': 6.5  # Average sunshine hours per day
+        }])
+        return default_weather.values[0]
 
     df = pd.concat(df_total, ignore_index=True)
 

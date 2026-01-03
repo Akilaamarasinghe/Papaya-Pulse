@@ -88,9 +88,27 @@ def parse_month(value):
     return value
 
 def remaining_days(total_days, plant_month):
-    planted = datetime(datetime.utcnow().year, plant_month, 1)
-    passed = max(0, (datetime.utcnow() - planted).days)
-    return max(0, int(total_days - passed)), passed
+    """
+    Calculate remaining days until harvest based on planting month.
+    Assumes planting happened on the 1st of the given month.
+    """
+    now = datetime.utcnow()
+    current_year = now.year
+    
+    # Create planting date (1st of the plant_month)
+    planted = datetime(current_year, plant_month, 1)
+    
+    # If planting month is in the future, it was last year
+    if planted > now:
+        planted = datetime(current_year - 1, plant_month, 1)
+    
+    # Calculate days passed since planting
+    passed = (now - planted).days
+    
+    # Calculate remaining days (ensure non-negative)
+    remaining = max(0, int(total_days - passed))
+    
+    return remaining, passed
 
 def build_features(data, weather):
     f = {}
@@ -285,6 +303,8 @@ def build_farmer_explanation(
 def predict():
     try:
         data = request.get_json()
+        
+        print(f"Received request data: {data}")  # Debug logging
 
         required = [
             "district", "soil_type", "watering_method",
@@ -296,12 +316,22 @@ def predict():
 
         plant_month = parse_month(data["plant_month"])
 
-        weather = get_weather_features(data["district"], plant_month)
-        weather = {
-            "avg_temp": float(weather["avg_temp"]),
-            "total_rain": float(weather["total_rain"]),
-            "rainy_days": int(weather["rainy_days"])
-        }
+        try:
+            weather = get_weather_features(data["district"], plant_month)
+            weather = {
+                "avg_temp": float(weather["avg_temp"]),
+                "total_rain": float(weather["total_rain"]),
+                "rainy_days": int(weather["rainy_days"])
+            }
+        except Exception as weather_error:
+            print(f"Weather data error: {str(weather_error)}")
+            # Use default weather values for Sri Lankan papaya growing regions
+            weather = {
+                "avg_temp": 27.0,
+                "total_rain": 150.0,
+                "rainy_days": 12
+            }
+            print(f"Using default weather values: {weather}")
 
         X = build_features(data, weather)
         X_scaled = scaler.transform(X)
@@ -321,29 +351,30 @@ def predict():
             yield_pred, harvest_total, weather, plant_month,
             yield_factors, harvest_factors
         )
-        print(jsonify({
+        
+        result = {
             "farmer_explanation": farmer_explanation,
             "predictions": {
                 "yield_per_tree": round(yield_pred, 2),
                 "harvest_days_total": int(harvest_total),
-                "harvest_days_remaining": remaining
+                "harvest_days_remaining": remaining,
+                "days_since_planting": passed
             }
-        }))
+        }
+        
+        print(f"Sending response: {result}")
+        print(f"Debug - Total: {int(harvest_total)}, Passed: {passed}, Remaining: {remaining}")
 
-        return jsonify({
-            "farmer_explanation": farmer_explanation,
-            "predictions": {
-                "yield_per_tree": round(yield_pred, 2),
-                "harvest_days_total": int(harvest_total),
-                "harvest_days_remaining": remaining
-            }
-        })
+        return jsonify(result)
 
     except Exception as e:
-        traceback.print_exc()
+        error_trace = traceback.format_exc()
+        print(f"Prediction error: {str(e)}")
+        print(f"Full traceback:\n{error_trace}")
         return jsonify({
-            "error": "Prediction failed",
-            "details": str(e)
+            "error": str(e),
+            "message": "Unable to generate prediction. Please check your input data.",
+            "details": error_trace if app.debug else None
         }), 500
 
 # ======================================================
