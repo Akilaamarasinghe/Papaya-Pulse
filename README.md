@@ -1,3 +1,132 @@
+# 🌱 Papaya Pulse  
+### *AI-Driven Mobile Assistant for Papaya Cultivation in Sri Lanka*
+
+> 📱 Intelligent decision support for **smallholder papaya farmers and customers** using **AI, computer vision, explainable ML, and weather-aware analytics**.
+
+---
+
+## ✨ Project Snapshot
+
+| Category | Details |
+|--------|--------|
+| **User Roles** | 👨‍🌾 Farmer · 🛒 Customer |
+| **Platforms** | 📱 React Native (Expo) · 🌐 Node.js / Express · 🧠 Python ML |
+| **AI / ML** | ViT image models · Color-based CNNs · SHAP (Explainable AI) |
+| **External Data** | 🌦 Weather Forecast API · 📊 Market Price Feeds |
+| **Storage** | 🗄 MongoDB (users & logs) · 🖼 Image storage (configurable) |
+
+---
+
+## 🧠 System Architecture
+
+```mermaid
+graph TD
+    UA[📱 Farmer / Customer App] -->|HTTPS + Firebase Token| API[🌐 Backend API]
+    API --> DB[(🗄 MongoDB)]
+    API -->|REST / JSON| MLS[🧠 ML Services]
+
+    subgraph ML Services
+        QG[🍈 Quality Grading<br/>Color CNN + XAI] --> XAI[🔍 Explainable AI]
+        LD[🍃 Leaf Disease Pipeline<br/>ViT → Disease → Severity]
+        GH[🌱 Growth & Harvest<br/>Weather + Yield Models]
+        MP[💰 Market Price Model]
+    end
+
+    API --> WX[🌦 Weather API]
+    API --> MPD[📊 Market Price Data]
+    UA -->|Images & Forms| API
+    API -->|Predictions & Advice| UA
+```
+
+---
+
+## 🚶 User Journeys
+
+### 👨‍🌾 Farmer – Papaya Quality Grading
+**Login → Quality Menu → Select Flow**
+
+#### 🍈 Best Quality Papaya
+- Farmer ID  
+- District (Galle / Matara / Hambantota)  
+- Variety (Red Lady / Tenim / Solo)  
+- Maturity stage  
+- Days after harvest  
+- Papaya image  
+
+**Outputs**
+- Grade (A / B / C)  
+- Probability score  
+- Expert farming suggestions  
+
+---
+
+#### 🏭 Factory Outlet Papaya
+- Upload damaged-area image  
+- Factory grade classification  
+- Taste prediction (temperature-based)  
+- Recommendations  
+
+---
+
+### 🍃 Leaf Disease Detection
+- Papaya / Non-papaya validation  
+- Disease identification (Anthracnose, Curl, Mite, Ringspot)  
+- Severity (Mild / Moderate / Severe)  
+- Sri Lanka–compliant treatment & prevention  
+
+⚠️ Invalid image message:
+> “This does not look like a papaya leaf.”
+
+---
+
+### 🌱 Growth Stage & Harvest Prediction
+- Plant image → Stage A / B / C / D  
+- Action guidance  
+- Harvest prediction using weather & ML  
+
+---
+
+### 🛒 Market Price Prediction (Customer)
+- Seller price per kg  
+- Optional papaya image  
+- Fair price range  
+- Label: Underpriced / Fair / Overpriced  
+- Buying recommendation  
+
+---
+
+## 🗂 Repository Structure
+
+```
+Papaya-Pulse/
+├── backend/
+│   └── ml_service/
+├── frontend/
+├── papaya-harvest-prediction-ml-part/
+├── papaya-leaf-disease-ml-part/
+└── papaya-quality-ml-part/
+```
+
+---
+
+## 🛠 Tech Stack
+
+**Frontend:** React Native (Expo), TypeScript  
+**Backend:** Node.js, Express, MongoDB, Firebase  
+**AI / ML:** ViT, CNN, SHAP, Weather-based regression  
+**APIs:** Open-Meteo, Market price feeds  
+
+---
+
+## 👨‍🎓 Contributors
+
+🎓 **SLIIT – 4th Year IT Undergraduate Research Team**  
+**Project:** Papaya Pulse  
+
+---
+
+🔗 GitHub Repository  
+https://github.com/Akilaamarasinghe/Papaya-Pulse
 
 
 <img width="1408" height="768" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/95e4587c-d1b6-412b-8424-5cc72ebb3b00" />
