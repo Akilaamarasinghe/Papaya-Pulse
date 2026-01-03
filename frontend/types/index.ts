@@ -74,13 +74,19 @@ export interface FarmerQualityRequest {
 }
 
 export interface FarmerQualityResponse {
-  predicted_grade: string; // The predicted grade from ML model
-  confidence: number; // Confidence score (0-1)
-  all_probabilities: { [grade: string]: number }; // Probabilities for all grades
-  extracted_color: string; // Hex color extracted from image
-  explanation: string; // Detailed explanation text
-  feature_contributions: FeatureContribution[]; // All feature contributions
-  top_features: FeatureContribution[]; // Top 3 features
+  // For Best Quality (ML service response)
+  predicted_grade?: string; // The predicted grade from ML model
+  confidence?: number; // Confidence score (0-1) or string like "85.5%"
+  all_probabilities?: { [grade: string]: number }; // Probabilities for all grades
+  extracted_color?: string; // Hex color extracted from image
+  explanation?: string; // Detailed explanation text
+  feature_contributions?: FeatureContribution[]; // All feature contributions
+  top_features?: FeatureContribution[]; // Top 3 features
+  
+  // For Factory Outlet (IM service response)
+  prediction?: string; // Type A or Type B
+  
+  // Common fields
   quality_category: QualityCategory; // Category user selected
 }
 

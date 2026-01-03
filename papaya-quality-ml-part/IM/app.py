@@ -81,6 +81,16 @@ def predict():
     class_idx = int(class_idx.item())
     confidence = f"{round(float(conf.item())*100, 2)}%"
 
+    # Print prediction details for debugging
+    print("\n" + "="*50)
+    print("PREDICTION RESULT")
+    print("="*50)
+    print(f"Class Index: {class_idx}")
+    print(f"Class Name: {class_names[class_idx]}")
+    print(f"Confidence: {confidence}")
+    print(f"All Probabilities: {probs.tolist()}")
+    print("="*50 + "\n")
+
     # --------------------
     # XAI: Layer GradCAM attribution map
     # --------------------
@@ -88,11 +98,17 @@ def predict():
 
     explanation = make_text_explanation(attributions)
 
-    return jsonify({
+    result = {
         "prediction": class_names[class_idx],
         "confidence": confidence,
         "explanation": explanation
-    })
+    }
+    
+    print("\nRETURNING JSON:")
+    print(result)
+    print("\n")
+
+    return jsonify(result)
 
 
 if __name__ == "__main__":
