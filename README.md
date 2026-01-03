@@ -17,28 +17,7 @@
 
 ---
 
-## 🧠 System Architecture
 
-```mermaid
-graph TD
-    UA[📱 Farmer / Customer App] -->|HTTPS + Firebase Token| API[🌐 Backend API]
-    API --> DB[(🗄 MongoDB)]
-    API -->|REST / JSON| MLS[🧠 ML Services]
-
-    subgraph ML Services
-        QG[🍈 Quality Grading<br/>Color CNN + XAI] --> XAI[🔍 Explainable AI]
-        LD[🍃 Leaf Disease Pipeline<br/>ViT → Disease → Severity]
-        GH[🌱 Growth & Harvest<br/>Weather + Yield Models]
-        MP[💰 Market Price Model]
-    end
-
-    API --> WX[🌦 Weather API]
-    API --> MPD[📊 Market Price Data]
-    UA -->|Images & Forms| API
-    API -->|Predictions & Advice| UA
-```
-
----
 
 ## 🚶 User Journeys
 
