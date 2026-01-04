@@ -35,7 +35,6 @@ export default function MarketPredictFormScreen() {
 
   const varietyOptions = [
     { label: 'Red Lady', value: 'RedLady' as PapayaVariety },
-    { label: 'Solo', value: 'Solo' as PapayaVariety },
     { label: 'Tainung', value: 'Tenim' as PapayaVariety },
   ];
 

@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const authMiddleware = require('../middleware/auth');
 const User = require('../models/User');
 const PredictionLog = require('../models/PredictionLog');
+
+// Python ML service URL
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5000';
 
 // POST /api/market/predict - Market price prediction (Farmers only)
 router.post('/predict', authMiddleware, async (req, res) => {
@@ -23,55 +27,61 @@ router.post('/predict', authMiddleware, async (req, res) => {
       expected_selling_date,
     } = req.body;
 
-    // TODO: Integrate with ML model for actual price prediction
-    // For now, return mock response based on inputs
+    // Determine which endpoint to use based on quality grade
+    const isBestQuality = ['I', 'II', 'III'].includes(quality_grade);
+    const endpoint = isBestQuality ? '/martket_data_predict' : '/factory_outlet_price_predict';
 
-    const basePrices = {
-      'RedLady': 180,
-      'Solo': 160,
-      'Tenim': 170,
+    // Map expected_selling_date to expect_selling_week
+    const sellingWeekMap = {
+      'today': 0,
+      '1day': 0,
+      '2day': 1,
+      '3day': 1,
+      '4day': 2,
+      '5day': 2,
     };
 
-    let pricePerKg = basePrices[variety] || 170;
-
-    // Apply modifiers
-    if (cultivation_method === 'Organic') {
-      pricePerKg *= 1.25; // 25% premium for organic
-    }
-
-    if (quality_grade === 'A') {
-      pricePerKg *= 1.15;
-    } else if (quality_grade === 'C') {
-      pricePerKg *= 0.85;
-    }
-
-    // District modifier
-    const districtModifiers = {
-      'Hambanthota': 1.05,
-      'Matara': 0.95,
-      'Galle': 1.0,
+    // Prepare data for ML service
+    const mlRequestData = {
+      district: district,
+      variety: variety,
+      cultivation_methode: cultivation_method, // Note: ML service uses 'methode' spelling
+      quality: quality_grade,
+      total_harvest_papaya_units_count: total_harvest_count,
+      avg_weight_kg: avg_weight_per_fruit,
+      expect_selling_week: sellingWeekMap[expected_selling_date] || 0,
     };
-    pricePerKg *= (districtModifiers[district] || 1.0);
 
-    const totalWeight = total_harvest_count * avg_weight_per_fruit;
-    const predictedTotalIncome = Math.round(totalWeight * pricePerKg);
+    console.log(`Calling ML service: ${ML_SERVICE_URL}${endpoint}`);
+    console.log('Request data:', mlRequestData);
 
-    const sellingDays = ['In 2 days', 'Tomorrow', 'In 3 days', 'Next week', 'In 5 days'];
-    const suggestedSellingDay = sellingDays[Math.floor(Math.random() * sellingDays.length)];
+    // Call Python ML service
+    const mlResponse = await axios.post(
+      `${ML_SERVICE_URL}${endpoint}`,
+      mlRequestData,
+      {
+        timeout: 30000, // 30 second timeout
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-    const explanationOptions = [
-      `${cultivation_method} method ${cultivation_method === 'Organic' ? 'increased' : 'standardized'} your price.`,
-      `${variety} variety has ${variety === 'RedLady' ? 'high' : 'moderate'} market demand.`,
-      `Quality grade ${quality_grade} ${quality_grade === 'A' ? 'commands premium pricing' : 'affects market value'}.`,
-      `${district} district has ${districtModifiers[district] > 1 ? 'favorable' : 'standard'} market conditions.`,
-      'Recent market trends show stable demand for quality papayas.',
-    ];
+    if (!mlResponse.data.success) {
+      throw new Error(mlResponse.data.error || 'ML service returned failure');
+    }
 
+    const predictions = mlResponse.data.predictions;
+
+    // Format response for frontend
     const response = {
-      predicted_price_per_kg: Math.round(pricePerKg),
-      predicted_total_income: predictedTotalIncome,
-      suggested_selling_day: suggestedSellingDay,
-      explanation: explanationOptions.slice(0, 4),
+      predicted_price_per_kg: predictions.price_per_kg,
+      predicted_total_income: predictions.total_harvest_value,
+      suggested_selling_day: predictions.best_selling_day,
+      explanation: [
+        mlResponse.data.summary || 'Market price prediction completed successfully.',
+      ],
+      xai_factors: mlResponse.data.xai_factors || [],
     };
 
     // Log prediction
@@ -84,8 +94,18 @@ router.post('/predict', authMiddleware, async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    console.error('Market price prediction error:', error);
-    res.status(500).json({ error: 'Failed to predict market price' });
+    console.error('Market price prediction error:', error.message);
+    
+    // Check if it's a connection error to ML service
+    if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+      return res.status(503).json({ 
+        error: 'ML service is not available. Please make sure the Python ML service is running on port 5000.' 
+      });
+    }
+
+    res.status(500).json({ 
+      error: error.response?.data?.error || error.message || 'Failed to predict market price' 
+    });
   }
 });
 
