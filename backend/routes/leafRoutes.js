@@ -51,8 +51,8 @@ const mapDiseaseLabel = (label, isLeaf) => {
   if (normalized.includes('mite')) {
     return 'Mite disease';
   }
-  if (normalized.includes('ring') || normalized.includes('mosaic')) {
-    return 'Ringspot';
+  if (normalized.includes('mosaic')) {
+    return 'Mosaic virus';
   }
   if (normalized.includes('healthy')) {
     return 'Healthy';

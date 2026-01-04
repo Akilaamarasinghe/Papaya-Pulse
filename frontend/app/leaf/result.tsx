@@ -16,12 +16,8 @@ const diseaseAdvisory: Record<DiseaseType, { description: string }> = {
   'Mite disease': {
     description: 'Damage caused by mites feeding on leaf tissues.',
   },
-  'Ringspot': {
-    description: 'Viral disease causing ring-shaped spots and stunted growth.',
-  },
-  'Healthy': {
-    description: 'Your papaya leaf appears healthy with no visible diseases.',
-  },
+
+
   'NotPapaya': {
     description: 'This does not appear to be a papaya leaf.',
   },
@@ -65,7 +61,7 @@ export default function LeafResultScreen() {
   const { disease, disease_confidence, severity, severity_confidence } = data;
   const advisory = diseaseAdvisory[disease];
   const isNotLeaf = data.is_leaf === false || disease === 'NotPapaya';
-  const showSeverity = !isNotLeaf && disease !== 'Healthy' && severity !== 'unknown' && severity_confidence > 0;
+  const showSeverity = !isNotLeaf  && severity !== 'unknown' && severity_confidence > 0;
   const showStage = !isNotLeaf && Boolean(data.stage_label);
 
   const getSeverityColor = (sev: SeverityLevel) => {
@@ -78,7 +74,6 @@ export default function LeafResultScreen() {
   };
 
   const getDiseaseColor = () => {
-    if (disease === 'Healthy') return '#4CAF50';
     if (disease === 'NotPapaya') return '#999';
     return '#F44336';
   };
@@ -160,7 +155,6 @@ export default function LeafResultScreen() {
 
         {advisory && (
           <View style={styles.descriptionCard}>
-            <Text style={styles.sectionTitle}>About This {disease === 'Healthy' ? 'Result' : 'Disease'}</Text>
             <Text style={styles.descriptionText}>{advisory.description}</Text>
             <Text style={styles.sectionHint}>
               Detailed treatment guidance will appear here once agronomy recommendations are connected.
