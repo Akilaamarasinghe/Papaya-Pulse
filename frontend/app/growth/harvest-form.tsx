@@ -54,7 +54,6 @@ export default function HarvestFormScreen() {
     { label: 'Hambanthota', value: 'hambanthota' as const },
     { label: 'Matara', value: 'matara' as const },
     { label: 'Galle', value: 'galle' as const },
-    { label: 'Kurunegala', value: 'kurunegala' as const },
   ];
 
   const calculateHarvest = async () => {

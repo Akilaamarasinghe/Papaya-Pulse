@@ -55,7 +55,7 @@ Predicts harvest timing and yield based on farming conditions.
 
 ## Parameters
 
-- **district**: District name (hambanthota, galle, kurunegala, matara)
+- **district**: District name (hambanthota, galle, matara)
 - **soil_type**: Soil type (laterite_soil, sandy_loam, loam)
 - **watering_method**: Irrigation method (drip, sprinkler, manual)
 - **watering_frequency**: Times per week (number)
