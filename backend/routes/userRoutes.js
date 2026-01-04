@@ -15,10 +15,12 @@ const upload = multer({
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { uid, email, name, role, district } = req.body;
+    console.log('[POST /users] Creating user profile:', { uid, email, role });
 
     // Check if user already exists
     let user = await User.findOne({ uid });
     if (user) {
+      console.log('[POST /users] User already exists:', uid);
       return res.status(200).json(user);
     }
 
@@ -32,26 +34,38 @@ router.post('/', authMiddleware, async (req, res) => {
     });
 
     await user.save();
+    console.log('[POST /users] User created successfully:', uid);
     res.status(201).json(user);
   } catch (error) {
-    console.error('Create user error:', error);
-    res.status(500).json({ error: 'Failed to create user profile' });
+    console.error('[POST /users] Error:', error.message);
+    console.error('[POST /users] Stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Failed to create user profile',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
 // GET /api/users/me - Get current user profile
 router.get('/me', authMiddleware, async (req, res) => {
   try {
+    console.log('[GET /me] Fetching user profile for UID:', req.user.uid);
     const user = await User.findOne({ uid: req.user.uid });
     
     if (!user) {
+      console.warn('[GET /me] User not found for UID:', req.user.uid);
       return res.status(404).json({ error: 'User not found' });
     }
 
+    console.log('[GET /me] User profile retrieved successfully');
     res.json(user);
   } catch (error) {
-    console.error('Get user error:', error);
-    res.status(500).json({ error: 'Failed to get user profile' });
+    console.error('[GET /me] Error:', error.message);
+    console.error('[GET /me] Stack:', error.stack);
+    res.status(500).json({ 
+      error: 'Failed to get user profile',
+      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 

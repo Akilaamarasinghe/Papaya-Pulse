@@ -35,9 +35,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Get user profile from backend
           const response = await api.get('/users/me');
           setUser(response.data);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error loading user profile:', error);
-          setUser(null);
+          console.error('Profile loading error details:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status,
+          });
+          
+          // User is authenticated in Firebase but backend has issues
+          // Don't set user to null - let them retry or sign out manually
+          if (error.response?.status !== 500) {
+            setUser(null);
+          }
         }
       } else {
         setAuthToken(null);
@@ -97,6 +107,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(response.data);
     } catch (error: any) {
       console.error('Sign in error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: error.config?.url,
+      });
+      
+      // Provide more helpful error messages
+      if (error.response?.status === 500) {
+        throw new Error('Backend server error - check network connection and ensure backend is running');
+      } else if (error.response?.status === 404) {
+        throw new Error('User profile not found - please complete registration');
+      } else if (error.code === 'auth/invalid-email' || error.code === 'auth/wrong-password') {
+        throw new Error('Invalid email or password');
+      }
+      
       throw new Error(error.message || 'Failed to sign in');
     }
   };
