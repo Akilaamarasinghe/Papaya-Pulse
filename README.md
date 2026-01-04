@@ -70,7 +70,10 @@
 - Optional papaya image  
 - Fair price range  
 - Label: Underpriced / Fair / Overpriced  
-- Buying recommendation  
+- Buying recommendation
+
+<img width="1888" height="682" alt="Untitled design" src="https://github.com/user-attachments/assets/44ee6b37-7326-42ab-a895-abaf957317a7" />
+
 
 ---
 
