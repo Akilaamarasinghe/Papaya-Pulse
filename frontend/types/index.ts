@@ -123,7 +123,7 @@ export interface MarketPriceResponse {
 }
 
 // Leaf Disease Types
-export type DiseaseType = 'Anthracnose' | 'Curl' | 'Healthy' | 'Mite disease' | 'Ringspot' | 'NotPapaya';
+export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' |  'NotPapaya';
 export type SeverityLevel = 'mild' | 'moderate' | 'severe' | 'unknown';
 
 export interface LeafDiseaseResponse {
