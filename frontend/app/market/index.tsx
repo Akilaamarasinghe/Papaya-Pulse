@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { LabeledInput } from '../../components/shared/LabeledInput';
+import { Card } from '../../components/shared/Card';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { Dropdown } from '../../components/shared/Dropdown';
 import api from '../../config/api';
-import { District, PapayaVariety, MarketGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../types';
+import { District, PapayaVariety, QualityGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../types';
 
 export default function MarketIndexScreen() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export default function MarketIndexScreen() {
     district: user?.district || 'Galle' as District,
     variety: 'RedLady' as PapayaVariety,
     cultivation_method: 'Organic' as CultivationMethod,
-    quality_grade: 'A' as MarketGrade,
+    quality_grade: 'A' as QualityGrade,
     total_harvest_count: '',
     avg_weight_per_fruit: '',
     expected_selling_date: '',
@@ -62,9 +62,9 @@ export default function MarketIndexScreen() {
   ];
 
   const gradeOptions = [
-    { label: 'Grade A', value: 'A' as MarketGrade },
-    { label: 'Grade B', value: 'B' as MarketGrade },
-    { label: 'Grade C', value: 'C' as MarketGrade },
+    { label: 'Grade A', value: 'A' as QualityGrade },
+    { label: 'Grade B', value: 'B' as QualityGrade },
+    { label: 'Grade C', value: 'C' as QualityGrade },
   ];
 
   const predictPrice = async () => {
@@ -115,72 +115,29 @@ export default function MarketIndexScreen() {
   return (
     <ScreenContainer>
       <View style={styles.header}>
-        <Text style={styles.title}>{t('marketPricePredictor')}</Text>
-        <Text style={styles.subtitle}>{t('getBestPrice')}</Text>
+        <Text style={styles.title}>
+          {language === 'si' ? 'වෙළඳපල මිල පුරෝකථනය' : 'Market Price Prediction'}
+        </Text>
+        <Text style={styles.subtitle}>
+          {language === 'si' 
+            ? 'පුරෝකථනය සඳහා පැපොල් වර්ගය තෝරන්න'
+            : 'Select papaya category for prediction'}
+        </Text>
       </View>
 
-      <Dropdown
-        label={t('district')}
-        value={formData.district}
-        options={districtOptions}
-        onChange={(value) => setFormData({ ...formData, district: value })}
+      {/* FARMER SIDE - Show two category options */}
+      <Card
+        title="Best Quality Papayas"
+        icon="star-outline"
+        description="Predict market price for premium quality papayas"
+        onPress={() => router.push('/market/predict-form?category=best' as any)}
       />
 
-      <Dropdown
-        label={t('variety')}
-        value={formData.variety}
-        options={varietyOptions}
-        onChange={(value) => setFormData({ ...formData, variety: value })}
-      />
-
-      <Dropdown
-        label={t('cultivationMethod')}
-        value={formData.cultivation_method}
-        options={cultivationOptions}
-        onChange={(value) => setFormData({ ...formData, cultivation_method: value })}
-      />
-
-      <Dropdown
-        label={t('qualityGrade')}
-        value={formData.quality_grade}
-        options={gradeOptions}
-        onChange={(value) => setFormData({ ...formData, quality_grade: value })}
-      />
-
-      <LabeledInput
-        label={t('totalHarvestCount')}
-        value={formData.total_harvest_count}
-        onChangeText={(text) => setFormData({ ...formData, total_harvest_count: text })}
-        placeholder={t('egValue').replace('{value}', '500')}
-        keyboardType="numeric"
-      />
-
-      <LabeledInput
-        label={t('avgWeightPerFruit')}
-        value={formData.avg_weight_per_fruit}
-        onChangeText={(text) => setFormData({ ...formData, avg_weight_per_fruit: text })}
-        placeholder={t('egValue').replace('{value}', '1.2')}
-        keyboardType="decimal-pad"
-      />
-
-      <LabeledInput
-        label={t('expectedSellingDate')}
-        value={formData.expected_selling_date}
-        onChangeText={(text) => setFormData({ ...formData, expected_selling_date: text })}
-        placeholder={t('egValue').replace('{value}', '2025-12-10')}
-      />
-
-      <PrimaryButton
-        title={t('predictMarketPrice')}
-        onPress={predictPrice}
-        loading={loading}
-        style={styles.button}
-      />
-
-      <PrimaryButton
-        title={t('cancel')}
-        onPress={() => router.back()}
-        variant="outline"
+      <Card
+        title="Factory Outlet Papayas"
+        icon="business-outline"
+        description="Predict price for factory processing papayas"
+        onPress={() => router.push('/market/predict-form?category=factory' as any)}
       />
     </ScreenContainer>
   );
@@ -191,7 +148,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
@@ -199,10 +156,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-  },
-  button: {
-    marginTop: 8,
-    marginBottom: 16,
   },
   restrictedContainer: {
     flex: 1,
