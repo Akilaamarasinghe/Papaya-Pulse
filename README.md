@@ -107,16 +107,16 @@ Papaya-Pulse/
 
 👥 Team Members
 
-Member 1 Akila Amarasinghe 
+Akila Amarasinghe 
 🔗 GitHub: https://github.com/username1
 
-Member 2 Udan jayasekara 
+Udan jayasekara 
 🔗 GitHub: https://github.com/username2
 
-Member 3 Athsara Weththasinghe 
+Athsara Weththasinghe 
 🔗 GitHub: https://github.com/username3
 
-Member 4 Sachini Tharindi 
+Sachini Tharindi 
 🔗 GitHub: https://github.com/username4
 
 ---
