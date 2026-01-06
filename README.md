@@ -100,10 +100,24 @@ Papaya-Pulse/
 
 ---
 
-## 👨‍🎓 Contributors
+##👨‍🎓 Contributors
 
-🎓 **SLIIT – 4th Year IT Undergraduate Research Team**  
-**Project:** Papaya Pulse  
+🎓 SLIIT – 4th Year IT Undergraduate Research Team
+📌 Project: Papaya Pulse
+
+👥 Team Members
+
+Member 1 Akila Amarasinghe 
+🔗 GitHub: https://github.com/username1
+
+Member 2 Udan jayasekara 
+🔗 GitHub: https://github.com/username2
+
+Member 3 Athsara Weththasinghe 
+🔗 GitHub: https://github.com/username3
+
+Member 4 Sachini Tharindi 
+🔗 GitHub: https://github.com/username4
 
 ---
 
