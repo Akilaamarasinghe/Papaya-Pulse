@@ -15,7 +15,7 @@ const LEAF_ML_TIMEOUT = Number(process.env.LEAF_ML_TIMEOUT || 45000);
 const parseProbability = (value) => {
   if (typeof value === 'number') {
     if (value > 1) {
-      return Math.min(value / 100, 1);
+      return Math.min(value / 100, 1); 
     }
     return Math.max(value, 0);
   }
