@@ -7,7 +7,7 @@ from transformers import ViTForImageClassification
 import torch.nn as nn
 import torch.nn.functional as F
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore") 
 
 app = Flask(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
