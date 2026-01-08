@@ -27,7 +27,7 @@ def load_vit_model(path):
         "google/vit-base-patch16-224",
         num_labels=len(classes),
         ignore_mismatched_sizes=True
-    ).to(device)
+    ).to(device) 
 
     base_model.load_state_dict(saved["state_dict"], strict=False)
     base_model.eval()
