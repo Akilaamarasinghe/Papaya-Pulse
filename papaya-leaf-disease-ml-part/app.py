@@ -17,7 +17,7 @@ class ViTWrapper(nn.Module):
         super().__init__()
         self.model = model 
     def forward(self, x):
-        return self.model(x).logits
+        return self.model(x).logits 
 
 def load_vit_model(path):
     saved = torch.load(path, map_location=device)
