@@ -21,7 +21,7 @@ class ViTWrapper(nn.Module):
 
 def load_vit_model(path):
     saved = torch.load(path, map_location=device)
-    classes = saved["classes"]
+    classes = saved["classes"] 
 
     base_model = ViTForImageClassification.from_pretrained(
         "google/vit-base-patch16-224",
