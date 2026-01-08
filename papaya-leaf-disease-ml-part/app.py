@@ -34,7 +34,7 @@ def load_vit_model(path):
     return ViTWrapper(base_model), classes
 
 leaf_model, leaf_classes = load_vit_model("models/leaf/leaf_detector.pth")
-disease_model, disease_classes = load_vit_model("models/disease/disease_classifier.pth")
+disease_model, disease_classes = load_vit_model("models/disease/disease_classifier.pth") 
 
 def load_stage_model(disease):
     saved = torch.load(f"models/stages/{disease}_stage.pth", map_location=device)
