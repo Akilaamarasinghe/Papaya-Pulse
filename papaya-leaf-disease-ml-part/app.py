@@ -20,7 +20,7 @@ class ViTWrapper(nn.Module):
         return self.model(x).logits 
 
 def load_vit_model(path):
-    saved = torch.load(path, map_location=device)
+    saved = torch.load(path, map_location=device) 
     classes = saved["classes"] 
 
     base_model = ViTForImageClassification.from_pretrained(
