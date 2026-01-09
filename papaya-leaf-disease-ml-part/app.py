@@ -5,7 +5,7 @@ from PIL import Image
 from torchvision import transforms
 from transformers import ViTForImageClassification
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F 
 import warnings
 warnings.filterwarnings("ignore") 
 
