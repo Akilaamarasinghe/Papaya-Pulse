@@ -62,7 +62,7 @@ SOIL_MAP = {
 }
 
 DISTRICT_MAP = {
-    "kurunegala": "Kurunegala",
+    "matara": "Matara",
     "hambantota": "Hambantota",
     "galle": "Galle"
 }
