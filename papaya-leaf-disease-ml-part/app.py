@@ -33,7 +33,7 @@ def load_vit_model(path):
     base_model.eval()
     return ViTWrapper(base_model), classes
 
-leaf_model, leaf_classes = load_vit_model("models/leaf/leaf_detector.pth")
+leaf_model, leaf_classes = load_vit_model("models/leaf/leaf_detector.pth") 
 disease_model, disease_classes = load_vit_model("models/disease/disease_classifier.pth") 
 
 def load_stage_model(disease):
