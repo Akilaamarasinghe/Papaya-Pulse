@@ -5,9 +5,9 @@ from PIL import Image
 from torchvision import transforms
 from transformers import ViTForImageClassification
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F 
 import warnings
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore") 
 
 app = Flask(__name__)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -15,26 +15,26 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 class ViTWrapper(nn.Module):
     def __init__(self, model):
         super().__init__()
-        self.model = model
+        self.model = model 
     def forward(self, x):
-        return self.model(x).logits
+        return self.model(x).logits 
 
 def load_vit_model(path):
-    saved = torch.load(path, map_location=device)
-    classes = saved["classes"]
+    saved = torch.load(path, map_location=device) 
+    classes = saved["classes"] 
 
     base_model = ViTForImageClassification.from_pretrained(
         "google/vit-base-patch16-224",
         num_labels=len(classes),
         ignore_mismatched_sizes=True
-    ).to(device)
+    ).to(device) 
 
     base_model.load_state_dict(saved["state_dict"], strict=False)
     base_model.eval()
     return ViTWrapper(base_model), classes
 
-leaf_model, leaf_classes = load_vit_model("models/leaf/leaf_detector.pth")
-disease_model, disease_classes = load_vit_model("models/disease/disease_classifier.pth")
+leaf_model, leaf_classes = load_vit_model("models/leaf/leaf_detector.pth") 
+disease_model, disease_classes = load_vit_model("models/disease/disease_classifier.pth") 
 
 def load_stage_model(disease):
     saved = torch.load(f"models/stages/{disease}_stage.pth", map_location=device)
@@ -109,4 +109,4 @@ def predict():
     return jsonify(predict_pipeline(img))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5005, debug=True)
+    app.run(host="0.0.0.0", port=5005, debug=True) 
