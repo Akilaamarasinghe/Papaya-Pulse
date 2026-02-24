@@ -123,7 +123,7 @@ export interface MarketPriceResponse {
 }
 
 // Leaf Disease Types
-export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' |  'NotPapaya';
+export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' | 'Mosaic virus' | 'Healthy' | 'NotPapaya';
 export type SeverityLevel = 'mild' | 'moderate' | 'severe' | 'unknown';
 
 export interface LeafDiseaseResponse {
@@ -148,4 +148,39 @@ export interface LeafPredictionHistory extends LeafDiseaseResponse {
   id: string;
   timestamp: string;
   imageUri?: string;
+}
+
+// Leaf Disease Recommendation Types
+export type GrowthStage = 'vegetative' | 'flowering' | 'fruiting';
+
+export interface LeafFertilizerRecommendation {
+  action: string;
+  treatment: string;
+  nitrogen_adjustment?: string;
+  phosphorus_adjustment?: string;
+  potassium_adjustment?: string;
+  notes?: string;
+}
+
+export interface LeafWeatherRisk {
+  risk_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  risk_score?: number;
+  summary?: string;
+  daily_risk?: Array<{ date: string; risk: string; rain_mm: number; t_mean: number }>;
+}
+
+export interface LeafAIAdvice {
+  ai_enriched: boolean;
+  advice_en: string;
+  advice_si: string;
+}
+
+export interface LeafRecommendResponse {
+  disease: string;
+  severity: string;
+  growth_stage: string;
+  district: string;
+  fertilizer: LeafFertilizerRecommendation;
+  weather: LeafWeatherRisk;
+  ai_advice: LeafAIAdvice;
 }
