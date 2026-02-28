@@ -1,6 +1,3 @@
-import os
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
-
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
@@ -11,6 +8,8 @@ import numpy as np
 from captum.attr import LayerGradCam
 import io
 
+from check_papaya import predict_pipeline
+
 app = Flask(__name__)
 
 # -------------------------
@@ -20,7 +19,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model = models.convnext_tiny(weights="DEFAULT")
 model.classifier[2] = nn.Linear(model.classifier[2].in_features, 2)
-model.load_state_dict(torch.load("papaya_model_best.pth", map_location=device))
+model.load_state_dict(torch.load("papaya_image_models/papaya_model_best.pth", map_location=device))
 model.eval()
 model.to(device)
 
@@ -57,17 +56,23 @@ def make_text_explanation(attributions):
     else:
         return "Model prediction came from subtle texture cues and general shape patterns."
 
-
 # -------------------------
 # Predict endpoint
 # -------------------------
-@app.route("/predict", methods=["POST"])
-def predict():
+@app.route("/predict-papaya-type", methods=["POST"])
+def predict_papaya_type():
     if "image" not in request.files:
         return jsonify({"error": "image file missing"}), 400
 
     img_bytes = request.files["image"].read()
     img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+    papaya_result = predict_pipeline(img)
+    if papaya_result["is_papaya"] is False:
+        return jsonify({
+            "prediction": "Not a papaya",
+            "confidence": papaya_result["not_papaya_prob"],
+            "explanation": "The uploaded image was classified as not a papaya by the initial model."
+        })
 
     img_tensor = tf(img).to(device)
     img_batch = img_tensor.unsqueeze(0)
@@ -81,16 +86,6 @@ def predict():
     class_idx = int(class_idx.item())
     confidence = f"{round(float(conf.item())*100, 2)}%"
 
-    # Print prediction details for debugging
-    print("\n" + "="*50)
-    print("PREDICTION RESULT")
-    print("="*50)
-    print(f"Class Index: {class_idx}")
-    print(f"Class Name: {class_names[class_idx]}")
-    print(f"Confidence: {confidence}")
-    print(f"All Probabilities: {probs.tolist()}")
-    print("="*50 + "\n")
-
     # --------------------
     # XAI: Layer GradCAM attribution map
     # --------------------
@@ -98,18 +93,12 @@ def predict():
 
     explanation = make_text_explanation(attributions)
 
-    result = {
+    return jsonify({
         "prediction": class_names[class_idx],
         "confidence": confidence,
         "explanation": explanation
-    }
-    
-    print("\nRETURNING JSON:")
-    print(result)
-    print("\n")
-
-    return jsonify(result)
+    })
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=5000)

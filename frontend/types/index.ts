@@ -91,7 +91,7 @@ export interface FarmerQualityResponse {
 }
 
 export interface CustomerQualityRequest {
-  weight: number;
+  city?: string;
 }
 
 export interface CustomerQualityResponse {
@@ -100,6 +100,22 @@ export interface CustomerQualityResponse {
   ripen_days: number;
   grade: QualityGrade;
   average_temperature: number;
+  city?: string;
+  ripeness_stage?: string;
+  taste?: string;
+  buying_recommendation?: string;
+  weather_last_7_days?: {
+    avg_temp?: number;
+    max_temp?: number;
+    min_temp?: number;
+  };
+  color_ratios?: {
+    green?: number;
+    yellow?: number;
+    orange?: number;
+  };
+  final_suggestion?: string;
+  papaya_probability?: string;
 }
 
 // Market Price Types
