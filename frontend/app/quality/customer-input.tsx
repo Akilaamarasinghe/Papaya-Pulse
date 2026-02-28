@@ -13,9 +13,23 @@ export default function CustomerInputScreen() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
-  const [weight, setWeight] = useState('');
+  const [city, setCity] = useState<string>(user?.district || 'Galle');
 
   const pickImage = async () => {
+    if (Platform.OS === 'web') {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+
+      if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+      }
+      return;
+    }
+
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     
     if (!permissionResult.granted) {
@@ -52,14 +66,8 @@ export default function CustomerInputScreen() {
       return;
     }
 
-    if (!weight) {
-      Alert.alert('Error', 'Please enter the weight');
-      return;
-    }
-
-    const weightNum = parseFloat(weight);
-    if (isNaN(weightNum) || weightNum <= 0) {
-      Alert.alert('Error', 'Please enter a valid weight');
+    if (!city || !city.trim()) {
+      Alert.alert('Error', 'Please enter a city or district');
       return;
     }
 
@@ -82,7 +90,7 @@ export default function CustomerInputScreen() {
         } as any);
       }
       
-      formData.append('weight', weightNum.toString());
+      formData.append('city', city.trim());
 
       const response = await api.post<CustomerQualityResponse>(
         '/quality/customer',
@@ -133,18 +141,17 @@ export default function CustomerInputScreen() {
       )}
 
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : 'Take Photo of Full Papaya'}
+        title={imageUri ? 'Retake Photo' : (Platform.OS === 'web' ? 'Choose Photo of Full Papaya' : 'Take Photo of Full Papaya')}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
       />
 
       <LabeledInput
-        label="Weight (kg)"
-        value={weight}
-        onChangeText={setWeight}
-        placeholder="e.g., 1.5"
-        keyboardType="decimal-pad"
+        label="City / District"
+        value={city}
+        onChangeText={setCity}
+        placeholder="e.g., Galle"
       />
 
       <PrimaryButton

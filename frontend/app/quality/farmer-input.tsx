@@ -34,7 +34,7 @@ export default function FarmerInputScreen() {
 
   const varietyOptions = [
     { label: 'Red Lady', value: 'RedLady' as PapayaVariety },
-    { label: 'Tainung', value: 'Tainung' as PapayaVariety },
+    { label: 'Tainung', value: 'Tenim' as PapayaVariety },
     
   ];
 

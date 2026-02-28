@@ -9,9 +9,45 @@ const PredictionLog = require('../models/PredictionLog');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ML Service URLs
-const ML_QUALITY_SERVICE = process.env.ML_QUALITY_SERVICE || 'http://localhost:5000';
-const ML_IMAGE_SERVICE = process.env.ML_IMAGE_SERVICE || 'http://localhost:5001';
+// ML Service URLs (full_service_quality)
+const ML_FACTORY_TYPE_SERVICE = process.env.ML_FACTORY_TYPE_SERVICE || process.env.ML_IMAGE_SERVICE || 'http://localhost:5000';
+const ML_BEST_GRADE_SERVICE = process.env.ML_BEST_GRADE_SERVICE || process.env.ML_QUALITY_SERVICE || process.env.ML_GRADING_SERVICE || 'http://localhost:5001';
+const ML_CUSTOMER_SERVICE = process.env.ML_CUSTOMER_SERVICE || 'http://localhost:5002';
+
+const normalizeDistrictForWeather = (district = '') => {
+  const trimmed = String(district).trim();
+  if (!trimmed) return 'Galle';
+
+  const normalizeMap = {
+    Hambanthota: 'Hambantota',
+    hambanthota: 'Hambantota',
+    hambantota: 'Hambantota',
+    Galle: 'Galle',
+    galle: 'Galle',
+    Matara: 'Matara',
+    matara: 'Matara',
+  };
+
+  return normalizeMap[trimmed] || trimmed;
+};
+
+const mapRipenessToDays = (ripenessStage = '') => {
+  const normalized = String(ripenessStage).toLowerCase();
+  if (normalized.includes('green') || normalized.includes('unripe')) return 4;
+  if (normalized.includes('half') || normalized.includes('semi')) return 2;
+  if (normalized.includes('ripe') || normalized.includes('ready')) return 1;
+  return 2;
+};
+
+const mapColorRatiosToColor = (colorRatios = {}) => {
+  const green = Number(colorRatios.green || 0);
+  const yellow = Number(colorRatios.yellow || 0);
+  const orange = Number(colorRatios.orange || 0);
+
+  if (green >= yellow && green >= orange) return 'Green';
+  if (yellow >= green && yellow >= orange) return 'Yellow';
+  return 'Orange';
+};
 
 // POST /api/quality/farmer - Farmer quality grading
 router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) => {
@@ -38,10 +74,10 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
           contentType: req.file.mimetype,
         });
 
-        console.log('Calling IM service at:', `${ML_IMAGE_SERVICE}/predict`);
+        console.log('Calling factory type service at:', `${ML_FACTORY_TYPE_SERVICE}/predict-papaya-type`);
         
         const imageResponse = await axios.post(
-          `${ML_IMAGE_SERVICE}/predict`,
+          `${ML_FACTORY_TYPE_SERVICE}/predict-papaya-type`,
           imageFormData,
           {
             headers: imageFormData.getHeaders(),
@@ -111,7 +147,8 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
     const varietyMap = {
       'RedLady': 0,
       'Solo': 1,
-      'Tenim': 1
+      'Tenim': 1,
+      'Tainung': 1
     };
 
     const maturityMap = {
@@ -140,7 +177,7 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       });
 
       const mlServiceResponse = await axios.post(
-        `${ML_QUALITY_SERVICE}/predict`,
+        `${ML_BEST_GRADE_SERVICE}/predict-papaya-grade`,
         formData,
         {
           headers: formData.getHeaders(),
@@ -150,7 +187,7 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
 
       mlResponse = mlServiceResponse.data;
     } catch (mlError) {
-      console.error('ML service error:', mlError.message);
+      console.error('Best quality ML service error:', mlError.message);
       // Fallback to mock grading if ML service fails
       const damageProbabilities = {
         'unmature': 0.15,
@@ -184,14 +221,19 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
     }
 
     // Build response using new ML service data
+    const bestExplanation =
+      typeof mlResponse.explanation === 'string'
+        ? mlResponse.explanation
+        : (mlResponse.explanation?.explanation || 'No detailed explanation available.');
+
     const response = {
       predicted_grade: mlResponse.predicted_grade,
       confidence: mlResponse.confidence,
       all_probabilities: mlResponse.all_probabilities,
       extracted_color: mlResponse.extracted_color,
-      explanation: mlResponse.explanation.explanation,
-      feature_contributions: mlResponse.explanation.feature_contributions,
-      top_features: mlResponse.explanation.top_features,
+      explanation: bestExplanation,
+      feature_contributions: mlResponse.explanation?.feature_contributions || [],
+      top_features: mlResponse.explanation?.top_features || [],
       quality_category: quality_category,
     };
 
@@ -235,41 +277,64 @@ router.get('/farmer/history', authMiddleware, async (req, res) => {
 // POST /api/quality/customer - Customer quality check
 router.post('/customer', authMiddleware, upload.single('file'), async (req, res) => {
   try {
-    const { weight } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
 
-    // TODO: Integrate with ML model for actual quality check
-    // For now, return mock response
+    const city = normalizeDistrictForWeather(req.body.city || req.user?.district || 'Galle');
 
-    const colors = ['Yellow-orange', 'Orange', 'Yellow-green', 'Golden yellow'];
-    const varieties = ['RedLady', 'Solo', 'Tainung'];
-    const grades = ['I', 'II', 'III'];
+    const customerFormData = new FormData();
+    customerFormData.append('city', city);
+    customerFormData.append('image', req.file.buffer, {
+      filename: 'papaya.jpg',
+      contentType: req.file.mimetype,
+    });
 
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const variety = varieties[Math.floor(Math.random() * varieties.length)];
-    const ripenDays = Math.floor(Math.random() * 5);
-    const grade = grades[Math.floor(Math.random() * grades.length)];
-    const avgTemperature = 24 + Math.random() * 4;
+    const customerServiceResponse = await axios.post(
+      `${ML_CUSTOMER_SERVICE}/predict-customer-recomandations`,
+      customerFormData,
+      {
+        headers: customerFormData.getHeaders(),
+        timeout: 45000,
+      }
+    );
+
+    const mlOutput = customerServiceResponse.data || {};
+    const predictions = mlOutput.predictions || {};
+    const weather = mlOutput.weather_last_7_days || {};
+    const colorRatios = mlOutput.color_ratios || {};
 
     const response = {
-      color,
-      variety,
-      ripen_days: ripenDays,
-      grade,
-      average_temperature: avgTemperature,
+      color: mapColorRatiosToColor(colorRatios),
+      variety: 'N/A',
+      ripen_days: mapRipenessToDays(predictions.ripeness_stage),
+      grade: String(predictions.quality_grade || '3'),
+      average_temperature: Number(weather.avg_temp || 0),
+      city,
+      ripeness_stage: predictions.ripeness_stage,
+      taste: predictions.taste,
+      buying_recommendation: predictions.buying_recommendation,
+      weather_last_7_days: weather,
+      color_ratios: colorRatios,
+      final_suggestion: mlOutput.final_suggestion,
+      papaya_probability: mlOutput.papaya_probability,
     };
 
     // Log prediction
     await PredictionLog.create({
       userId: req.user.uid,
       type: 'customer_quality',
-      input: { weight },
+      input: { city },
       output: response,
     });
 
     res.json(response);
   } catch (error) {
     console.error('Customer quality error:', error);
-    res.status(500).json({ error: 'Failed to check papaya quality' });
+    res.status(500).json({
+      error: 'Failed to check papaya quality',
+      details: error.response?.data?.error || error.message,
+    });
   }
 });
 
