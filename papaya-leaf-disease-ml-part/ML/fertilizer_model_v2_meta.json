@@ -1,0 +1,21 @@
+{
+  "features": [
+    "disease",
+    "severity",
+    "growth_stage",
+    "soil_type"
+  ],
+  "target": "fertilizer_action",
+  "model_type": "RandomForest",
+  "accuracy": 1.0,
+  "classes": [
+    "BALANCED_NPK",
+    "BALANCED_NPK_PLUS_ORGANIC",
+    "MICRONUTRIENT_FOLIAR_SPRAY",
+    "POTASSIUM_BOOST",
+    "REDUCE_N_INCREASE_K",
+    "SKIP_FERTILIZER_TREAT_FIRST"
+  ],
+  "version": "2",
+  "notes": "Trained without weather features. Weather handled separately by weather_risk_model.pkl"
+}
