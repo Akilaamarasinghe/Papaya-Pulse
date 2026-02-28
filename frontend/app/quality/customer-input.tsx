@@ -9,7 +9,7 @@ import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import api from '../../config/api';
 import { CustomerQualityResponse } from '../../types';
 
-export default function CustomerInputScreen() {
+export default function CustomerInputScreen() { 
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
