@@ -171,32 +171,77 @@ export type GrowthStage = 'vegetative' | 'flowering' | 'fruiting';
 
 export interface LeafFertilizerRecommendation {
   action: string;
-  treatment: string;
+  confidence?: number;
+  advice_en?: string;
+  advice_si?: string;
+  treatment?: string;
   nitrogen_adjustment?: string;
   phosphorus_adjustment?: string;
   potassium_adjustment?: string;
   notes?: string;
 }
 
+export interface DayRisk {
+  date: string;
+  tmean: number;
+  rain_mm: number;
+  humidity_est: number;
+  day_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+}
+
+export interface WeatherSummary {
+  tmean_7d_avg_c: number;
+  total_rain_7d_mm: number;
+  tmax_c: number;
+  tmin_c: number;
+  humidity_est_pct: number;
+}
+
 export interface LeafWeatherRisk {
   risk_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  risk_level_si?: string;
   risk_score?: number;
-  summary?: string;
-  daily_risk?: Array<{ date: string; risk: string; rain_mm: number; t_mean: number }>;
+  alert_color?: 'GREEN' | 'YELLOW' | 'ORANGE' | 'RED';
+  action?: string;
+  action_si?: string;
+  urgency_en?: string;
+  urgency_si?: string;
+  frequency?: string;
+  frequency_si?: string;
+  weather_summary?: WeatherSummary;
+  daily_risk?: DayRisk[];
+  disease_explanation?: string;
+  disease_explanation_si?: string;
+  future_outlook_en?: string;
+  future_outlook_si?: string;
+  why_this_risk_en?: string;
+  why_this_risk_si?: string;
+  model_used?: string;
 }
 
 export interface LeafAIAdvice {
   ai_enriched: boolean;
   advice_en: string;
   advice_si: string;
+  outlook_en?: string;
+  outlook_si?: string;
+  urgent_action_en?: string;
+  urgent_action_si?: string;
+  confidence?: number;
 }
 
 export interface LeafRecommendResponse {
   disease: string;
   severity: string;
   growth_stage: string;
-  district: string;
+  soil_type?: string;
+  district?: string;
   fertilizer: LeafFertilizerRecommendation;
-  weather: LeafWeatherRisk;
-  ai_advice: LeafAIAdvice;
+  prevention?: {
+    pack: string[];
+    steps_en: string[];
+    steps_si: string[];
+  };
+  weather_risk?: LeafWeatherRisk;
+  ai_advice?: LeafAIAdvice;
 }
