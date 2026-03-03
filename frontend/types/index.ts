@@ -138,6 +138,40 @@ export interface MarketPriceResponse {
   explanation: string[];
 }
 
+// ── Customer Market Prediction Types (5004 service) ───────────────────────────
+export interface CustomerMarketPriceDriver {
+  feature: string;
+  impact: number;
+}
+
+export interface CustomerMarketPriceRow {
+  variety: string;
+  price_lkr_per_kg: number;
+  price_drivers: CustomerMarketPriceDriver[];
+}
+
+export interface CustomerMarketAnalysis {
+  location: string;
+  month: number;
+  rainfall_mm: number;
+  ripeness: string;
+  confidence_percent: number;
+  color_ratios: {
+    green: number;
+    yellow: number;
+    orange: number;
+  };
+  ripeness_drivers: CustomerMarketPriceDriver[];
+  price_table: CustomerMarketPriceRow[];
+  seller_price: number | null;
+}
+
+export interface CustomerMarketResponse {
+  analysis: CustomerMarketAnalysis;
+  final_market_advice: string;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Leaf Disease Types
 export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' | 'Mosaic virus' | 'Healthy' | 'NotPapaya';
 export type SeverityLevel = 'mild' | 'moderate' | 'severe' | 'unknown';

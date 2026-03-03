@@ -1,0 +1,87 @@
+(sachini) C:\Users\sachi\Desktop\full_service_sachini\5004>python train.py   
+Loaded 1000 rows from customer_papaya_price.csv
+Columns: ['district', 'variety', 'month', 'green_ratio', 'yellow_ratio', 'orange_ratio', 'ripeness_stage', 'last7_days_rainfall', 'price_lkr_per_kg']
+
+After cleaning: 1000 rows
+Ripeness stages: [np.int64(1), np.int64(2), np.int64(3)]
+Varieties: ['Red_Lady', 'Tainung']
+Districts: ['Galle', 'Hambanthota', 'Matara']
+
+Price stats:
+count    1000.00000
+mean      327.84400
+std        46.82691
+min       253.08000
+25%       298.81800
+50%       338.22800
+75%       369.52200
+max       379.57200
+Name: price_lkr_per_kg, dtype: float64
+
+=== PRICE BY VARIETY ===
+Red_Lady: Mean=335.90, Min=253.08, Max=379.57, Count=378
+Tainung: Mean=322.95, Min=253.08, Max=379.57, Count=622
+
+=== VARIETY IMPACT CHECK ===
+Price variation within varieties:
+variety
+Red_Lady    49.472375
+Tainung     44.475890
+Name: price_lkr_per_kg, dtype: float64
+
+============================================================
+TRAINING RIPENESS MODEL
+============================================================
+
+X_ripeness shape: (1000, 6)
+y_ripeness shape: (1000,)
+y_ripeness distribution:
+ripeness_stage
+1    420
+2    230
+3    350
+Name: count, dtype: int64
+
+Train size: 800, Test size: 200
+
+Ripeness Model Accuracy: 0.6050
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           1       0.63      0.77      0.70        84
+           2       0.58      0.46      0.51        46
+           3       0.57      0.50      0.53        70
+
+    accuracy                           0.60       200
+   macro avg       0.60      0.58      0.58       200
+weighted avg       0.60      0.60      0.60       200
+
+
+✓ Saved: artifacts/ripeness_model.joblib
+
+============================================================
+TRAINING PRICE MODEL
+============================================================
+
+X_price shape: (1000, 8)
+y_price shape: (1000,)
+y_price range: [253.08, 379.57]
+
+Train size: 800, Test size: 200
+
+Price Model Performance:
+{
+  "rmse": 4.06,
+  "mae": 0.84,
+  "r2": 0.9923
+}
+
+✓ Saved: artifacts/price_model.joblib
+
+============================================================
+TRAINING COMPLETE
+============================================================
+
+Models saved in 'artifacts/' directory
+Ready for inference with app.py
