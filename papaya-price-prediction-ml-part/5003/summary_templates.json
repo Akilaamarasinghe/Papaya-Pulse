@@ -1,0 +1,41 @@
+[
+  "Because of {positive_reasons}, the market price is performing well. {negative_clause}The current price of {crop} is around LKR {price:.2f} per kg. Selling {time_phrase} is expected to give better profit.",
+
+  "Market signals show that {positive_reasons} are supporting the price. {negative_clause}{crop} is priced at about LKR {price:.2f} per kg, and selling {time_phrase} is recommended.",
+
+  "{positive_reasons} are contributing to a stronger price in the market. {negative_clause}At present, {crop} sells for roughly LKR {price:.2f} per kg. Best results are expected by selling {time_phrase}.",
+
+  "Current conditions indicate a favorable price mainly due to {positive_reasons}. {negative_clause}The expected price of {crop} is around LKR {price:.2f} per kg. Selling {time_phrase} should be more profitable.",
+
+  "The price trend is positive as a result of {positive_reasons}. {negative_clause}{crop} currently fetches about LKR {price:.2f} per kg. Selling {time_phrase} is advised.",
+
+  "According to market analysis, {positive_reasons} are pushing prices upward. {negative_clause}You can expect around LKR {price:.2f} per kg for {crop}. Selling {time_phrase} gives better returns.",
+
+  "Price movement is mainly influenced by {positive_reasons}. {negative_clause}{crop} is valued at approximately LKR {price:.2f} per kg. Selling {time_phrase} is likely beneficial.",
+
+  "Favorable factors such as {positive_reasons} are helping the price. {negative_clause}The market price for {crop} is about LKR {price:.2f} per kg. Selling {time_phrase} is expected to be advantageous.",
+
+  "Market behavior shows improvement due to {positive_reasons}. {negative_clause}{crop} is currently priced near LKR {price:.2f} per kg. Better profit is expected if sold {time_phrase}.",
+
+  "Based on current data, {positive_reasons} are increasing the price potential. {negative_clause}The estimated price of {crop} is LKR {price:.2f} per kg. Selling {time_phrase} is recommended.",
+
+  "{positive_reasons} are positively influencing market value. {negative_clause}{crop} is trading at around LKR {price:.2f} per kg. Selling {time_phrase} may improve earnings.",
+
+  "The market outlook is supported by {positive_reasons}. {negative_clause}At present, {crop} is priced at LKR {price:.2f} per kg. Selling {time_phrase} is likely to be better.",
+
+  "Price trends are favorable because of {positive_reasons}. {negative_clause}{crop} currently has an estimated price of LKR {price:.2f} per kg. Selling {time_phrase} is advised.",
+
+  "Due to {positive_reasons}, prices are holding strong in the market. {negative_clause}{crop} is valued at around LKR {price:.2f} per kg. Selling {time_phrase} should bring better results.",
+
+  "Analysis suggests that {positive_reasons} are supporting the price level. {negative_clause}The expected price for {crop} is LKR {price:.2f} per kg. Selling {time_phrase} is preferred.",
+
+  "{positive_reasons} are the main contributors to the current price trend. {negative_clause}{crop} is priced close to LKR {price:.2f} per kg. Selling {time_phrase} is expected to be profitable.",
+
+  "Current pricing benefits from {positive_reasons}. {negative_clause}{crop} shows a market price of about LKR {price:.2f} per kg. Selling {time_phrase} may give higher returns.",
+
+  "Market conditions shaped by {positive_reasons} are improving prices. {negative_clause}{crop} is selling at roughly LKR {price:.2f} per kg. Selling {time_phrase} is recommended.",
+
+  "The price outlook is influenced positively by {positive_reasons}. {negative_clause}{crop} is estimated at LKR {price:.2f} per kg. Selling {time_phrase} is expected to perform better.",
+
+  "With {positive_reasons} affecting the market, prices remain favorable. {negative_clause}{crop} currently trades near LKR {price:.2f} per kg. Selling {time_phrase} is a good option."
+]
