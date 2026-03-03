@@ -24,94 +24,6 @@ export default function MarketIndexScreen() {
     expected_selling_date: '',
   });
 
-  // Check if user is a farmer
-  if (user?.role !== 'farmer') {
-    return (
-      <ScreenContainer>
-        <View style={styles.restrictedContainer}>
-          <Text style={styles.restrictedTitle}>{t('farmersOnly')}</Text>
-          <Text style={styles.restrictedText}>
-            {language === 'si' 
-              ? 'මෙම විශේෂාංගය ගොවීන් සඳහා පමණි. වෙළඳපල මිල පුරෝකථන වලට ප්‍රවේශ වීමට කරුණාකර ගොවි ගිණුමක් සමඟ පුරන්න.'
-              : 'This feature is only available for farmers. Please sign in with a farmer account to access market price predictions.'}
-          </Text>
-          <PrimaryButton
-            title={t('goBack')}
-            onPress={() => router.back()}
-          />
-        </View>
-      </ScreenContainer>
-    );
-  }
-
-  const districtOptions = [
-    { label: 'Hambanthota', value: 'Hambanthota' as District },
-    { label: 'Matara', value: 'Matara' as District },
-    { label: 'Galle', value: 'Galle' as District },
-  ];
-
-  const varietyOptions = [
-    { label: 'Red Lady', value: 'RedLady' as PapayaVariety },
-    { label: 'Solo', value: 'Solo' as PapayaVariety },
-    { label: 'Tainung', value: 'Tenim' as PapayaVariety },
-  ];
-
-  const cultivationOptions = [
-    { label: 'Organic', value: 'Organic' as CultivationMethod },
-    { label: 'Inorganic', value: 'Inorganic' as CultivationMethod },
-  ];
-
-  const gradeOptions = [
-    { label: 'Grade A', value: 'A' as QualityGrade },
-    { label: 'Grade B', value: 'B' as QualityGrade },
-    { label: 'Grade C', value: 'C' as QualityGrade },
-  ];
-
-  const predictPrice = async () => {
-    if (!formData.total_harvest_count || !formData.avg_weight_per_fruit || !formData.expected_selling_date) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
-    const harvestCount = parseInt(formData.total_harvest_count);
-    const avgWeight = parseFloat(formData.avg_weight_per_fruit);
-
-    if (isNaN(harvestCount) || isNaN(avgWeight) || harvestCount <= 0 || avgWeight <= 0) {
-      Alert.alert('Error', 'Please enter valid numbers');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const requestData: MarketPriceRequest = {
-        district: formData.district,
-        variety: formData.variety,
-        cultivation_method: formData.cultivation_method,
-        quality_grade: formData.quality_grade,
-        total_harvest_count: harvestCount,
-        avg_weight_per_fruit: avgWeight,
-        expected_selling_date: formData.expected_selling_date,
-      };
-
-      const response = await api.post<MarketPriceResponse>(
-        '/market/predict',
-        requestData
-      );
-
-      router.push({
-        pathname: '/market/result' as any,
-        params: {
-          data: JSON.stringify(response.data),
-        },
-      });
-    } catch (error: any) {
-      console.error('Market price prediction error:', error);
-      Alert.alert('Error', 'Failed to predict market price. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <ScreenContainer>
       <View style={styles.header}>
@@ -119,25 +31,49 @@ export default function MarketIndexScreen() {
           {language === 'si' ? 'වෙළඳපල මිල පුරෝකථනය' : 'Market Price Prediction'}
         </Text>
         <Text style={styles.subtitle}>
-          {language === 'si' 
-            ? 'පුරෝකථනය සඳහා පැපොල් වර්ගය තෝරන්න'
-            : 'Select papaya category for prediction'}
+          {language === 'si'
+            ? 'පුරෝකථනය සඳහා ප්‍රවර්ගය තෝරන්න'
+            : 'Select a category for prediction'}
         </Text>
       </View>
 
-      {/* FARMER SIDE - Show two category options */}
-      <Card
-        title="Best Quality Papayas"
-        icon="star-outline"
-        description="Predict market price for premium quality papayas"
-        onPress={() => router.push('/market/predict-form?category=best' as any)}
-      />
+      {/* FARMER CARDS */}
+      {user?.role === 'farmer' && (
+        <>
+          <Card
+            title={language === 'si' ? 'හොඳම ගුණාත්මක පැපොල්' : 'Best Quality Papayas'}
+            icon="star-outline"
+            description={
+              language === 'si'
+                ? 'ශ්‍රේෂ්ඨ ගුණාත්මක පැපොල් සඳහා වෙළඳපල මිල ලබා ගන්න'
+                : 'Predict market price for premium quality papayas'
+            }
+            onPress={() => router.push('/market/predict-form?category=best' as any)}
+          />
 
+          <Card
+            title={language === 'si' ? 'කර්මාන්තශාලා අලෙවිසැල්' : 'Factory Outlet Papayas'}
+            icon="business-outline"
+            description={
+              language === 'si'
+                ? 'කර්මාන්ත ශාලා සැකසීම සඳහා මිල ලබා ගන්න'
+                : 'Predict price for factory processing papayas'
+            }
+            onPress={() => router.push('/market/predict-form?category=factory' as any)}
+          />
+        </>
+      )}
+
+      {/* CUSTOMER CARD – available to all users */}
       <Card
-        title="Factory Outlet Papayas"
-        icon="business-outline"
-        description="Predict price for factory processing papayas"
-        onPress={() => router.push('/market/predict-form?category=factory' as any)}
+        title={language === 'si' ? 'පැපොල් ස්කෑන් කරන්න' : 'Scan Papaya for Market Price'}
+        icon="camera-outline"
+        description={
+          language === 'si'
+            ? 'ඡායාරූපයක් ගෙන ශීර්ෂත්වය, මිල සහ වෙළඳපල උපදෙස් ලබා ගන්න'
+            : 'Take a photo to get ripeness, price estimate & market advice'
+        }
+        onPress={() => router.push('/market/customer-predict' as any)}
       />
     </ScreenContainer>
   );
