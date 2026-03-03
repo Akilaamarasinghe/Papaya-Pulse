@@ -1,0 +1,18 @@
+{
+  "feature_names": [
+    "District",
+    "Variety",
+    "Maturity",
+    "Days_since_plucked",
+    "R",
+    "G",
+    "B"
+  ],
+  "classes": [
+    "1",
+    "2",
+    "3"
+  ],
+  "model_type": "Random Forest",
+  "accuracy": 1.0
+}
