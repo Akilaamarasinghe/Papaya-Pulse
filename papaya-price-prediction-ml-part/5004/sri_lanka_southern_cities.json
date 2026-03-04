@@ -1,0 +1,11 @@
+{
+  "galle": { "lat": 6.0535, "lon": 80.221 },
+  "matara": { "lat": 5.9549, "lon": 80.5549 },
+  "hambantota": { "lat": 6.1241, "lon": 81.1185 },
+  "akuressa": { "lat": 6.0979, "lon": 80.4763 },
+  "weligama": { "lat": 5.975, "lon": 80.4297 },
+  "tangalle": { "lat": 6.024, "lon": 80.7921 },
+  "ambalangoda": { "lat": 6.235, "lon": 80.0535 },
+  "hikkaduwa": { "lat": 6.1396, "lon": 80.1132 },
+  "beliatta": { "lat": 6.0484, "lon": 80.734 }
+}

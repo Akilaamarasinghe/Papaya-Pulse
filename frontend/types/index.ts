@@ -91,7 +91,7 @@ export interface FarmerQualityResponse {
 }
 
 export interface CustomerQualityRequest {
-  weight: number;
+  city?: string;
 }
 
 export interface CustomerQualityResponse {
@@ -100,6 +100,22 @@ export interface CustomerQualityResponse {
   ripen_days: number;
   grade: QualityGrade;
   average_temperature: number;
+  city?: string;
+  ripeness_stage?: string;
+  taste?: string;
+  buying_recommendation?: string;
+  weather_last_7_days?: {
+    avg_temp?: number;
+    max_temp?: number;
+    min_temp?: number;
+  };
+  color_ratios?: {
+    green?: number;
+    yellow?: number;
+    orange?: number;
+  };
+  final_suggestion?: string;
+  papaya_probability?: string;
 }
 
 // Market Price Types
@@ -122,8 +138,42 @@ export interface MarketPriceResponse {
   explanation: string[];
 }
 
+// ── Customer Market Prediction Types (5004 service) ───────────────────────────
+export interface CustomerMarketPriceDriver {
+  feature: string;
+  impact: number;
+}
+
+export interface CustomerMarketPriceRow {
+  variety: string;
+  price_lkr_per_kg: number;
+  price_drivers: CustomerMarketPriceDriver[];
+}
+
+export interface CustomerMarketAnalysis {
+  location: string;
+  month: number;
+  rainfall_mm: number;
+  ripeness: string;
+  confidence_percent: number;
+  color_ratios: {
+    green: number;
+    yellow: number;
+    orange: number;
+  };
+  ripeness_drivers: CustomerMarketPriceDriver[];
+  price_table: CustomerMarketPriceRow[];
+  seller_price: number | null;
+}
+
+export interface CustomerMarketResponse {
+  analysis: CustomerMarketAnalysis;
+  final_market_advice: string;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Leaf Disease Types
-export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' |  'NotPapaya';
+export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' | 'Mosaic virus' | 'Healthy' | 'NotPapaya';
 export type SeverityLevel = 'mild' | 'moderate' | 'severe' | 'unknown';
 
 export interface LeafDiseaseResponse {
@@ -148,4 +198,84 @@ export interface LeafPredictionHistory extends LeafDiseaseResponse {
   id: string;
   timestamp: string;
   imageUri?: string;
+}
+
+// Leaf Disease Recommendation Types
+export type GrowthStage = 'vegetative' | 'flowering' | 'fruiting';
+
+export interface LeafFertilizerRecommendation {
+  action: string;
+  confidence?: number;
+  advice_en?: string;
+  advice_si?: string;
+  treatment?: string;
+  nitrogen_adjustment?: string;
+  phosphorus_adjustment?: string;
+  potassium_adjustment?: string;
+  notes?: string;
+}
+
+export interface DayRisk {
+  date: string;
+  tmean: number;
+  rain_mm: number;
+  humidity_est: number;
+  day_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+}
+
+export interface WeatherSummary {
+  tmean_7d_avg_c: number;
+  total_rain_7d_mm: number;
+  tmax_c: number;
+  tmin_c: number;
+  humidity_est_pct: number;
+}
+
+export interface LeafWeatherRisk {
+  risk_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  risk_level_si?: string;
+  risk_score?: number;
+  alert_color?: 'GREEN' | 'YELLOW' | 'ORANGE' | 'RED';
+  action?: string;
+  action_si?: string;
+  urgency_en?: string;
+  urgency_si?: string;
+  frequency?: string;
+  frequency_si?: string;
+  weather_summary?: WeatherSummary;
+  daily_risk?: DayRisk[];
+  disease_explanation?: string;
+  disease_explanation_si?: string;
+  future_outlook_en?: string;
+  future_outlook_si?: string;
+  why_this_risk_en?: string;
+  why_this_risk_si?: string;
+  model_used?: string;
+}
+
+export interface LeafAIAdvice {
+  ai_enriched: boolean;
+  advice_en: string;
+  advice_si: string;
+  outlook_en?: string;
+  outlook_si?: string;
+  urgent_action_en?: string;
+  urgent_action_si?: string;
+  confidence?: number;
+}
+
+export interface LeafRecommendResponse {
+  disease: string;
+  severity: string;
+  growth_stage: string;
+  soil_type?: string;
+  district?: string;
+  fertilizer: LeafFertilizerRecommendation;
+  prevention?: {
+    pack: string[];
+    steps_en: string[];
+    steps_si: string[];
+  };
+  weather_risk?: LeafWeatherRisk;
+  ai_advice?: LeafAIAdvice;
 }
