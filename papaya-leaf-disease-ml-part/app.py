@@ -304,6 +304,7 @@ def recommend():
             "pack":         prev_items,
             "steps_en":     [PREV_ITEM_EN.get(p, p) for p in prev_items],
             "steps_si":     [PREV_ITEM_SI.get(p, p) for p in prev_items],
+            "steps_detail": advisor_data.get("prevention_detailed", []),
         },
         "weather_risk":     weather_risk_data,
     }
@@ -458,9 +459,10 @@ def full_analysis():
             "advice_si":  FERT_LABEL_SI.get(fertilizer_action, fertilizer_action),
         },
         "prevention": {
-            "pack":       prev_items,
-            "steps_en":   [PREV_ITEM_EN.get(p, p) for p in prev_items],
-            "steps_si":   [PREV_ITEM_SI.get(p, p) for p in prev_items],
+            "pack":         prev_items,
+            "steps_en":     [PREV_ITEM_EN.get(p, p) for p in prev_items],
+            "steps_si":     [PREV_ITEM_SI.get(p, p) for p in prev_items],
+            "steps_detail": advisor_data.get("prevention_detailed", []),
         },
         "weather_risk":     weather_risk_data,
         "ai_advice": {
