@@ -328,6 +328,40 @@ export interface LeafAIAdvice {
   confidence?: number;
 }
 
+// ---------------------------------------------------------------------------
+// Prevention step — maps to PREV_META + AI per-step guide from backend
+// ---------------------------------------------------------------------------
+export interface PreventionStep {
+  step: number;
+  code: string;
+  name_en: string | null;
+  description_en: string;
+  description_si: string;
+  // classification
+  type: 'chemical_inorganic' | 'chemical_organic' | 'biological' | 'cultural';
+  type_label_en: string;
+  type_label_si: string;
+  category: string;
+  category_label_en: string;
+  category_label_si: string;
+  organic: boolean;
+  // dosage / scheduling
+  dosage: string | null;
+  frequency: string | null;
+  phi_days: number | null;
+  timing: string | null;
+  // static how-to
+  how_to_mix: string | null;
+  how_to_apply: string | null;
+  safety: string | null;
+  // AI-generated guides (may be null if AI unavailable)
+  ai_how_to_en: string | null;
+  ai_how_to_si: string | null;
+  ai_warning_en: string | null;
+  ai_warning_si: string | null;
+  doa_approved: boolean;
+}
+
 export interface LeafRecommendResponse {
   disease: string;
   severity: string;
@@ -339,6 +373,8 @@ export interface LeafRecommendResponse {
     pack: string[];
     steps_en: string[];
     steps_si: string[];
+    steps_detail: PreventionStep[];
+    
   };
   weather_risk?: LeafWeatherRisk;
   ai_advice?: LeafAIAdvice;
