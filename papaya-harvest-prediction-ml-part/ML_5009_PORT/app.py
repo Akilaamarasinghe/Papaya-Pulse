@@ -56,14 +56,18 @@ MONTH_MAP = {
 SOIL_MAP = {
     "loam": "loam",
     "sandy loam": "sandy_loam",
+    "sandy_loam": "sandy_loam",
     "laterite": "laterite_soils",
     "laterite soil": "laterite_soils",
-    "laterite soils": "laterite_soils"
+    "laterite soils": "laterite_soils",
+    "laterite_soil": "laterite_soils",
+    "laterite_soils": "laterite_soils",
 }
 
 DISTRICT_MAP = {
     "matara": "Matara",
     "hambantota": "Hambantota",
+    "hambanthota": "Hambantota",  # frontend typo variant
     "galle": "Galle"
 }
 
@@ -172,6 +176,11 @@ def get_month_name(month_num):
     months = ["January", "February", "March", "April", "May", "June",
               "July", "August", "September", "October", "November", "December"]
     return months[month_num - 1]
+
+def get_month_name_si(month_num):
+    months_si = ["ජනවාරි", "පෙබරවාරි", "මාර්තු", "අප්‍රේල්", "මැයි", "ජූනි",
+                 "ජූලි", "අගෝස්තු", "සැප්තැම්බර්", "ඔක්තෝබර්", "නොවැම්බර්", "දෙසැම්බර්"]
+    return months_si[month_num - 1]
 
 def build_farmer_explanation(
     yield_pred,
@@ -296,6 +305,251 @@ def build_farmer_explanation(
 
     return explanation
 
+def build_farmer_explanation_si(
+    yield_pred,
+    harvest_total,
+    weather,
+    plant_month,
+    shap_yield_factors,
+    shap_harvest_factors,
+    soil_type=None
+):
+    """Sinhala version of farmer explanation."""
+    explanation = []
+
+    avg_temp = float(weather.get("avg_temp", 0))
+    total_rain = float(weather.get("total_rain", 0))
+    rainy_days = int(weather.get("rainy_days", 0))
+
+    month_name_si = get_month_name_si(plant_month)
+
+    def effective_rainfall(rain, soil):
+        if soil == "sandy_loam":
+            return rain * 0.9
+        if soil in ["clay", "laterite_soils"]:
+            return rain * 1.15
+        return rain
+
+    def rainfall_status(rain_eff):
+        if rain_eff < 80:
+            return "low"
+        elif 80 <= rain_eff <= 170:
+            return "ideal"
+        return "excess"
+
+    rain_eff = effective_rainfall(total_rain, soil_type)
+    rain_state = rainfall_status(rain_eff)
+    rain_intensity = total_rain / (rainy_days + 1)
+
+    explanation.append(
+        f"ඔබේ පැපොල් ගස් හොඳ ගොවිතැනකදී ගසක් බැගින් {yield_pred:.1f} kg විනශ්‍ය ලබා දෙනු ඇතැයි අපේක්ෂා කෙරේ."
+    )
+    explanation.append("ඒ සඳහා හේතු:")
+
+    used_topics = set()
+
+    for feature, impact in shap_yield_factors:
+        f = feature.lower()
+
+        if "rain" in f and "rain" not in used_topics:
+            if rain_state == "ideal":
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) නිවැරදි මට්ටමේ පවතී, ශාකයේ වර්ධනයට හිතකරයි."
+                )
+            elif rain_state == "low":
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) ඉතා අඩුය, කෘත්‍රිම ජලසෙinci මත රඳා පැවතිය යුතුය."
+                )
+            else:
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) වැඩිය, මේ නිසා මූලයේ ඔක්සිජන් හිඟවිය හැකිය."
+                )
+            if rain_intensity > 20:
+                explanation.append(
+                    "- වර්ෂාව ඉතා කෙටි කාලයේ ඇදහැලීම නිසා පස් ඔක්සිජන් අඩු විය."
+                )
+            used_topics.add("rain")
+
+        elif "temp" in f and "temp" not in used_topics:
+            if avg_temp < 24:
+                explanation.append(
+                    f"- සීතල කාලගුණය ({avg_temp:.1f}°C) ශාකයේ ක්‍රියාශීලිත්වය අඩු කළේය."
+                )
+            elif avg_temp > 32:
+                explanation.append(
+                    f"- ඉහළ උෂ්ණත්වය ({avg_temp:.1f}°C) ශාකයේ ගිනි ආතතිය ඇති කළේය."
+                )
+            else:
+                explanation.append(
+                    f"- උෂ්ණත්ව තත්ත්ව ({avg_temp:.1f}°C) ගෙඩි වර්ධනයට හිතකර විය."
+                )
+            used_topics.add("temp")
+
+        elif "plant_month" in f and "month" not in used_topics:
+            explanation.append(
+                f"- {month_name_si} මාසේ රෝපණය කිරීම ඍතු කාලගුණය නිසා වර්ධනයට බලපෑවේය."
+            )
+            used_topics.add("month")
+
+        elif "watering" in f and "watering" not in used_topics:
+            explanation.append(
+                "- ජල සම්පාදන ක්‍රමය සහ සාරාංශය පස් ආර්ද්‍රතාවය පවත්වා ගැනීමට සහාය විය."
+            )
+            used_topics.add("watering")
+
+        elif "trees" in f and "trees" not in used_topics:
+            explanation.append(
+                "- ගස් ගණන පෝෂ්‍ය තරඟය සහ ගසක් බැගින් ලැබෙන ඵල ප්‍රමාණයට බලපෑවේය."
+            )
+            used_topics.add("trees")
+
+        if len(used_topics) >= 3:
+            break
+
+    explanation.append("")
+
+    explanation.append(
+        f"ඵල නෙලා ගැනීමට ඇස්තමේන්තු කාලය දිනය {int(harvest_total)} ක් පමණ වේ."
+    )
+    explanation.append("ඒ ගැන හේතු:")
+
+    explanation.append(
+        f"- උෂ්ණත්වය ({avg_temp:.1f}°C) ගෙඩි 익는 වේගය කෙරේ බලපෑමක් කරන්නේය."
+    )
+    explanation.append(
+        f"- වර්ෂාපතනය ({total_rain:.1f} mm) මල් හේතු සහ ගෙඩි ඇල්ලීමට සිදු කරයි."
+    )
+    explanation.append(
+        f"- {month_name_si} රෝපණ මාසය, මෝසම් සහ ජල ස්වල්ප කාල නිරාවරණයට ම නිශ්චය කළේය."
+    )
+
+    return explanation
+
+
+def build_farmer_explanation_si(
+    yield_pred,
+    harvest_total,
+    weather,
+    plant_month,
+    shap_yield_factors,
+    shap_harvest_factors,
+    soil_type=None
+):
+    """Sinhala version of the farmer-friendly explanation."""
+    explanation = []
+
+    avg_temp = float(weather.get("avg_temp", 0))
+    total_rain = float(weather.get("total_rain", 0))
+    rainy_days = int(weather.get("rainy_days", 0))
+
+    month_name = get_month_name_si(plant_month)
+
+    def effective_rainfall(rain, soil):
+        if soil == "sandy_loam":
+            return rain * 0.9
+        if soil in ["clay", "laterite_soils"]:
+            return rain * 1.15
+        return rain
+
+    def rainfall_status(rain_eff):
+        if rain_eff < 80:
+            return "low"
+        elif 80 <= rain_eff <= 170:
+            return "ideal"
+        return "excess"
+
+    rain_eff = effective_rainfall(total_rain, soil_type)
+    rain_state = rainfall_status(rain_eff)
+    rain_intensity = total_rain / (rainy_days + 1)
+
+    explanation.append(
+        f"ඔබේ පැපොල් ගස් ගසකට {yield_pred:.1f} kg අස්වැන්නක් ලබා දෙනු ඇතැයි අපේක්‍ෂා කෙරේ."
+    )
+    explanation.append("ඒ සඳහා හේතු:")
+
+    used_topics = set()
+
+    for feature, impact in shap_yield_factors:
+        f = feature.lower()
+
+        if "rain" in f and "rain" not in used_topics:
+            if rain_state == "ideal":
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) පැපොල් සඳහා ප්‍රශස්ත පරාසය තුළ පැවතුන අතර, නිරෝගී වර්ධනයට සහාය විය."
+                )
+            elif rain_state == "low":
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) තරමක් අඩු විය; වාරිමාර්ග ජලය මත රඳා පැවතීම වැඩි විය."
+                )
+            else:
+                explanation.append(
+                    f"- වර්ෂාපතනය ({total_rain:.1f} mm) අධික වූ අතර, තාවකාලික මූල ආතතියට හේතු විය."
+                )
+
+            if rain_intensity > 20:
+                explanation.append(
+                    "- වර්ෂාව කෙටි, ශක්තිමත් කාලසීමාවල ඇති වූ නිසා පාංශු ඔක්සිජන් ලබාගැනීම අඩු විය."
+                )
+            used_topics.add("rain")
+
+        elif "temp" in f and "temp" not in used_topics:
+            if avg_temp < 24:
+                explanation.append(
+                    f"- සිසිල් උෂ්ණත්වය ({avg_temp:.1f}°C) ශාක පරිවෘත්තීය ක්‍රියාවලිය තරමක් මන්දගාමී කළේය."
+                )
+            elif avg_temp > 32:
+                explanation.append(
+                    f"- ඉහළ උෂ්ණත්වය ({avg_temp:.1f}°C) ශාකවලට තාප ආතතිය ඇති කළේය."
+                )
+            else:
+                explanation.append(
+                    f"- උෂ්ණත්ව තත්ත්ව ({avg_temp:.1f}°C) ගෙඩි වර්ධනයට හිතකර විය."
+                )
+            used_topics.add("temp")
+
+        elif "plant_month" in f and "month" not in used_topics:
+            explanation.append(
+                f"- {month_name} මාසයේ සිටුවීම, සෘතුමය දේශගුණ රටා නිසා වර්ධනයට බලපෑවේය."
+            )
+            used_topics.add("month")
+
+        elif "watering" in f and "watering" not in used_topics:
+            explanation.append(
+                "- ජල සම්පාදන ක්‍රමය සහ වාර ගණන, පාංශු ආර්ද්‍රතා සමතුලිතතාව පවත්වා ගැනීමේ දී භූමිකාවක් ඉටු කළේය."
+            )
+            used_topics.add("watering")
+
+        elif "trees" in f and "trees" not in used_topics:
+            explanation.append(
+                "- ගස් ගණන, පෝෂක තරගකාරිත්වයට සහ ගස් එකකට ලැබෙන අස්වැන්නට බලපෑවේය."
+            )
+            used_topics.add("trees")
+
+        if len(used_topics) >= 3:
+            break
+
+    explanation.append("")
+
+    explanation.append(
+        f"ඇස්තමේන්තු අස්වනු කාලය දින {int(harvest_total)} කි."
+    )
+    explanation.append("අස්වනු නෙළීමට මෙතරම් කාලය ගත වන්නේ ඇයි:")
+
+    explanation.append(
+        f"- උෂ්ණත්වය ({avg_temp:.1f}°C) ගෙඩි 익어ගන්නා වේගය පාලනය කරයි."
+    )
+
+    explanation.append(
+        f"- වර්ෂාවෙන් ({total_rain:.1f} mm) මල් පිපීමේ ස්ථිරතාව සහ ගෙඩි ගැසීම කෙරෙහි බලපෑමක් ඇත."
+    )
+
+    explanation.append(
+        f"- {month_name} මාසයේ සිටුවීමෙන් මෝසම් සහ වියළි කාලයන්ට නිරාවරණය නිර්ණය වේ."
+    )
+
+    return explanation
+
+
 # ======================================================
 # API ENDPOINT
 # ======================================================
@@ -349,11 +603,18 @@ def predict():
         # Build dynamic farmer explanation
         farmer_explanation = build_farmer_explanation(
             yield_pred, harvest_total, weather, plant_month,
-            yield_factors, harvest_factors
+            yield_factors, harvest_factors,
+            soil_type=SOIL_MAP.get(str(data.get("soil_type", "")).lower().strip())
+        )
+        farmer_explanation_si = build_farmer_explanation_si(
+            yield_pred, harvest_total, weather, plant_month,
+            yield_factors, harvest_factors,
+            soil_type=SOIL_MAP.get(str(data.get("soil_type", "")).lower().strip())
         )
         
         result = {
             "farmer_explanation": farmer_explanation,
+            "farmer_explanation_si": farmer_explanation_si,
             "predictions": {
                 "yield_per_tree": round(yield_pred, 2),
                 "harvest_days_total": int(harvest_total),
@@ -379,4 +640,4 @@ def predict():
 
 # ======================================================
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5009)
