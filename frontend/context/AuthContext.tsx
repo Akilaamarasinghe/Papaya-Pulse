@@ -7,7 +7,7 @@ import {
   User as FirebaseUser,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import api, { setAuthToken } from '../config/api';
+import api, { setAuthToken, setTokenGetter } from '../config/api';
 import { User, SignUpData, LoginData } from '../types';
 
 interface AuthContextType {
@@ -31,6 +31,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           const token = await firebaseUser.getIdToken();
           setAuthToken(token);
+          // Register a getter so every future request gets a fresh token (handles 1hr expiry)
+          setTokenGetter(() => firebaseUser.getIdToken());
           
           // Get user profile from backend
           const response = await api.get('/users/me');
@@ -41,6 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } else {
         setAuthToken(null);
+        setTokenGetter(null);
         setUser(null);
       }
       setLoading(false);
@@ -64,6 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const token = await userCredential.user.getIdToken();
       setAuthToken(token);
+      setTokenGetter(() => userCredential.user.getIdToken());
 
       // Create user profile in backend
       const response = await api.post('/users', {
@@ -91,6 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const token = await userCredential.user.getIdToken();
       setAuthToken(token);
+      setTokenGetter(() => userCredential.user.getIdToken());
 
       // Get user profile from backend
       const response = await api.get('/users/me');
@@ -105,6 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await firebaseSignOut(auth);
       setAuthToken(null);
+      setTokenGetter(null);
       setUser(null);
     } catch (error: any) {
       console.error('Sign out error:', error);

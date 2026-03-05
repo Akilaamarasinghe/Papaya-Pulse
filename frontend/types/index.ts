@@ -1,6 +1,6 @@
 // User & Auth Types
 export type UserRole = 'farmer' | 'customer';
-export type District = 'Hambanthota' | 'Matara' | 'Galle';
+export type District = 'Hambantota' | 'Matara' | 'Galle';
 
 export interface User {
   uid: string;
@@ -32,6 +32,69 @@ export interface GrowthStageResponse {
   advice: string[];
 }
 
+// Image Processing ML response types
+export interface GrowthStagePapayaValidation {
+  predicted_class: string;
+  confidence: number;
+  threshold_required: number;
+  passed_threshold: boolean;
+  probabilities: { [key: string]: number };
+}
+
+export interface GrowthStageCurrentStage {
+  code: string;
+  name: string;
+  name_si?: string;
+  height: string;
+  height_si?: string;
+  duration: string;
+  duration_si?: string;
+  characteristics: string;
+  characteristics_si?: string;
+}
+
+export interface GrowthStageCareInstructions {
+  watering: string;
+  watering_si?: string;
+  fertilizer: string;
+  fertilizer_si?: string;
+  soil: string;
+  soil_si?: string;
+  spacing: string;
+  spacing_si?: string;
+  protection: string;
+  protection_si?: string;
+}
+
+export interface GrowthStageTransitionGuide {
+  next_stage: string;
+  next_stage_si?: string;
+  signs_to_watch: string;
+  signs_to_watch_si?: string;
+  transition_focus: string;
+  transition_focus_si?: string;
+}
+
+export interface GrowthStageGuidance {
+  current_stage: GrowthStageCurrentStage;
+  care_instructions: GrowthStageCareInstructions;
+  transition_guide: GrowthStageTransitionGuide;
+  expert_guidance: string;
+}
+
+export interface GrowthStageGradeDetails {
+  grade: string;
+  confidence: number;
+  probabilities: { [key: string]: number };
+}
+
+export interface GrowthStageMLResponse {
+  is_papaya: boolean;
+  papaya_validation: GrowthStagePapayaValidation;
+  grade_prediction: GrowthStageGradeDetails | null;
+  growth_guidance: GrowthStageGuidance | null;
+}
+
 export interface HarvestPredictionRequest {
   district: District;
   soil_type: 'laterite soils' | 'sandy loam';
@@ -43,6 +106,7 @@ export interface HarvestPredictionRequest {
 
 export interface HarvestPredictionResponse {
   farmer_explanation: string[];
+  farmer_explanation_si?: string[];
   predictions: {
     harvest_days_remaining: number;
     harvest_days_total: number;

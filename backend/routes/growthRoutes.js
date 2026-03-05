@@ -9,38 +9,60 @@ const PredictionLog = require('../models/PredictionLog');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ML Service URL
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5000';
+// ML Service URLs
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5009';
+const ML_STAGE_SERVICE_URL = process.env.ML_STAGE_SERVICE_URL || 'http://localhost:5008';
 
-// POST /api/growth/stage - Growth stage check
+// POST /api/growth/stage - Growth stage check (image processing ML)
 router.post('/stage', authMiddleware, upload.single('file'), async (req, res) => {
   try {
-    // TODO: Integrate with ML model for actual growth stage detection
-    // For now, return mock response
-    
-    const mockStages = ['A', 'B', 'C', 'D'];
-    const stage = mockStages[Math.floor(Math.random() * mockStages.length)];
+    if (!req.file) {
+      return res.status(400).json({ error: 'Image file is required' });
+    }
 
-    const response = {
-      stage,
-      advice: [
-        `Your plant is on stage ${stage}.`,
-        `To reach the next stage: water consistently, add fertilizer every 1½ weeks.`,
-        'Ensure adequate sunlight (6-8 hours daily).',
-        'Monitor for pests and diseases regularly.',
-        'Maintain soil pH between 6.0-6.5 for optimal growth.',
-      ],
-    };
-
-    // Log prediction
-    await PredictionLog.create({
-      userId: req.user.uid,
-      type: 'growth_stage',
-      input: { hasImage: !!req.file },
-      output: response,
+    // Forward image to image-processing ML service on port 5008
+    const FormData = require('form-data');
+    const form = new FormData();
+    form.append('file', req.file.buffer, {
+      filename: req.file.originalname || 'plant.jpg',
+      contentType: req.file.mimetype || 'image/jpeg',
     });
 
-    res.json(response);
+    // Optional: forward location/month/language if provided
+    if (req.body.location) form.append('location', req.body.location);
+    if (req.body.month) form.append('month', req.body.month);
+    form.append('language', req.body.language || 'en');
+
+    let mlData;
+    try {
+      const mlResponse = await axios.post(
+        `${ML_STAGE_SERVICE_URL}/predict`,
+        form,
+        {
+          headers: form.getHeaders(),
+          timeout: 60000,
+        }
+      );
+      mlData = mlResponse.data;
+    } catch (mlError) {
+      console.error('ML Stage Service error:', mlError.response?.data || mlError.message);
+      if (mlError.code === 'ECONNREFUSED') {
+        return res.status(503).json({
+          error: 'Growth stage ML service is not available. Please ensure the image processing service is running on port 5008.',
+        });
+      }
+      throw mlError;
+    }
+
+    // Log prediction (non-blocking)
+    PredictionLog.create({
+      userId: req.user.uid,
+      type: 'growth_stage',
+      input: { hasImage: true },
+      output: mlData,
+    }).catch(dbErr => console.warn('PredictionLog save failed (non-fatal):', dbErr.message));
+
+    res.json(mlData);
   } catch (error) {
     console.error('Growth stage error:', error);
     res.status(500).json({ error: 'Failed to analyze growth stage' });
@@ -67,11 +89,12 @@ router.post('/harvest', authMiddleware, async (req, res) => {
     // Call Python ML service
     const mlPayload = {
       district: district.toLowerCase(),
-      soil_type: soil_type.toLowerCase().replace(/ /g, '_'),
+      soil_type: soil_type.toLowerCase().replace(/_/g, ' '),  // convert underscores → spaces to match SOIL_MAP
       watering_method: watering_method.toLowerCase(),
       watering_frequency: parseInt(watering_frequency),
       trees_count: parseInt(trees_count),
       plant_month: parseInt(plant_month),
+      language: req.body.language || 'en',
     };
 
     console.log('Calling ML service with:', mlPayload);
@@ -85,13 +108,13 @@ router.post('/harvest', authMiddleware, async (req, res) => {
 
       const response = mlResponse.data;
 
-      // Log prediction
-      await PredictionLog.create({
+      // Log prediction (non-blocking – don't fail request if DB is down)
+      PredictionLog.create({
         userId: req.user.uid,
         type: 'harvest',
         input: req.body,
         output: response,
-      });
+      }).catch(dbErr => console.warn('PredictionLog save failed (non-fatal):', dbErr.message));
 
       res.json(response);
     } catch (mlError) {
@@ -100,7 +123,7 @@ router.post('/harvest', authMiddleware, async (req, res) => {
       // If ML service is down, return informative error
       if (mlError.code === 'ECONNREFUSED') {
         return res.status(503).json({ 
-          error: 'ML prediction service is not available. Please ensure Python ML service is running on port 5000.' 
+          error: 'ML prediction service is not available. Please ensure Python ML service is running on port 5009.' 
         });
       }
       
