@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 import {
   LeafDiseaseResponse, LeafRecommendResponse, LeafWeatherRisk, DayRisk,
-  GrowthStage,
+  GrowthStage, PreventionStep,
 } from '../../types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -307,6 +307,342 @@ function WeatherRiskPanel({ weatherRisk, disease }: { weatherRisk: LeafWeatherRi
   );
 }
 
+// ─── Prevention Guide Component ───────────────────────────────────────────
+
+const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  chemical_inorganic: { bg: '#FFF3E0', text: '#E65100', border: '#FFB74D' },
+  chemical_organic:   { bg: '#F1F8E9', text: '#33691E', border: '#AED581' },
+  biological:         { bg: '#E8F5E9', text: '#1B5E20', border: '#81C784' },
+  cultural:           { bg: '#E3F2FD', text: '#0D47A1', border: '#64B5F6' },
+};
+
+const TYPE_ICON: Record<string, string> = {
+  chemical_inorganic: '🧪',
+  chemical_organic:   '🌿',
+  biological:         '🔬',
+  cultural:           '🏗️',
+};
+
+function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' | 'si' }) {
+  const [expanded, setExpanded] = useState(false);
+  const colors = TYPE_COLORS[step.type] ?? TYPE_COLORS['cultural'];
+
+  const name = step.name_en ?? step.description_en;
+  const desc = lang === 'si' ? step.description_si : step.description_en;
+  const aiHowTo = lang === 'si' ? step.ai_how_to_si : step.ai_how_to_en;
+  const aiWarning = lang === 'si' ? step.ai_warning_si : step.ai_warning_en;
+
+  return (
+    <View style={ps.card}>
+      {/* ── Header row ── */}
+      <View style={ps.headerRow}>
+        <View style={ps.stepCircle}>
+          <Text style={ps.stepNum}>{step.step}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={ps.stepName} numberOfLines={2}>{name}</Text>
+          {/* Category badge */}
+          <View style={[ps.typeBadge, { backgroundColor: colors.bg, borderColor: colors.border }]}>
+            <Text style={[ps.typeText, { color: colors.text }]}>
+              {TYPE_ICON[step.type] ?? '•'} {step.type_label_en}
+            </Text>
+          </View>
+        </View>
+        {/* Organic pill */}
+        <View style={[ps.organicPill, { backgroundColor: step.organic ? '#E8F5E9' : '#FCE4EC' }]}>
+          <Text style={[ps.organicText, { color: step.organic ? '#2E7D32' : '#B71C1C' }]}>
+            {step.organic ? 'Organic' : 'Inorganic'}
+          </Text>
+        </View>
+      </View>
+
+      {/* ── PHI warning (if applicable) ── */}
+      {typeof step.phi_days === 'number' && (
+        <View style={[ps.phiRow, { backgroundColor: step.phi_days > 7 ? '#FFEBEE' : '#FFF8E1' }]}>
+          <Ionicons
+            name="time-outline"
+            size={14}
+            color={step.phi_days > 7 ? '#B71C1C' : '#E65100'}
+          />
+          <Text style={[ps.phiText, { color: step.phi_days > 7 ? '#B71C1C' : '#E65100' }]}>
+            {step.phi_days === 0
+              ? 'No waiting period before harvest'
+              : `Do not harvest for ${step.phi_days} days after spraying`}
+          </Text>
+        </View>
+      )}
+
+      {/* ── Dosage & timing ── */}
+      {(step.dosage || step.timing) && (
+        <View style={ps.infoGrid}>
+          {step.dosage ? (
+            <View style={ps.infoCell}>
+              <Ionicons name="beaker-outline" size={14} color="#555" />
+              <Text style={ps.infoLabel}>Dosage</Text>
+              <Text style={ps.infoVal}>{step.dosage}</Text>
+            </View>
+          ) : null}
+          {step.timing ? (
+            <View style={ps.infoCell}>
+              <Ionicons name="sunny-outline" size={14} color="#555" />
+              <Text style={ps.infoLabel}>When to apply</Text>
+              <Text style={ps.infoVal}>{step.timing}</Text>
+            </View>
+          ) : null}
+          {step.frequency ? (
+            <View style={ps.infoCell}>
+              <Ionicons name="repeat-outline" size={14} color="#555" />
+              <Text style={ps.infoLabel}>Frequency</Text>
+              <Text style={ps.infoVal}>{step.frequency}</Text>
+            </View>
+          ) : null}
+        </View>
+      )}
+
+      {/* ── Short description ── */}
+      <Text style={ps.descText}>{desc}</Text>
+
+      {/* ── Expandable AI how-to guide ── */}
+      <TouchableOpacity style={ps.expandBtn} onPress={() => setExpanded(e => !e)} activeOpacity={0.7}>
+        <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color="#2D7A4F" />
+        <Text style={ps.expandLabel}>How to Use as a Farmer</Text>
+      </TouchableOpacity>
+
+      {expanded && (
+        <View style={ps.guideBox}>
+          {/* Prefer AI guide; fallback to static how_to_mix + how_to_apply */}
+          {aiHowTo ? (
+            <Text style={ps.guideText}>{aiHowTo}</Text>
+          ) : (
+            <>
+              {step.how_to_mix && (
+                <>
+                  <Text style={ps.guideSubhead}>Mixing</Text>
+                  <Text style={ps.guideText}>{step.how_to_mix}</Text>
+                </>
+              )}
+              {step.how_to_apply && (
+                <>
+                  <Text style={ps.guideSubhead}>Application</Text>
+                  <Text style={ps.guideText}>{step.how_to_apply}</Text>
+                </>
+              )}
+            </>
+          )}
+          {/* AI warning or static safety */}
+          {(aiWarning || step.safety) && (
+            <View style={ps.warnRow}>
+              <Ionicons name="warning-outline" size={15} color="#E65100" />
+              <Text style={ps.warnText}>{aiWarning ?? step.safety}</Text>
+            </View>
+          )}
+        </View>
+      )}
+    </View>
+  );
+}
+
+function PreventionGuide({
+  steps,
+  lang,
+}: {
+  steps: PreventionStep[];
+  lang: 'en' | 'si';
+}) {
+  if (!steps || steps.length === 0) return null;
+
+  return (
+    <View style={ps.container}>
+      <View style={ps.sectionHeader}>
+        <Ionicons name="shield-checkmark-outline" size={20} color="#2D7A4F" />
+        <Text style={ps.sectionTitle}>Prevention & Treatment Steps</Text>
+      </View>
+      <Text style={ps.sectionSub}>
+        {steps.length} step{steps.length !== 1 ? 's' : ''} recommended for your plantation
+      </Text>
+      {steps.map((step) => (
+        <PreventionStepCard key={step.code} step={step} lang={lang} />
+      ))}
+    </View>
+  );
+}
+
+const ps = StyleSheet.create({
+  container: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1B4332',
+  },
+  sectionSub: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 12,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    padding: 14,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+    marginBottom: 8,
+  },
+  stepCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#2D7A4F',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  stepNum: {
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  stepName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#212121',
+    marginBottom: 4,
+    flexShrink: 1,
+  },
+  typeBadge: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  typeText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  organicPill: {
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    alignSelf: 'flex-start',
+    flexShrink: 0,
+  },
+  organicText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  phiRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: 6,
+    padding: 7,
+    marginBottom: 8,
+  },
+  phiText: {
+    fontSize: 12,
+    fontWeight: '600',
+    flexShrink: 1,
+  },
+  infoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  infoCell: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 8,
+    flexShrink: 1,
+    minWidth: 100,
+    maxWidth: '48%',
+  },
+  infoLabel: {
+    fontSize: 10,
+    color: '#888',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    marginTop: 2,
+  },
+  infoVal: {
+    fontSize: 12,
+    color: '#333',
+    marginTop: 2,
+  },
+  descText: {
+    fontSize: 13,
+    color: '#444',
+    lineHeight: 19,
+    marginBottom: 10,
+  },
+  expandBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#EEEEEE',
+  },
+  expandLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2D7A4F',
+  },
+  guideBox: {
+    backgroundColor: '#F9FBF9',
+    borderRadius: 8,
+    padding: 10,
+    marginTop: 8,
+  },
+  guideSubhead: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 2,
+    marginTop: 6,
+  },
+  guideText: {
+    fontSize: 13,
+    color: '#333',
+    lineHeight: 20,
+  },
+  warnRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    backgroundColor: '#FFF3E0',
+    borderRadius: 6,
+    padding: 8,
+    marginTop: 8,
+  },
+  warnText: {
+    fontSize: 12,
+    color: '#E65100',
+    flexShrink: 1,
+    lineHeight: 18,
+  },
+});
+
 // ─── Main Screen ──────────────────────────────────────────────────────────
 
 export default function LeafResultScreen() {
@@ -482,6 +818,14 @@ export default function LeafResultScreen() {
                 </>
               )}
             </Section>
+          )}
+
+          {/* ── Prevention & Treatment Steps ── */}
+          {isDisease && recommend?.prevention?.steps_detail && recommend.prevention.steps_detail.length > 0 && (
+            <PreventionGuide
+              steps={recommend.prevention.steps_detail}
+              lang="en"
+            />
           )}
 
           {/* ── Weather & Disease Risk Forecast ── */}
