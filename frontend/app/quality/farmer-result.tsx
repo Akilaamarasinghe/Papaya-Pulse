@@ -10,6 +10,9 @@ export default function FarmerResultScreen() {
   const data: FarmerQualityResponse = params.data ? JSON.parse(params.data as string) : null;
   const category = (params.category as string) || 'best'; // 'best' | 'factory'
 
+  const notPapayaText = String((data as any)?.message || (data as any)?.prediction || '').toLowerCase();
+  const isNotPapaya = (data as any)?.is_papaya === false || notPapayaText.includes('not a papaya');
+
   console.log('\n======= RESULT SCREEN DEBUG START =======');
   console.log('Raw params.data:', params.data);
   console.log('Parsed data:', JSON.stringify(data, null, 2));
@@ -33,6 +36,33 @@ export default function FarmerResultScreen() {
     );
   }
 
+  if (isNotPapaya) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+          <View style={styles.headerCard}>
+            <Text style={styles.categoryTitle}>{category === 'factory' ? 'Factory Outlet Papayas' : 'Best Quality Papayas'}</Text>
+            <Text style={styles.categorySubtitle}>Image Analysis Result</Text>
+          </View>
+
+          <View style={[styles.gradeCard, { backgroundColor: '#F44336' }]}>
+            <Text style={[styles.gradeLabel, { color: '#FFFFFF' }]}>Quality Grade</Text>
+            <View style={styles.gradeDisplay}>
+              <Text style={[styles.gradeValueTextOnly, { color: '#FFFFFF' }]}>Not a Papaya</Text>
+            </View>
+            <Text style={[styles.gradeLabelText, { color: '#FFFFFF' }]}>Do not proceed with grading</Text>
+          </View>
+
+          <PrimaryButton
+            title="Back to Quality Grader"
+            onPress={() => router.push('/quality')}
+            style={styles.button}
+          />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   // Factory Outlet Result
   if (category === 'factory' && data.prediction) {
     // Extract and clean the prediction value
@@ -45,18 +75,18 @@ export default function FarmerResultScreen() {
     console.log('predictionValue === "Type B":', predictionValue === 'Type B');
     console.log('=====================================\n');
     
-    const getTypeColor = () => {
-      const color = predictionValue === 'Type A' ? '#4CAF50' : '#FF9800';
-      console.log('getTypeColor - predictionValue:', predictionValue, '- Returning color:', color);
-      return color;
-    };
-    
-    const getTypeDescription = () => {
-      if (predictionValue === 'Type A') {
-        return 'Good quality for factory processing. Minimal damage detected.';
-      }
-      return 'Acceptable for factory processing. Some damage detected.';
-    };
+    const typeConfig =
+      predictionValue === 'Type A'
+        ? {
+            backgroundColor: '#4CAF50',
+            textColor: '#FFFFFF',
+            subtitle: 'Small damages',
+          }
+        : {
+            backgroundColor: '#F44336',
+            textColor: '#FFFFFF',
+            subtitle: 'More Damages',
+          };
 
     // Parse confidence string like "85.5%"
     const confidenceValue = typeof data.confidence === 'string' 
@@ -71,15 +101,14 @@ export default function FarmerResultScreen() {
             <Text style={styles.categorySubtitle}>Image Analysis Result</Text>
           </View>
 
-          <View style={styles.gradeCard}>
-            <Text style={styles.gradeLabel}>Quality Type</Text>
+          <View style={[styles.gradeCard, { backgroundColor: typeConfig.backgroundColor }]}> 
+            <Text style={[styles.gradeLabel, { color: typeConfig.textColor }]}>Quality Type</Text>
             <View style={styles.gradeDisplay}>
-              <Text style={[styles.gradeValue, { color: getTypeColor(), fontSize: 48 }]}>
+              <Text style={[styles.gradeValue, { color: typeConfig.textColor, fontSize: 48 }]}>
                 {predictionValue}
               </Text>
             </View>
-            <Text style={styles.gradeLabelText}>{predictionValue}</Text>
-            <Text style={styles.gradeDescription}>{getTypeDescription()}</Text>
+            <Text style={[styles.gradeLabelText, { color: typeConfig.textColor }]}>{typeConfig.subtitle}</Text>
 
             <View style={styles.probabilityBox}>
               <Text style={styles.probabilityLabel}>Confidence Score</Text>
@@ -118,17 +147,24 @@ export default function FarmerResultScreen() {
   const { predicted_grade, confidence, all_probabilities, extracted_color, explanation, top_features } = data;
   const grade = predicted_grade;
 
-  const getGradeColor = () => {
-    if (grade === '1') return '#4CAF50';
-    if (grade === '2') return '#FF9800';
-    return '#F44336';
-  };
-
-  const getGradeLabel = () => {
-    if (grade === '1') return 'Grade 1 - Premium Quality';
-    if (grade === '2') return 'Grade 2 - Good Quality';
-    return 'Grade 3 - Standard Quality';
-  };
+  const gradeConfig =
+    grade === '1'
+      ? {
+          backgroundColor: '#4CAF50',
+          textColor: '#FFFFFF',
+          subtitle: 'Very suitable for sell',
+        }
+      : grade === '2'
+      ? {
+          backgroundColor: '#FFC107',
+          textColor: '#1F2937',
+          subtitle: 'Normal suitable for sell',
+        }
+      : {
+          backgroundColor: '#F44336',
+          textColor: '#FFFFFF',
+          subtitle: 'Quickly sell',
+        };
 
   const getCategoryTitle = () => (category === 'best' ? 'Best Quality Papayas' : 'Factory Outlet Papayas');
 
@@ -146,14 +182,13 @@ export default function FarmerResultScreen() {
           <Text style={styles.categorySubtitle}>AI-Powered Grading Result</Text>
         </View>
 
-        <View style={styles.gradeCard}>
-          <Text style={styles.gradeLabel}>Quality Grade</Text>
+        <View style={[styles.gradeCard, { backgroundColor: gradeConfig.backgroundColor }]}>
+          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>Quality Grade</Text>
           <View style={styles.gradeDisplay}>
-            <Text style={styles.gradePrefix}>Grade</Text>
-            <Text style={[styles.gradeValue, { color: getGradeColor() }]}>{grade}</Text>
+            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>Grade</Text>
+            <Text style={[styles.gradeValue, { color: gradeConfig.textColor }]}>{grade}</Text>
           </View>
-          <Text style={styles.gradeLabelText}>{getGradeLabel()}</Text>
-          <Text style={styles.gradeDescription}>{getGradeDescription()}</Text>
+          <Text style={[styles.gradeLabelText, { color: gradeConfig.textColor }]}>{gradeConfig.subtitle}</Text>
 
           <View style={styles.probabilityBox}>
             <Text style={styles.probabilityLabel}>Confidence Score</Text>
@@ -272,6 +307,7 @@ const styles = StyleSheet.create({
   gradeDisplay: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   gradePrefix: { fontSize: 36, fontWeight: '600', color: '#333', marginRight: 8 },
   gradeValue: { fontSize: 72, fontWeight: 'bold' },
+  gradeValueTextOnly: { fontSize: 42, fontWeight: '700' },
   gradeLabelText: { fontSize: 18, fontWeight: '600', color: '#333', marginBottom: 8 },
   gradeDescription: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 16, paddingHorizontal: 20 },
   probabilityBox: { backgroundColor: '#F8F9FA', padding: 16, borderRadius: 12, width: '100%', alignItems: 'center' },

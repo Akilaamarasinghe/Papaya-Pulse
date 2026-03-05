@@ -37,7 +37,7 @@ function normalizeCustomerGrade(raw: string): '1' | '2' | '3' {
 
 export default function CustomerResultScreen() {
   const params = useLocalSearchParams();
-  const data: CustomerQualityResponse = params.data ? JSON.parse(params.data as string) : null;
+  const data: any = params.data ? JSON.parse(params.data as string) : null;
 
   if (!data) {
     return (
@@ -46,6 +46,102 @@ export default function CustomerResultScreen() {
           <Text style={styles.errorText}>No data available</Text>
           <PrimaryButton title="Go Back" onPress={() => router.back()} />
         </View>
+      </SafeAreaView>
+    );
+  }
+
+  const isNotPapaya = data?.is_papaya === false || String(data?.message || '').toLowerCase().includes('not a papaya');
+
+  const getGradeConfig = (currentGrade: '1' | '2' | '3') => {
+    if (currentGrade === '1') {
+      return {
+        backgroundColor: '#4CAF50',
+        textColor: '#FFFFFF',
+        title: 'Grade 1',
+        subtitle: 'Very suitable for buy',
+      };
+    }
+
+    if (currentGrade === '2') {
+      return {
+        backgroundColor: '#FFC107',
+        textColor: '#1F2937',
+        title: 'Grade 2',
+        subtitle: 'Normal suitable for buy',
+      };
+    }
+
+    return {
+      backgroundColor: '#F44336',
+      textColor: '#FFFFFF',
+      title: 'Grade 3',
+      subtitle: 'Do not buy',
+    };
+  };
+
+  if (isNotPapaya) {
+    const notPapayaGradeConfig = {
+      backgroundColor: '#F44336',
+      textColor: '#FFFFFF',
+      title: 'Not a Papaya',
+      subtitle: 'Do not buy',
+    };
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Customer Quality Check</Text>
+            <Text style={styles.headerSubtitle}>Image Validation Result</Text>
+          </View>
+
+          <View style={[styles.gradeCard, { backgroundColor: notPapayaGradeConfig.backgroundColor }]}> 
+            <Text style={[styles.gradeLabel, { color: notPapayaGradeConfig.textColor }]}>Quality Grade</Text>
+            <View style={styles.gradeDisplay}>
+              <Text style={[styles.gradeValueTextOnly, { color: notPapayaGradeConfig.textColor }]}>{notPapayaGradeConfig.title}</Text>
+            </View>
+            <Text style={[styles.gradeLabelText, { color: notPapayaGradeConfig.textColor }]}>{notPapayaGradeConfig.subtitle}</Text>
+          </View>
+
+          <View style={styles.tasteCard}>
+            <Text style={styles.tasteDescription}>
+              {data?.message || 'The uploaded image does not appear to be a papaya. Please upload a clear full-papaya image.'}
+            </Text>
+
+            {!!data?.papaya_probability && (
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>✅ Papaya Probability</Text>
+                <Text style={styles.detailValue}>{data.papaya_probability}</Text>
+              </View>
+            )}
+
+            {!!data?.not_papaya_probability && (
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>❌ Not Papaya Probability</Text>
+                <Text style={styles.detailValue}>{data.not_papaya_probability}</Text>
+              </View>
+            )}
+
+            {!!data?.city && (
+              <View style={styles.detailRow}>
+                <Text style={styles.detailLabel}>📍 City</Text>
+                <Text style={styles.detailValue}>{data.city}</Text>
+              </View>
+            )}
+          </View>
+
+          <PrimaryButton
+            title="Try Another Image"
+            onPress={() => router.push('/quality/customer-input')}
+            style={styles.button}
+          />
+
+          <PrimaryButton
+            title="Back to Quality Menu"
+            onPress={() => router.push('/quality')}
+            variant="outline"
+          />
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -63,7 +159,7 @@ export default function CustomerResultScreen() {
     color_ratios,
     final_suggestion,
     papaya_probability,
-  } = data;
+  } = data as CustomerQualityResponse;
   const grade = normalizeCustomerGrade(String(rawGrade));
   const safeAvgTemp = Number(average_temperature || 0);
   const normalizedTaste = String(taste || '').toLowerCase();
@@ -132,17 +228,7 @@ export default function CustomerResultScreen() {
     return 'Taste prediction combines image analysis, ripeness, and weather factors.';
   };
 
-  const getGradeColor = () => {
-    if (grade === '1') return '#4CAF50';
-    if (grade === '2') return '#FF9800';
-    return '#F44336';
-  };
-
-  const getGradeLabel = () => {
-    if (grade === '1') return 'Grade 1 - Best Quality';
-    if (grade === '2') return 'Grade 2 - Good Quality';
-    return 'Grade 3 - Acceptable';
-  };
+  const gradeConfig = getGradeConfig(grade);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -152,13 +238,13 @@ export default function CustomerResultScreen() {
           <Text style={styles.headerSubtitle}>Analysis Complete</Text>
         </View>
 
-        <View style={styles.gradeCard}>
-          <Text style={styles.gradeLabel}>Quality Grade</Text>
+        <View style={[styles.gradeCard, { backgroundColor: gradeConfig.backgroundColor }]}>
+          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>Quality Grade</Text>
           <View style={styles.gradeDisplay}>
-            <Text style={styles.gradePrefix}>Grade</Text>
-            <Text style={[styles.gradeValue, { color: getGradeColor() }]}>{grade}</Text>
+            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>Grade</Text>
+            <Text style={[styles.gradeValue, { color: gradeConfig.textColor }]}>{grade}</Text>
           </View>
-          <Text style={styles.gradeLabelText}>{getGradeLabel()}</Text>
+          <Text style={[styles.gradeLabelText, { color: gradeConfig.textColor }]}>{gradeConfig.subtitle}</Text>
         </View>
 
         <View style={styles.tasteCard}>
@@ -269,29 +355,30 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   content: { padding: 20 },
   errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  errorText: { fontSize: 18, color: '#666', marginBottom: 20 },
+  errorText: { fontSize: 20, color: '#0a0909', marginBottom: 20 },
   header: {
     backgroundColor: '#2196F3', borderRadius: 16, padding: 20, marginBottom: 16, alignItems: 'center',
   },
-  headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#fff', marginBottom: 4 },
-  headerSubtitle: { fontSize: 16, color: '#E3F2FD' },
+  headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#fff', marginBottom: 4 },
+  headerSubtitle: { fontSize: 18, color: '#E3F2FD' },
   gradeCard: {
     backgroundColor: '#fff', borderRadius: 16, padding: 24, marginBottom: 16, alignItems: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 3,
   },
-  gradeLabel: { fontSize: 18, color: '#666', marginBottom: 8 },
+  gradeLabel: { fontSize: 20, color: '#666', marginBottom: 8 },
   gradeDisplay: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  gradePrefix: { fontSize: 36, fontWeight: '600', color: '#333', marginRight: 8 },
-  gradeValue: { fontSize: 72, fontWeight: 'bold', marginBottom: 8 },
-  gradeLabelText: { fontSize: 16, color: '#666' },
+  gradePrefix: { fontSize: 37, fontWeight: '600', color: '#333', marginRight: 8 },
+  gradeValue: { fontSize: 73, fontWeight: 'bold', marginBottom: 8 },
+  gradeValueTextOnly: { fontSize: 43, fontWeight: '700', marginBottom: 8 },
+  gradeLabelText: { fontSize: 17, color: '#666' },
   tasteCard: {
     backgroundColor: '#fff', borderRadius: 16, padding: 20, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 3,
   },
   tasteResult: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  tasteEmoji: { fontSize: 48, marginRight: 12 },
-  tasteLabel: { fontSize: 28, fontWeight: 'bold' },
-  tasteDescription: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 16, lineHeight: 20 },
+  tasteEmoji: { fontSize: 49, marginRight: 12 },
+  tasteLabel: { fontSize: 29, fontWeight: 'bold' },
+  tasteDescription: { fontSize: 16, color: '#1a1919', textAlign: 'center', marginBottom: 16, lineHeight: 21 },
   tasteBadge: {
     backgroundColor: '#F8F9FA',
     borderRadius: 10,
@@ -299,22 +386,22 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     alignItems: 'center',
   },
-  tasteBadgeTitle: { fontSize: 12, color: '#666', marginBottom: 4 },
-  tasteBadgeValue: { fontSize: 16, fontWeight: '700', color: '#333', textAlign: 'center' },
-  tasteHint: { fontSize: 13, color: '#555', textAlign: 'center', marginBottom: 12, lineHeight: 18 },
+  tasteBadgeTitle: { fontSize: 13, color: '#666', marginBottom: 4 },
+  tasteBadgeValue: { fontSize: 17, fontWeight: '700', color: '#333', textAlign: 'center' },
+  tasteHint: { fontSize: 14, color: '#555', textAlign: 'center', marginBottom: 12, lineHeight: 19 },
   tempBox: { backgroundColor: '#F8F9FA', padding: 12, borderRadius: 8, alignItems: 'center' },
-  tempLabel: { fontSize: 12, color: '#666', marginBottom: 4 },
-  tempValue: { fontSize: 20, fontWeight: 'bold', color: '#FF6B35' },
+  tempLabel: { fontSize: 13, color: '#666', marginBottom: 4 },
+  tempValue: { fontSize: 21, fontWeight: 'bold', color: '#FF6B35' },
   detailsCard: {
     backgroundColor: '#fff', borderRadius: 16, padding: 20, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 3,
   },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 16 },
+  sectionTitle: { fontSize: 21, fontWeight: 'bold', color: '#333', marginBottom: 16 },
   detailRow: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#F0F0F0',
   },
-  detailLabel: { fontSize: 16, color: '#666' },
-  detailValue: { fontSize: 16, fontWeight: '600', color: '#333' },
+  detailLabel: { fontSize: 17, color: '#666' },
+  detailValue: { fontSize: 17, fontWeight: '600', color: '#333' },
   button: { marginTop: 8 },
 });

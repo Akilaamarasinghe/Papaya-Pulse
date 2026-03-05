@@ -4,10 +4,16 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { LabeledInput } from '../../components/shared/LabeledInput';
+import { Dropdown } from '../../components/shared/Dropdown';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import api from '../../config/api';
 import { CustomerQualityResponse } from '../../types';
+
+const cityOptions = [
+  { label: 'Galle', value: 'Galle' },
+  { label: 'Matara', value: 'Matara' },
+  { label: 'Hambanthota', value: 'Hambanthota' },
+];
 
 export default function CustomerInputScreen() { 
   const { user } = useAuth();
@@ -110,7 +116,26 @@ export default function CustomerInputScreen() {
       });
     } catch (error: any) {
       console.error('Quality check error:', error);
-      Alert.alert('Error', 'Failed to check papaya quality. Please try again.');
+      const errorData = error?.response?.data || {};
+      const errorMessage = String(errorData?.message || errorData?.error || '').toLowerCase();
+      const isNotPapaya = errorData?.is_papaya === false || errorMessage.includes('not a papaya');
+
+      if (isNotPapaya) {
+        router.push({
+          pathname: '/quality/customer-result' as any,
+          params: {
+            data: JSON.stringify({
+              is_papaya: false,
+              message: errorData?.message || 'Not a papaya',
+              papaya_probability: errorData?.papaya_prob || errorData?.papaya_probability,
+              not_papaya_probability: errorData?.not_papaya_prob || errorData?.not_papaya_probability,
+              city: city.trim(),
+            }),
+          },
+        });
+      } else {
+        Alert.alert('Error', errorData?.error || 'Failed to check papaya quality. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -147,11 +172,12 @@ export default function CustomerInputScreen() {
         style={styles.button}
       />
 
-      <LabeledInput
+      <Dropdown
         label="City / District"
         value={city}
-        onChangeText={setCity}
-        placeholder="e.g., Galle"
+        options={cityOptions}
+        onChange={setCity}
+        placeholder="Select city"
       />
 
       <PrimaryButton
@@ -213,7 +239,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 250,
+    height: 1500,
     borderRadius: 12,
     resizeMode: 'cover',
   },

@@ -296,10 +296,32 @@ router.post('/customer', authMiddleware, upload.single('file'), async (req, res)
       {
         headers: customerFormData.getHeaders(),
         timeout: 45000,
+        validateStatus: (status) => status >= 200 && status < 500,
       }
     );
 
+    const mlStatus = customerServiceResponse.status;
     const mlOutput = customerServiceResponse.data || {};
+
+    if (mlStatus === 400) {
+      const mlMessage = String(mlOutput.message || mlOutput.error || '').toLowerCase();
+      const isNotPapaya = mlOutput.is_papaya === false || mlMessage.includes('not a papaya');
+
+      if (isNotPapaya) {
+        return res.status(200).json({
+          is_papaya: false,
+          papaya_probability: mlOutput.papaya_prob || mlOutput.papaya_probability || null,
+          not_papaya_probability: mlOutput.not_papaya_prob || null,
+          message: mlOutput.message || 'Not a papaya',
+          city,
+        });
+      }
+
+      return res.status(400).json({
+        error: mlOutput.error || mlOutput.message || 'Invalid quality prediction request',
+      });
+    }
+
     const predictions = mlOutput.predictions || {};
     const weather = mlOutput.weather_last_7_days || {};
     const colorRatios = mlOutput.color_ratios || {};
@@ -331,6 +353,13 @@ router.post('/customer', authMiddleware, upload.single('file'), async (req, res)
     res.json(response);
   } catch (error) {
     console.error('Customer quality error:', error);
+
+    if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+      return res.status(503).json({
+        error: 'Customer quality ML service is not available. Please make sure the Python ML service is running.',
+      });
+    }
+
     res.status(500).json({
       error: 'Failed to check papaya quality',
       details: error.response?.data?.error || error.message,
