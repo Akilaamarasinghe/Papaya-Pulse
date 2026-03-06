@@ -66,44 +66,47 @@ export default function CustomerResultScreen() {
     );
   }
 
+  // ── Handle model error (e.g. "Not a papaya") ──
+  if (raw.error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorIcon}>🚫</Text>
+          <Text style={styles.errorTitle}>
+            {language === 'si' ? 'දෝෂයකි' : 'Detection Failed'}
+          </Text>
+          <Text style={styles.errorText}>
+            {raw.error === 'Not a papaya'
+              ? language === 'si'
+                ? 'මෙය පැපොල් ගෙඩියක් නොවේ. කරුණාකර නිවැරදි රූපයක් ඉදිරිපත් කරන්න.'
+                : 'This does not appear to be a papaya. Please upload a valid papaya image.'
+              : raw.error}
+          </Text>
+          <PrimaryButton
+            title={language === 'si' ? 'නැවත උත්සාහ කරන්න' : 'Try Again'}
+            onPress={() => router.back()}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   // ── Defensive field extraction ──
-  // Supports both { analysis: {...}, final_market_advice: '...' }
-  // and flat responses directly from the ML model
   const analysis = raw.analysis ?? raw;
   const final_market_advice: string =
-    raw.final_market_advice ??
-    raw.market_advice ??
-    analysis.market_advice ??
-    analysis.advice ??
-    '';
+    raw.final_market_advice ?? raw.market_advice ?? analysis.market_advice ?? analysis.advice ?? '';
 
-  const location: string =
-    analysis.location ?? analysis.district ?? raw.location ?? 'N/A';
-
-  const month: string =
-    analysis.month ?? raw.month ?? 'N/A';
-
-  const rainfall_mm: number =
-    parseFloat(analysis.rainfall_mm ?? analysis.rainfall ?? raw.rainfall_mm ?? 0);
+  const location: string = analysis.location ?? analysis.district ?? raw.location ?? 'N/A';
+  const month: string = analysis.month ?? raw.month ?? 'N/A';
+  const rainfall_mm: number = parseFloat(analysis.rainfall_mm ?? analysis.rainfall ?? raw.rainfall_mm ?? 0);
 
   const ripeness: string =
-    analysis.ripeness ??
-    analysis.ripeness_stage ??
-    analysis.predicted_class ??
-    raw.ripeness ??
-    raw.predicted_class ??
-    'Unknown';
+    analysis.ripeness ?? analysis.ripeness_stage ?? analysis.predicted_class ?? raw.ripeness ?? raw.predicted_class ?? 'Unknown';
 
-  const confidence_percent: number =
-    parseFloat(
-      analysis.confidence_percent ??
-      analysis.confidence ??
-      raw.confidence_percent ??
-      raw.confidence ??
-      0
-    );
+  const confidence_percent: number = parseFloat(
+    analysis.confidence_percent ?? analysis.confidence ?? raw.confidence_percent ?? raw.confidence ?? 0
+  );
 
-  // color_ratios — support both nested object and flat keys
   const cr = analysis.color_ratios ?? analysis.colour_ratios ?? raw.color_ratios ?? {};
   const color_ratios = {
     green:  parseFloat(cr.green  ?? cr.Green  ?? 0),
@@ -111,8 +114,6 @@ export default function CustomerResultScreen() {
     orange: parseFloat(cr.orange ?? cr.Orange ?? 0),
   };
 
-  // price_table — array of { variety, price_lkr_per_kg }
-  // also support flat { estimated_price, price_estimate } from simpler models
   const rawTable = analysis.price_table ?? raw.price_table ?? null;
   const price_table: { variety: string; price_lkr_per_kg: number }[] = rawTable
     ? rawTable.map((r: any) => ({
@@ -123,11 +124,7 @@ export default function CustomerResultScreen() {
         {
           variety: 'Papaya',
           price_lkr_per_kg: parseFloat(
-            analysis.price_estimate ??
-            analysis.estimated_price ??
-            raw.price_estimate ??
-            raw.estimated_price ??
-            0
+            analysis.price_estimate ?? analysis.estimated_price ?? raw.price_estimate ?? raw.estimated_price ?? 0
           ),
         },
       ];
@@ -246,10 +243,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  errorIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  errorTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#F44336',
+    marginBottom: 10,
+  },
   errorText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#666',
     marginBottom: 20,
+    textAlign: 'center',
+    lineHeight: 24,
   },
   card: {
     backgroundColor: '#fff',
@@ -291,7 +300,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  /* Weather */
   weatherRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -310,7 +318,6 @@ const styles = StyleSheet.create({
     color: '#888',
     textAlign: 'center',
   },
-  /* Price table */
   priceRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -319,8 +326,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
-  priceLeft: {},
-  priceRight: {},
   varietyName: {
     fontSize: 15,
     fontWeight: '600',
@@ -349,7 +354,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#E65100',
   },
-  /* Advice */
   adviceCard: {
     borderLeftWidth: 4,
     borderLeftColor: '#4CAF50',
