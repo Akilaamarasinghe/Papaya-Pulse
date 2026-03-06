@@ -61,6 +61,8 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       days_since_picked,
     } = req.body;
 
+    const lang = req.body.lang || 'en';
+
     if (!req.file) {
       return res.status(400).json({ error: 'Image file is required' });
     }
@@ -77,7 +79,7 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
         console.log('Calling factory type service at:', `${ML_FACTORY_TYPE_SERVICE}/predict-papaya-type`);
         
         const imageResponse = await axios.post(
-          `${ML_FACTORY_TYPE_SERVICE}/predict-papaya-type`,
+          `${ML_FACTORY_TYPE_SERVICE}/predict-papaya-type?lang=${lang}`,
           imageFormData,
           {
             headers: imageFormData.getHeaders(),
@@ -177,7 +179,7 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
       });
 
       const mlServiceResponse = await axios.post(
-        `${ML_BEST_GRADE_SERVICE}/predict-papaya-grade`,
+        `${ML_BEST_GRADE_SERVICE}/predict-papaya-grade?lang=${lang}`,
         formData,
         {
           headers: formData.getHeaders(),
@@ -213,7 +215,9 @@ router.post('/farmer', authMiddleware, upload.single('file'), async (req, res) =
         },
         extracted_color: '#f09439',
         explanation: {
-          explanation: `Based on maturity level and days since picked, the fruit quality is estimated as Grade ${grade}.`,
+          explanation: lang === 'si'
+            ? `AI ආදර්ශකය ශ්‍රේණිය ${grade} ලෙස ඇස්තමේන්තු කළේය.`
+            : `Based on maturity level and days since picked, the fruit quality is estimated as Grade ${grade}.`,
           feature_contributions: [],
           top_features: []
         }
@@ -282,6 +286,7 @@ router.post('/customer', authMiddleware, upload.single('file'), async (req, res)
     }
 
     const city = normalizeDistrictForWeather(req.body.city || req.user?.district || 'Galle');
+    const lang = req.body.lang || 'en';
 
     const customerFormData = new FormData();
     customerFormData.append('city', city);
@@ -291,7 +296,7 @@ router.post('/customer', authMiddleware, upload.single('file'), async (req, res)
     });
 
     const customerServiceResponse = await axios.post(
-      `${ML_CUSTOMER_SERVICE}/predict-customer-recomandations`,
+      `${ML_CUSTOMER_SERVICE}/predict-customer-recomandations?lang=${lang}`,
       customerFormData,
       {
         headers: customerFormData.getHeaders(),

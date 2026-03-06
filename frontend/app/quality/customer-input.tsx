@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { Dropdown } from '../../components/shared/Dropdown';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
@@ -17,6 +18,7 @@ const cityOptions = [
 
 export default function CustomerInputScreen() { 
   const { user } = useAuth();
+  const { t, language } = useTheme();
   const [loading, setLoading] = useState(false);
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [city, setCity] = useState<string>(user?.district || 'Galle');
@@ -39,16 +41,17 @@ export default function CustomerInputScreen() {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     
     if (!permissionResult.granted) {
-      Alert.alert('Permission Required', 'Camera permission is required');
+      Alert.alert(t('permissionRequired') || 'Permission Required', t('cameraPermission') || 'Camera permission is required');
       return;
     }
 
     Alert.alert(
-      'Photo Instructions',
-      'Please take a clear photo showing the FULL papaya (entire fruit visible) for accurate quality assessment.',
+      t('photoInstructions'),
+      t('showFullPapaya'),
       [
         {
-          text: 'OK, Got it',
+          text: 'OK',
+
           onPress: async () => {
             const result = await ImagePicker.launchCameraAsync({
               mediaTypes: 'images',
@@ -68,12 +71,12 @@ export default function CustomerInputScreen() {
 
   const submitGrading = async () => {
     if (!imageUri) {
-      Alert.alert('Error', 'Please take a photo of the papaya');
+      Alert.alert(t('error'), t('pleaseTakePhoto') || 'Please take a photo of the papaya');
       return;
     }
 
     if (!city || !city.trim()) {
-      Alert.alert('Error', 'Please enter a city or district');
+      Alert.alert(t('error'), t('pleaseEnterCity') || 'Please enter a city or district');
       return;
     }
 
@@ -97,6 +100,7 @@ export default function CustomerInputScreen() {
       }
       
       formData.append('city', city.trim());
+      formData.append('lang', language);
 
       const response = await api.post<CustomerQualityResponse>(
         '/quality/customer',
@@ -134,7 +138,7 @@ export default function CustomerInputScreen() {
           },
         });
       } else {
-        Alert.alert('Error', errorData?.error || 'Failed to check papaya quality. Please try again.');
+        Alert.alert(t('error'), errorData?.error || 'Failed to check papaya quality. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -144,44 +148,44 @@ export default function CustomerInputScreen() {
   return (
     <ScreenContainer>
       <View style={styles.header}>
-        <Text style={styles.title}>Customer Quality Check</Text>
-        <Text style={styles.subtitle}>Check papaya quality before buying</Text>
+        <Text style={styles.title}>{t('customerQualityCheck')}</Text>
+        <Text style={styles.subtitle}>{t('qualityCheckDesc')}</Text>
       </View>
 
       <View style={styles.instructionBox}>
-        <Text style={styles.instructionTitle}>📸 Photo Instructions:</Text>
+        <Text style={styles.instructionTitle}>{t('photoInstructionsTitle')}</Text>
         <Text style={styles.instructionText}>
-          • Show the FULL papaya (entire fruit visible){'\n'}
-          • Ensure good lighting{'\n'}
-          • Capture from a clear angle{'\n'}
-          • Include the whole papaya in frame
+          {'• '}{t('showFullPapaya')}{'\n'}
+          {'• '}{t('ensureGoodLightingHint')}{'\n'}
+          {'• '}{t('captureFromClearAngle')}{'\n'}
+          {'• '}{t('includeWholePapayaInFrame')}
         </Text>
       </View>
 
       {imageUri && (
         <View style={styles.imageContainer}>
-          <Text style={styles.imageLabel}>Papaya Photo</Text>
+          <Text style={styles.imageLabel}>{t('papayaPhotoLabel')}</Text>
           <Image source={{ uri: imageUri }} style={styles.image} />
         </View>
       )}
 
       <PrimaryButton
-        title={imageUri ? 'Retake Photo' : (Platform.OS === 'web' ? 'Choose Photo of Full Papaya' : 'Take Photo of Full Papaya')}
+        title={imageUri ? t('retake') : (Platform.OS === 'web' ? t('choosePhotoFullPapaya') : t('takePhotoFullPapaya'))}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
       />
 
       <Dropdown
-        label="City / District"
+        label={t('cityDistrict')}
         value={city}
         options={cityOptions}
         onChange={setCity}
-        placeholder="Select city"
+        placeholder={t('selectCity')}
       />
 
       <PrimaryButton
-        title="Check Quality & Taste Prediction"
+        title={t('checkQualityTastePrediction')}
         onPress={submitGrading}
         loading={loading}
         disabled={!imageUri}
@@ -189,7 +193,7 @@ export default function CustomerInputScreen() {
       />
 
       <PrimaryButton
-        title="Cancel"
+        title={t('cancel')}
         onPress={() => router.back()}
         variant="outline"
       />

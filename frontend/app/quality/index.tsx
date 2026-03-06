@@ -15,8 +15,8 @@ export default function QualityIndexScreen() {
     return (
       <ScreenContainer>
         <View style={styles.header}>
-          <Text style={styles.title}>Please Login</Text>
-          <Text style={styles.subtitle}>You need to login to access this feature</Text>
+          <Text style={styles.title}>{t('pleaseLogin')}</Text>
+          <Text style={styles.subtitle}>{t('loginToAccess')}</Text>
         </View>
       </ScreenContainer>
     );
@@ -28,8 +28,8 @@ export default function QualityIndexScreen() {
         <Text style={styles.title}>{t('papayaQualityGrader')}</Text>
         <Text style={styles.subtitle}>
           {user.role === 'farmer' 
-            ? 'Select papaya category to grade'
-            : 'Check papaya quality before buying'}
+            ? t('selectPapayaCategoryToGrade')
+            : t('checkPapayaQualityBeforeBuying')}
         </Text>
       </View>
 
@@ -37,16 +37,16 @@ export default function QualityIndexScreen() {
       {user.role === 'farmer' && (
         <>
           <Card
-            title="Best Quality Papayas"
+            title={t('bestQualityPapayas')}
             icon="star-outline"
-            description="Grade premium papayas for best market pricing"
+            description={t('gradePremiumDescription')}
             onPress={() => router.push('/quality/farmer-input?category=best' as any)}
           />
 
           <Card
-            title="Factory Outlet Papayas"
+            title={t('factoryOutletPapayas')}
             icon="business-outline"
-            description="Grade papayas suitable for factory processing"
+            description={t('gradeFactoryDescription')}
             onPress={() => router.push('/quality/farmer-input?category=factory' as any)}
           />
         </>
@@ -55,9 +55,9 @@ export default function QualityIndexScreen() {
       {/* CUSTOMER SIDE - Show single option */}
       {user.role === 'customer' && (
         <Card
-          title="Check Papaya Quality"
+          title={t('checkQuality')}
           icon="checkmark-circle-outline"
-          description="Verify papaya quality, taste prediction, and ripeness"
+          description={t('checkPapayaQualityDescription')}
           onPress={() => router.push('/quality/customer-input' as any)}
         />
       )}

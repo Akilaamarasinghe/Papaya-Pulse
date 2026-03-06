@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
+import { useTheme } from '../../context/ThemeContext';
 import { CustomerQualityResponse } from '../../types';
 
 function normalizeCustomerGrade(raw: string): '1' | '2' | '3' {
@@ -38,13 +39,14 @@ function normalizeCustomerGrade(raw: string): '1' | '2' | '3' {
 export default function CustomerResultScreen() {
   const params = useLocalSearchParams();
   const data: any = params.data ? JSON.parse(params.data as string) : null;
+  const { t } = useTheme();
 
   if (!data) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>No data available</Text>
-          <PrimaryButton title="Go Back" onPress={() => router.back()} />
+          <Text style={styles.errorText}>{t('noData')}</Text>
+          <PrimaryButton title={t('goBack')} onPress={() => router.back()} />
         </View>
       </SafeAreaView>
     );
@@ -57,8 +59,8 @@ export default function CustomerResultScreen() {
       return {
         backgroundColor: '#4CAF50',
         textColor: '#FFFFFF',
-        title: 'Grade 1',
-        subtitle: 'Very suitable for buy',
+        title: t('gradePrefix') + ' 1',
+        subtitle: t('verySuitableForBuy'),
       };
     }
 
@@ -66,16 +68,16 @@ export default function CustomerResultScreen() {
       return {
         backgroundColor: '#FFC107',
         textColor: '#1F2937',
-        title: 'Grade 2',
-        subtitle: 'Normal suitable for buy',
+        title: t('gradePrefix') + ' 2',
+        subtitle: t('normalSuitableForBuy'),
       };
     }
 
     return {
       backgroundColor: '#F44336',
       textColor: '#FFFFFF',
-      title: 'Grade 3',
-      subtitle: 'Do not buy',
+      title: t('gradePrefix') + ' 3',
+      subtitle: t('doNotBuySubtitle'),
     };
   };
 
@@ -83,20 +85,20 @@ export default function CustomerResultScreen() {
     const notPapayaGradeConfig = {
       backgroundColor: '#F44336',
       textColor: '#FFFFFF',
-      title: 'Not a Papaya',
-      subtitle: 'Do not buy',
+      title: t('notAPapayaTitle'),
+      subtitle: t('doNotBuySubtitle'),
     };
 
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Customer Quality Check</Text>
-            <Text style={styles.headerSubtitle}>Image Validation Result</Text>
+            <Text style={styles.headerTitle}>{t('customerQualityCheck')}</Text>
+            <Text style={styles.headerSubtitle}>{t('imageValidationResult')}</Text>
           </View>
 
           <View style={[styles.gradeCard, { backgroundColor: notPapayaGradeConfig.backgroundColor }]}> 
-            <Text style={[styles.gradeLabel, { color: notPapayaGradeConfig.textColor }]}>Quality Grade</Text>
+            <Text style={[styles.gradeLabel, { color: notPapayaGradeConfig.textColor }]}>{t('qualityGrade')}</Text>
             <View style={styles.gradeDisplay}>
               <Text style={[styles.gradeValueTextOnly, { color: notPapayaGradeConfig.textColor }]}>{notPapayaGradeConfig.title}</Text>
             </View>
@@ -105,39 +107,39 @@ export default function CustomerResultScreen() {
 
           <View style={styles.tasteCard}>
             <Text style={styles.tasteDescription}>
-              {data?.message || 'The uploaded image does not appear to be a papaya. Please upload a clear full-papaya image.'}
+              {data?.message || t('notAPapayaMessage') || 'The uploaded image does not appear to be a papaya. Please upload a clear full-papaya image.'}
             </Text>
 
             {!!data?.papaya_probability && (
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>✅ Papaya Probability</Text>
+                <Text style={styles.detailLabel}>{t('papayaProbabilityLabel')}</Text>
                 <Text style={styles.detailValue}>{data.papaya_probability}</Text>
               </View>
             )}
 
             {!!data?.not_papaya_probability && (
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>❌ Not Papaya Probability</Text>
+                <Text style={styles.detailLabel}>{t('notPapayaProbLabel')}</Text>
                 <Text style={styles.detailValue}>{data.not_papaya_probability}</Text>
               </View>
             )}
 
             {!!data?.city && (
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>📍 City</Text>
+                <Text style={styles.detailLabel}>{t('cityLabel')}</Text>
                 <Text style={styles.detailValue}>{data.city}</Text>
               </View>
             )}
           </View>
 
           <PrimaryButton
-            title="Try Another Image"
+            title={t('tryAnotherImage')}
             onPress={() => router.push('/quality/customer-input')}
             style={styles.button}
           />
 
           <PrimaryButton
-            title="Back to Quality Menu"
+            title={t('backToQualityMenu')}
             onPress={() => router.push('/quality')}
             variant="outline"
           />
@@ -169,10 +171,10 @@ export default function CustomerResultScreen() {
   const getTastePrediction = () => {
     if (normalizedTaste.includes('sweet')) {
       return {
-        label: 'Sweet Taste',
+        label: t('sweetTaste'),
         emoji: '😋',
         color: '#4CAF50',
-        description: 'This papaya is predicted to be sweet and flavorful based on detected fruit characteristics.',
+        description: t('sweetTasteDesc'),
       };
     }
 
@@ -182,34 +184,34 @@ export default function CustomerResultScreen() {
       normalizedTaste.includes('sour')
     ) {
       return {
-        label: 'Less Taste',
+        label: t('lessTaste'),
         emoji: '😐',
         color: '#FF9800',
-        description: 'This papaya is likely less sweet with a more raw or vegetal taste profile.',
+        description: t('lessTasteDesc'),
       };
     }
 
     if (normalizedTaste.includes('balanced') || normalizedTaste.includes('mild')) {
       return {
-        label: 'Balanced Taste',
+        label: t('balancedTaste'),
         emoji: '🙂',
         color: '#2196F3',
-        description: 'This papaya is expected to have a balanced and moderate flavor.',
+        description: t('balancedTasteDesc'),
       };
     }
 
     return safeAvgTemp >= 25
       ? {
-          label: 'More Taste',
+          label: t('moreTaste'),
           emoji: '😋',
           color: '#4CAF50',
-          description: 'Taste estimate is based on weather trend because a specific taste label was not provided.',
+          description: t('tasteWeatherDesc'),
         }
       : {
-          label: 'Less Taste',
+          label: t('lessTaste'),
           emoji: '😐',
           color: '#FF9800',
-          description: 'Taste estimate is based on weather trend because a specific taste label was not provided.',
+          description: t('tasteWeatherDesc'),
         };
   };
 
@@ -217,15 +219,15 @@ export default function CustomerResultScreen() {
 
   const getTasteHint = () => {
     if (normalizedBuying.includes('do not buy')) {
-      return 'Buying advice indicates lower eating quality right now.';
+      return t('tasteHintDontBuy');
     }
     if (normalizedRipeness.includes('ripe')) {
-      return 'Ripeness stage suggests this fruit is close to ready for eating.';
+      return t('tasteHintRipe');
     }
     if (normalizedRipeness.includes('unripe') || normalizedRipeness.includes('green')) {
-      return 'Ripeness stage suggests this fruit needs more time before best taste.';
+      return t('tasteHintUnripe');
     }
-    return 'Taste prediction combines image analysis, ripeness, and weather factors.';
+    return t('tasteHintGeneral');
   };
 
   const gradeConfig = getGradeConfig(grade);
@@ -234,21 +236,21 @@ export default function CustomerResultScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Customer Quality Check</Text>
-          <Text style={styles.headerSubtitle}>Analysis Complete</Text>
+          <Text style={styles.headerTitle}>{t('customerQualityCheck')}</Text>
+          <Text style={styles.headerSubtitle}>{t('analysisComplete')}</Text>
         </View>
 
         <View style={[styles.gradeCard, { backgroundColor: gradeConfig.backgroundColor }]}>
-          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>Quality Grade</Text>
+          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>{t('qualityGrade')}</Text>
           <View style={styles.gradeDisplay}>
-            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>Grade</Text>
+            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>{t('gradePrefix')}</Text>
             <Text style={[styles.gradeValue, { color: gradeConfig.textColor }]}>{grade}</Text>
           </View>
           <Text style={[styles.gradeLabelText, { color: gradeConfig.textColor }]}>{gradeConfig.subtitle}</Text>
         </View>
 
         <View style={styles.tasteCard}>
-          <Text style={styles.sectionTitle}>🍈 Taste Prediction</Text>
+          <Text style={styles.sectionTitle}>{t('tastePredictionSection')}</Text>
           <View style={styles.tasteResult}>
             <Text style={styles.tasteEmoji}>{tastePrediction.emoji}</Text>
             <Text style={[styles.tasteLabel, { color: tastePrediction.color }]}>{tastePrediction.label}</Text>
@@ -257,7 +259,7 @@ export default function CustomerResultScreen() {
 
           {!!taste && (
             <View style={styles.tasteBadge}>
-              <Text style={styles.tasteBadgeTitle}>Model Predicted Taste</Text>
+              <Text style={styles.tasteBadgeTitle}>{t('modelPredictedTaste')}</Text>
               <Text style={styles.tasteBadgeValue}>{taste}</Text>
             </View>
           )}
@@ -265,62 +267,62 @@ export default function CustomerResultScreen() {
           <Text style={styles.tasteHint}>{getTasteHint()}</Text>
 
           <View style={styles.tempBox}>
-            <Text style={styles.tempLabel}>Average Growing Temperature</Text>
+            <Text style={styles.tempLabel}>{t('avgGrowingTemp')}</Text>
             <Text style={styles.tempValue}>{safeAvgTemp.toFixed(1)}°C</Text>
           </View>
         </View>
 
         <View style={styles.detailsCard}>
-          <Text style={styles.sectionTitle}>Papaya Details</Text>
+          <Text style={styles.sectionTitle}>{t('papayaDetailsSection')}</Text>
 
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>🎨 Color</Text>
+            <Text style={styles.detailLabel}>{t('colorLabel')}</Text>
             <Text style={styles.detailValue}>{color}</Text>
           </View>
 
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>🌱 Variety</Text>
+            <Text style={styles.detailLabel}>{t('varietyLabel')}</Text>
             <Text style={styles.detailValue}>{variety}</Text>
           </View>
 
           {city && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>📍 City</Text>
+              <Text style={styles.detailLabel}>{t('cityLabel')}</Text>
               <Text style={styles.detailValue}>{city}</Text>
             </View>
           )}
 
           {ripeness_stage && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>🥭 Ripeness Stage</Text>
+              <Text style={styles.detailLabel}>{t('ripenessStageLabel')}</Text>
               <Text style={styles.detailValue}>{ripeness_stage}</Text>
             </View>
           )}
 
           {taste && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>👅 Predicted Taste</Text>
+              <Text style={styles.detailLabel}>{t('predictedTasteLabel')}</Text>
               <Text style={styles.detailValue}>{taste}</Text>
             </View>
           )}
 
           {buying_recommendation && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>🛒 Buying Recommendation</Text>
+              <Text style={styles.detailLabel}>{t('buyingRecommendationLabel')}</Text>
               <Text style={styles.detailValue}>{buying_recommendation}</Text>
             </View>
           )}
 
           {papaya_probability && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>✅ Papaya Probability</Text>
+              <Text style={styles.detailLabel}>{t('papayaProbabilityLabel')}</Text>
               <Text style={styles.detailValue}>{papaya_probability}</Text>
             </View>
           )}
 
           {color_ratios && (
             <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>🎯 Color Ratios</Text>
+              <Text style={styles.detailLabel}>{t('colorRatiosLabel')}</Text>
               <Text style={styles.detailValue}>
                 G:{Math.round(Number(color_ratios.green || 0) * 100)}% / Y:{Math.round(Number(color_ratios.yellow || 0) * 100)}% / O:{Math.round(Number(color_ratios.orange || 0) * 100)}%
               </Text>
@@ -328,20 +330,20 @@ export default function CustomerResultScreen() {
           )}
 
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>⏱️ Days to Ripen</Text>
-            <Text style={styles.detailValue}>{ripen_days} days</Text>
+            <Text style={styles.detailLabel}>{t('daysToRipenLabel')}</Text>
+            <Text style={styles.detailValue}>{ripen_days} {t('daysUnit')}</Text>
           </View>
         </View>
 
         {final_suggestion && (
           <View style={styles.tasteCard}>
-            <Text style={styles.sectionTitle}>🤖 Final Suggestion</Text>
+            <Text style={styles.sectionTitle}>{t('finalSuggestionSection')}</Text>
             <Text style={styles.tasteDescription}>{final_suggestion}</Text>
           </View>
         )}
 
         <PrimaryButton
-          title="Back to Quality Check"
+          title={t('backToQualityCheck')}
           onPress={() => router.push('/quality')}
           style={styles.button}
         />

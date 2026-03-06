@@ -12,7 +12,8 @@ def generate_final_suggestion(
     weather_last_7_days,
     predictions,
     xai_explanations,
-    temperature_for_taste: float
+    temperature_for_taste: float,
+    lang: str = 'en'
 ):
     """
     temperature_for_taste:
@@ -25,7 +26,8 @@ def generate_final_suggestion(
         color_ratios=color_ratios,
         weather=weather_last_7_days,
         preds=predictions,
-        xai=xai_explanations
+        xai=xai_explanations,
+        lang=lang
     )
 
     body = {
@@ -56,13 +58,16 @@ def generate_final_suggestion(
     return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
-def build_prompt(*, color_ratios, weather, preds, xai):
+def build_prompt(*, color_ratios, weather, preds, xai, lang='en'):
     """
     This is the secret sauce 🧠🔥
     """
-    return f"""
-You are an expert agricultural food-quality advisor.
+    lang_instruction = ""
+    if lang == 'si':
+        lang_instruction = "\nIMPORTANT: You MUST respond entirely in Sinhala (සිංහල) language only. Do not use any English words in your response.\n"
 
+    return f"""You are an expert agricultural food-quality advisor.
+{lang_instruction}
 Your task:
 Generate a FINAL consumer-friendly recommendation
 based ONLY on the provided data.
@@ -95,6 +100,7 @@ OUTPUT RULES:
 - Mention ripeness, taste expectation, and buying advice
 - Sound natural and helpful (like a fruit expert)
 - Avoid technical language
+- Respond in {'Sinhala (සිංහල)' if lang == 'si' else 'English'}
 
 Now generate the final recommendation:
 """
