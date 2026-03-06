@@ -152,7 +152,7 @@ router.post('/customer-predict', authMiddleware, upload.single('file'), async (r
 
     const result = mlResponse.data;
 
-    // Log the prediction
+    // Log the prediction (including "Not a papaya" outcomes)
     await PredictionLog.create({
       userId: req.user.uid,
       type: 'market_price',
@@ -160,6 +160,8 @@ router.post('/customer-predict', authMiddleware, upload.single('file'), async (r
       output: result,
     });
 
+    // Always forward the ML response as-is with 200.
+    // The frontend result screen already handles raw.error === 'Not a papaya'.
     res.json(result);
   } catch (error) {
     console.error('Customer market predict error:', error.message);
@@ -170,12 +172,8 @@ router.post('/customer-predict', authMiddleware, upload.single('file'), async (r
       });
     }
 
-    // Propagate "Not a papaya" error clearly
+    // Fallback: if ML somehow still returns 4xx, forward the error message
     const mlError = error.response?.data?.error;
-    if (mlError === 'Not a papaya') {
-      return res.status(400).json({ error: 'The uploaded image does not appear to be a papaya. Please take a clearer photo.' });
-    }
-
     res.status(500).json({
       error: mlError || error.message || 'Failed to analyse papaya image',
     });

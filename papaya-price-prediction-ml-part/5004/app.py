@@ -126,9 +126,14 @@ def predict():
     # ---------- PAPAYA CHECK ----------
     papaya_check = predict_pipeline(image)
     if not papaya_check["is_papaya"]:
-        return jsonify({"error": "Not a papaya"}), 400
+        # Return 200 so the frontend navigates to the result screen and shows
+        # the "Detection Failed" UI instead of crashing with an AxiosError.
+        return jsonify({"error": "Not a papaya"}), 200
 
     # ---------- COLOR ----------
+    # Reset the stream position before re-reading for colour extraction
+    # (PIL.Image.open() leaves the stream pointer at the end).
+    file.stream.seek(0)
     hex_color = get_dominant_color(file.stream)
     rgb = hex_to_rgb(hex_color)
     ratios = rgb_to_ratios(rgb)
