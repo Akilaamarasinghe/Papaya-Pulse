@@ -37,7 +37,7 @@ export default function MarketIndexScreen() {
         </Text>
       </View>
 
-      {/* FARMER CARDS */}
+      {/* FARMER CARDS – only for farmers */}
       {user?.role === 'farmer' && (
         <>
           <Card
@@ -64,17 +64,19 @@ export default function MarketIndexScreen() {
         </>
       )}
 
-      {/* CUSTOMER CARD – available to all users */}
-      <Card
-        title={language === 'si' ? 'පැපොල් ස්කෑන් කරන්න' : 'Scan Papaya for Market Price'}
-        icon="camera-outline"
-        description={
-          language === 'si'
-            ? 'ඡායාරූපයක් ගෙන ශීර්ෂත්වය, මිල සහ වෙළඳපල උපදෙස් ලබා ගන්න'
-            : 'Take a photo to get ripeness, price estimate & market advice'
-        }
-        onPress={() => router.push('/market/customer-predict' as any)}
-      />
+      {/* CUSTOMER CARD – only for customers */}
+      {user?.role === 'customer' && (
+        <Card
+          title={language === 'si' ? 'පැපොල් ස්කෑන් කරන්න' : 'Scan Papaya for Market Price'}
+          icon="camera-outline"
+          description={
+            language === 'si'
+              ? 'ඡායාරූපයක් ගෙන ශීර්ෂත්වය, මිල සහ වෙළඳපල උපදෙස් ලබා ගන්න'
+              : 'Take a photo to get ripeness, price estimate & market advice'
+          }
+          onPress={() => router.push('/market/customer-predict' as any)}
+        />
+      )}
     </ScreenContainer>
   );
 }

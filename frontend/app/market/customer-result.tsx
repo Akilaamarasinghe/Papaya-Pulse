@@ -4,11 +4,10 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { CustomerMarketResponse } from '../../types';
 
 /* ── Ripeness colour helper ── */
 function ripenessColour(label: string): string {
-  const l = label.toLowerCase();
+  const l = (label ?? '').toLowerCase();
   if (l.includes('unripe')) return '#4CAF50';
   if (l.includes('half')) return '#FFC107';
   if (l.includes('market') || l.includes('ready')) return '#FF9800';
@@ -18,13 +17,14 @@ function ripenessColour(label: string): string {
 
 /* ── Colour ratio bar ── */
 function ColourRatioBar({ label, value, colour }: { label: string; value: number; colour: string }) {
+  const pct = Math.round((value ?? 0) * 100);
   return (
     <View style={barStyles.row}>
       <Text style={barStyles.label}>{label}</Text>
       <View style={barStyles.track}>
-        <View style={[barStyles.fill, { width: `${Math.round(value * 100)}%`, backgroundColor: colour }]} />
+        <View style={[barStyles.fill, { width: `${pct}%`, backgroundColor: colour }]} />
       </View>
-      <Text style={barStyles.pct}>{Math.round(value * 100)}%</Text>
+      <Text style={barStyles.pct}>{pct}%</Text>
     </View>
   );
 }
@@ -41,11 +41,16 @@ const barStyles = StyleSheet.create({
 export default function CustomerResultScreen() {
   const { language } = useTheme();
   const params = useLocalSearchParams();
-  const data: CustomerMarketResponse | null = params.data
-    ? JSON.parse(params.data as string)
-    : null;
 
-  if (!data) {
+  // Parse raw ML model output from port 5004
+  let raw: any = null;
+  try {
+    raw = params.data ? JSON.parse(params.data as string) : null;
+  } catch {
+    raw = null;
+  }
+
+  if (!raw) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
@@ -61,17 +66,78 @@ export default function CustomerResultScreen() {
     );
   }
 
-  const { analysis, final_market_advice } = data;
-  const {
-    location,
-    month,
-    rainfall_mm,
-    ripeness,
-    confidence_percent,
-    color_ratios,
-    price_table,
-    seller_price,
-  } = analysis;
+  // ── Defensive field extraction ──
+  // Supports both { analysis: {...}, final_market_advice: '...' }
+  // and flat responses directly from the ML model
+  const analysis = raw.analysis ?? raw;
+  const final_market_advice: string =
+    raw.final_market_advice ??
+    raw.market_advice ??
+    analysis.market_advice ??
+    analysis.advice ??
+    '';
+
+  const location: string =
+    analysis.location ?? analysis.district ?? raw.location ?? 'N/A';
+
+  const month: string =
+    analysis.month ?? raw.month ?? 'N/A';
+
+  const rainfall_mm: number =
+    parseFloat(analysis.rainfall_mm ?? analysis.rainfall ?? raw.rainfall_mm ?? 0);
+
+  const ripeness: string =
+    analysis.ripeness ??
+    analysis.ripeness_stage ??
+    analysis.predicted_class ??
+    raw.ripeness ??
+    raw.predicted_class ??
+    'Unknown';
+
+  const confidence_percent: number =
+    parseFloat(
+      analysis.confidence_percent ??
+      analysis.confidence ??
+      raw.confidence_percent ??
+      raw.confidence ??
+      0
+    );
+
+  // color_ratios — support both nested object and flat keys
+  const cr = analysis.color_ratios ?? analysis.colour_ratios ?? raw.color_ratios ?? {};
+  const color_ratios = {
+    green:  parseFloat(cr.green  ?? cr.Green  ?? 0),
+    yellow: parseFloat(cr.yellow ?? cr.Yellow ?? 0),
+    orange: parseFloat(cr.orange ?? cr.Orange ?? 0),
+  };
+
+  // price_table — array of { variety, price_lkr_per_kg }
+  // also support flat { estimated_price, price_estimate } from simpler models
+  const rawTable = analysis.price_table ?? raw.price_table ?? null;
+  const price_table: { variety: string; price_lkr_per_kg: number }[] = rawTable
+    ? rawTable.map((r: any) => ({
+        variety: r.variety ?? r.name ?? 'Papaya',
+        price_lkr_per_kg: parseFloat(r.price_lkr_per_kg ?? r.price ?? 0),
+      }))
+    : [
+        {
+          variety: 'Papaya',
+          price_lkr_per_kg: parseFloat(
+            analysis.price_estimate ??
+            analysis.estimated_price ??
+            raw.price_estimate ??
+            raw.estimated_price ??
+            0
+          ),
+        },
+      ];
+
+  const seller_price: number | null =
+    analysis.seller_price != null
+      ? parseFloat(analysis.seller_price)
+      : raw.seller_price != null
+      ? parseFloat(raw.seller_price)
+      : null;
 
   const ripenColour = ripenessColour(ripeness);
 
@@ -84,78 +150,73 @@ export default function CustomerResultScreen() {
           <Text style={styles.sectionTitle}>
             🍈 {language === 'si' ? 'ශීර්ෂත්ව විශ්ලේෂණය' : 'Ripeness Analysis'}
           </Text>
-
           <View style={[styles.ripenessBadge, { backgroundColor: ripenColour + '22', borderColor: ripenColour }]}>
             <Text style={[styles.ripenessLabel, { color: ripenColour }]}>{ripeness}</Text>
             <Text style={styles.confidence}>
               {language === 'si' ? 'විශ්වාසය' : 'Confidence'}: {confidence_percent.toFixed(1)}%
             </Text>
           </View>
-
-          {/* Colour ratios */}
           <Text style={styles.subTitle}>
             {language === 'si' ? 'වර්ණ නිදර්ශනය' : 'Colour Breakdown'}
           </Text>
-          <ColourRatioBar label={language === 'si' ? 'කොළ' : 'Green'} value={color_ratios.green} colour="#4CAF50" />
-          <ColourRatioBar label={language === 'si' ? 'කහ' : 'Yellow'} value={color_ratios.yellow} colour="#FFC107" />
+          <ColourRatioBar label={language === 'si' ? 'කොළ' : 'Green'}  value={color_ratios.green}  colour="#4CAF50" />
+          <ColourRatioBar label={language === 'si' ? 'කහ'  : 'Yellow'} value={color_ratios.yellow} colour="#FFC107" />
           <ColourRatioBar label={language === 'si' ? 'තැඹිලි' : 'Orange'} value={color_ratios.orange} colour="#FF9800" />
         </View>
 
         {/* ── Weather Info Card ── */}
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>
-            🌦️ {language === 'si' ? 'කාලගුණ සාරාංශය' : 'Weather Summary'}
-          </Text>
-          <View style={styles.weatherRow}>
-            <View style={styles.weatherItem}>
-              <Text style={styles.weatherValue}>{location}</Text>
-              <Text style={styles.weatherMeta}>{language === 'si' ? 'ස්ථානය' : 'Location'}</Text>
-            </View>
-            <View style={styles.weatherItem}>
-              <Text style={styles.weatherValue}>{rainfall_mm.toFixed(1)} mm</Text>
-              <Text style={styles.weatherMeta}>{language === 'si' ? 'වර්ෂාපතනය (දින 7)' : '7-day Rainfall'}</Text>
-            </View>
-            <View style={styles.weatherItem}>
-              <Text style={styles.weatherValue}>{month}</Text>
-              <Text style={styles.weatherMeta}>{language === 'si' ? 'මාසය' : 'Month'}</Text>
+        {(location !== 'N/A' || month !== 'N/A' || rainfall_mm > 0) && (
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>
+              🌦️ {language === 'si' ? 'කාලගුණ සාරාංශය' : 'Weather Summary'}
+            </Text>
+            <View style={styles.weatherRow}>
+              <View style={styles.weatherItem}>
+                <Text style={styles.weatherValue}>{location}</Text>
+                <Text style={styles.weatherMeta}>{language === 'si' ? 'ස්ථානය' : 'Location'}</Text>
+              </View>
+              <View style={styles.weatherItem}>
+                <Text style={styles.weatherValue}>{rainfall_mm.toFixed(1)} mm</Text>
+                <Text style={styles.weatherMeta}>{language === 'si' ? 'වර්ෂාපතනය (දින 7)' : '7-day Rainfall'}</Text>
+              </View>
+              <View style={styles.weatherItem}>
+                <Text style={styles.weatherValue}>{month}</Text>
+                <Text style={styles.weatherMeta}>{language === 'si' ? 'මාසය' : 'Month'}</Text>
+              </View>
             </View>
           </View>
-        </View>
+        )}
 
         {/* ── Price Table Card ── */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
             💰 {language === 'si' ? 'අනුමාන මිල (LKR/kg)' : 'Estimated Price (LKR/kg)'}
           </Text>
-
-          {price_table.map((row) => (
-            <View key={row.variety} style={styles.priceRow}>
-              <View style={styles.priceLeft}>
-                <Text style={styles.varietyName}>{row.variety.replace('_', ' ')}</Text>
-              </View>
-              <View style={styles.priceRight}>
-                <Text style={styles.priceValue}>Rs. {row.price_lkr_per_kg.toFixed(2)}</Text>
-              </View>
+          {price_table.map((row, idx) => (
+            <View key={row.variety + idx} style={styles.priceRow}>
+              <Text style={styles.varietyName}>{row.variety.replace(/_/g, ' ')}</Text>
+              <Text style={styles.priceValue}>Rs. {row.price_lkr_per_kg.toFixed(2)}</Text>
             </View>
           ))}
-
           {seller_price != null && (
             <View style={styles.sellerPriceBox}>
               <Text style={styles.sellerPriceLabel}>
                 {language === 'si' ? 'අලෙවිකරු ඉල්ලන මිල:' : 'Seller Asking Price:'}
               </Text>
-              <Text style={styles.sellerPriceValue}>Rs. {Number(seller_price).toFixed(2)}/kg</Text>
+              <Text style={styles.sellerPriceValue}>Rs. {seller_price.toFixed(2)}/kg</Text>
             </View>
           )}
         </View>
 
         {/* ── Market Advice Card ── */}
-        <View style={[styles.card, styles.adviceCard]}>
-          <Text style={styles.sectionTitle}>
-            🧠 {language === 'si' ? 'වෙළඳපල උපදේශය' : 'Market Advice'}
-          </Text>
-          <Text style={styles.adviceText}>{final_market_advice}</Text>
-        </View>
+        {final_market_advice ? (
+          <View style={[styles.card, styles.adviceCard]}>
+            <Text style={styles.sectionTitle}>
+              🧠 {language === 'si' ? 'වෙළඳපල උපදේශය' : 'Market Advice'}
+            </Text>
+            <Text style={styles.adviceText}>{final_market_advice}</Text>
+          </View>
+        ) : null}
 
         <PrimaryButton
           title={language === 'si' ? 'නිම කරන්න' : 'Done'}
