@@ -185,13 +185,19 @@ const adv = StyleSheet.create({
 
 // ─── Weather Risk Panel ────────────────────────────────────────────────────
 
-function WeatherRiskPanel({ weatherRisk, disease }: { weatherRisk: LeafWeatherRisk; disease: string }) {
+function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWeatherRisk; disease: string; lang: 'en' | 'si' }) {
   const rl    = weatherRisk.risk_level;
   const color = RISK_COLOR[rl] || '#888';
   const bg    = RISK_BG[rl]    || '#F5F5F5';
   const bord  = RISK_BORDER[rl] || '#DDD';
   const barColor = ALERT_BAR_COLOR[weatherRisk.alert_color || 'YELLOW'] || '#F9A825';
   const score    = weatherRisk.risk_score != null ? `${(weatherRisk.risk_score * 100).toFixed(0)}%` : null;
+
+  const urgencyText   = lang === 'si' ? (weatherRisk.urgency_si   || weatherRisk.urgency_en)                    : weatherRisk.urgency_en;
+  const frequencyText = lang === 'si' ? (weatherRisk.frequency_si || weatherRisk.frequency)                      : weatherRisk.frequency;
+  const outlookText   = lang === 'si' ? (weatherRisk.future_outlook_si  || weatherRisk.future_outlook_en)        : weatherRisk.future_outlook_en;
+  const explainText   = lang === 'si' ? (weatherRisk.disease_explanation_si || weatherRisk.disease_explanation)  : weatherRisk.disease_explanation;
+  const whyText       = lang === 'si' ? (weatherRisk.why_this_risk_si || weatherRisk.why_this_risk_en)          : weatherRisk.why_this_risk_en;
 
   return (
     <Section title="Weather & Disease Risk" icon="thunderstorm-outline">
@@ -202,7 +208,7 @@ function WeatherRiskPanel({ weatherRisk, disease }: { weatherRisk: LeafWeatherRi
       <View style={[s.riskBadge, { backgroundColor: bg, borderWidth: 1.5, borderColor: bord }]}>
         <View>
           <Text style={[s.riskBadgeText, { color }]}>{rl}</Text>
-          {weatherRisk.risk_level_si ? (
+          {lang === 'si' && weatherRisk.risk_level_si ? (
             <Text style={s.riskBadgeSi}>{weatherRisk.risk_level_si}</Text>
           ) : null}
         </View>
@@ -212,24 +218,16 @@ function WeatherRiskPanel({ weatherRisk, disease }: { weatherRisk: LeafWeatherRi
       </View>
 
       {/* Urgency message */}
-      {weatherRisk.urgency_en ? (
+      {urgencyText ? (
         <View style={s.urgencyRow}>
           <Ionicons name="alert-circle-outline" size={18} color={color} style={s.urgencyIcon} />
-          <View style={{ flex: 1 }}>
-            <Text style={[s.urgencyText, { color }]}>{weatherRisk.urgency_en}</Text>
-            {weatherRisk.urgency_si ? (
-              <Text style={[s.urgencyText, { color: '#4A148C', marginTop: 4 }]}>{weatherRisk.urgency_si}</Text>
-            ) : null}
-          </View>
+          <Text style={[s.urgencyText, { color }]}>{urgencyText}</Text>
         </View>
       ) : null}
 
       {/* Inspection frequency */}
-      {weatherRisk.frequency ? (
-        <Text style={s.frequencyText}>
-          📋 {weatherRisk.frequency}
-          {weatherRisk.frequency_si ? `  •  ${weatherRisk.frequency_si}` : ''}
-        </Text>
+      {frequencyText ? (
+        <Text style={s.frequencyText}>📋 {frequencyText}</Text>
       ) : null}
 
       {/* 7-day weather summary chips */}
@@ -266,38 +264,23 @@ function WeatherRiskPanel({ weatherRisk, disease }: { weatherRisk: LeafWeatherRi
       )}
 
       {/* Future disease outlook */}
-      {(weatherRisk.future_outlook_en || weatherRisk.future_outlook_si) && (
-        <ExpandableBlock icon="trending-up-outline" title="What Could Happen (Next 7 Days)" defaultOpen>
-          {weatherRisk.future_outlook_en ? (
-            <Text style={s.bodyText}>{weatherRisk.future_outlook_en}</Text>
-          ) : null}
-          {weatherRisk.future_outlook_si ? (
-            <Text style={s.bodyTextSi}>{weatherRisk.future_outlook_si}</Text>
-          ) : null}
+      {outlookText && (
+        <ExpandableBlock icon="trending-up-outline" title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : 'What Could Happen (Next 7 Days)'} defaultOpen>
+          <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{outlookText}</Text>
         </ExpandableBlock>
       )}
 
       {/* Disease × weather explanation */}
-      {(weatherRisk.disease_explanation || weatherRisk.disease_explanation_si) && (
-        <ExpandableBlock icon="information-circle-outline" title="Why Weather Matters for This Disease">
-          {weatherRisk.disease_explanation ? (
-            <Text style={s.bodyText}>{weatherRisk.disease_explanation}</Text>
-          ) : null}
-          {weatherRisk.disease_explanation_si ? (
-            <Text style={s.bodyTextSi}>{weatherRisk.disease_explanation_si}</Text>
-          ) : null}
+      {explainText && (
+        <ExpandableBlock icon="information-circle-outline" title={lang === 'si' ? 'කාලගුණය රෝගයට බලපාන ආකාරය' : 'Why Weather Matters for This Disease'}>
+          <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{explainText}</Text>
         </ExpandableBlock>
       )}
 
       {/* XAI: why this risk level */}
-      {(weatherRisk.why_this_risk_en || weatherRisk.why_this_risk_si) && (
-        <ExpandableBlock icon="analytics-outline" title="Why This Risk Level? (Explainable AI)">
-          {weatherRisk.why_this_risk_en ? (
-            <Text style={s.bodyText}>{weatherRisk.why_this_risk_en}</Text>
-          ) : null}
-          {weatherRisk.why_this_risk_si ? (
-            <Text style={s.bodyTextSi}>{weatherRisk.why_this_risk_si}</Text>
-          ) : null}
+      {whyText && (
+        <ExpandableBlock icon="analytics-outline" title={lang === 'si' ? 'ඇයි මෙම අවදානම් මට්ටම? (AI)' : 'Why This Risk Level? (Explainable AI)'} >
+          <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{whyText}</Text>
           {weatherRisk.model_used ? (
             <Text style={s.modelTag}>Powered by: ML weather_risk_model ({weatherRisk.model_used})</Text>
           ) : null}
@@ -469,7 +452,6 @@ function PreventionGuide({
 
 const ps = StyleSheet.create({
   container: {
-    marginHorizontal: 16,
     marginBottom: 12,
   },
   sectionHeader: {
@@ -643,6 +625,16 @@ const ps = StyleSheet.create({
   },
 });
 
+// ─── Tab definitions ────────────────────────────────────────────────────
+
+const TABS = [
+  { key: 'treatment',  label: 'Treatment',    icon: 'medkit-outline' },
+  { key: 'prevention', label: 'Prevention',   icon: 'shield-checkmark-outline' },
+  { key: 'weather',    label: 'Weather Risk', icon: 'thunderstorm-outline' },
+  { key: 'advisory',   label: 'AI Advisory',  icon: 'chatbubble-ellipses-outline' },
+] as const;
+type TabKey = typeof TABS[number]['key'];
+
 // ─── Main Screen ──────────────────────────────────────────────────────────
 
 export default function LeafResultScreen() {
@@ -651,6 +643,8 @@ export default function LeafResultScreen() {
   const [recommend, setRecommend]   = useState<LeafRecommendResponse | null>(null);
   const [recLoading, setRecLoading] = useState(false);
   const [recError, setRecError]     = useState<string | null>(null);
+  const [lang, setLang]             = useState<'en' | 'si'>('en');
+  const [activeTab, setActiveTab]   = useState<TabKey>('treatment');
 
   const data: LeafDiseaseResponse | null = params.data
     ? JSON.parse(params.data as string)
@@ -721,6 +715,26 @@ export default function LeafResultScreen() {
           {isNotLeaf && (
             <Text style={s.bannerSub}>Please retake with a papaya leaf in frame</Text>
           )}
+
+          {/* ── Language Toggle ── */}
+          {isDisease && (
+            <View style={s.langToggle}>
+              <TouchableOpacity
+                style={[s.langBtn, lang === 'en' && s.langBtnActive]}
+                onPress={() => setLang('en')}
+                activeOpacity={0.8}
+              >
+                <Text style={[s.langBtnText, lang === 'en' && s.langBtnTextActive]}>EN</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.langBtn, lang === 'si' && s.langBtnActive]}
+                onPress={() => setLang('si')}
+                activeOpacity={0.8}
+              >
+                <Text style={[s.langBtnText, lang === 'si' && s.langBtnTextActive]}>සිංහල</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={s.body}>
@@ -770,25 +784,51 @@ export default function LeafResultScreen() {
             </Section>
           )}
 
-          {/* ── Treatment Recommendation ── */}
+          {/* ── Tab Bar (shown when disease detected) ── */}
           {isDisease && (
-            <Section title="Treatment Recommendation" icon="medkit-outline">
-              {recLoading && (
-                <View style={s.loadRow}>
-                  <ActivityIndicator color="#2D7A4F" size="small" />
-                  <Text style={s.loadText}>Loading personalised advice…</Text>
-                </View>
-              )}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={s.tabBar}
+              contentContainerStyle={s.tabBarInner}
+            >
+              {TABS.map((tab) => {
+                const active = activeTab === tab.key;
+                return (
+                  <TouchableOpacity
+                    key={tab.key}
+                    style={[s.tabItem, active && s.tabItemActive]}
+                    onPress={() => setActiveTab(tab.key)}
+                    activeOpacity={0.8}
+                  >
+                    <Ionicons name={tab.icon as any} size={15} color={active ? '#fff' : '#2D7A4F'} />
+                    <Text style={[s.tabLabel, active && s.tabLabelActive]}>{tab.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
 
-              {recError && (
-                <View style={s.errorBox}>
-                  <Ionicons name="cloud-offline-outline" size={20} color="#D32F2F" />
-                  <Text style={s.errorText}>{recError}</Text>
-                </View>
-              )}
+          {/* ── Loading / Error ── */}
+          {isDisease && recLoading && (
+            <View style={s.loadRow}>
+              <ActivityIndicator color="#2D7A4F" size="small" />
+              <Text style={s.loadText}>Loading personalised advice…</Text>
+            </View>
+          )}
+          {isDisease && recError && (
+            <View style={s.errorBox}>
+              <Ionicons name="cloud-offline-outline" size={20} color="#D32F2F" />
+              <Text style={s.errorText}>{recError}</Text>
+            </View>
+          )}
 
-              {recommend && !recLoading && (
-                <>
+          {/* ── Tab Content ── */}
+          {isDisease && recommend && !recLoading && (
+            <>
+              {/* ── Tab: Treatment Recommendation ── */}
+              {activeTab === 'treatment' && (
+                <Section title="Treatment Recommendation" icon="medkit-outline">
                   <View style={s.recRow}>
                     <View style={s.recIconWrap}>
                       <Ionicons name="flask-outline" size={22} color="#2D7A4F" />
@@ -800,67 +840,90 @@ export default function LeafResultScreen() {
                       </Text>
                     </View>
                   </View>
-
-                  {recommend.fertilizer?.advice_en ? (
+                  {recommend.fertilizer?.advice_en && (
                     <View style={s.recRow}>
                       <View style={[s.recIconWrap, { backgroundColor: '#FFF3E0' }]}>
                         <Ionicons name="leaf-outline" size={22} color="#F57C00" />
                       </View>
                       <View style={{ flex: 1 }}>
                         <Text style={s.recLabel}>Fertilizer Advice</Text>
-                        <Text style={s.recValue}>{recommend.fertilizer.advice_en}</Text>
-                        {recommend.fertilizer?.advice_si && (
-                          <Text style={[s.recSub, { color: '#6A1B9A', marginTop: 2 }]}>{recommend.fertilizer.advice_si}</Text>
-                        )}
+                        <Text style={s.recValue}>
+                          {lang === 'si'
+                            ? (recommend.fertilizer.advice_si || recommend.fertilizer.advice_en)
+                            : recommend.fertilizer.advice_en}
+                        </Text>
                       </View>
                     </View>
-                  ) : null}
-                </>
+                  )}
+                </Section>
               )}
-            </Section>
-          )}
 
-          {/* ── Prevention & Treatment Steps ── */}
-          {isDisease && recommend?.prevention?.steps_detail && recommend.prevention.steps_detail.length > 0 && (
-            <PreventionGuide
-              steps={recommend.prevention.steps_detail}
-              lang="en"
-            />
-          )}
-
-          {/* ── Weather & Disease Risk Forecast ── */}
-          {isDisease && recommend?.weather_risk && (
-            <WeatherRiskPanel weatherRisk={recommend.weather_risk} disease={recommend.disease} />
-          )}
-
-          {/* ── AI Advisory ── */}
-          {isDisease && recommend?.ai_advice && (
-            <Section title="AI Advisory" icon="chatbubble-ellipses-outline">
-              {!recommend.ai_advice.ai_enriched && (
-                <View style={s.aiBanner}>
-                  <Ionicons name="information-circle-outline" size={18} color="#1565C0" />
-                  <Text style={s.aiBannerText}>Expert template-based advice</Text>
-                </View>
+              {/* ── Tab: Prevention & Treatment Steps ── */}
+              {activeTab === 'prevention' && (
+                recommend?.prevention?.steps_detail?.length
+                  ? <PreventionGuide steps={recommend.prevention.steps_detail} lang={lang} />
+                  : <View style={s.emptyTab}>
+                      <Ionicons name="shield-outline" size={40} color="#ccc" />
+                      <Text style={s.emptyTabText}>Prevention steps are not yet available.</Text>
+                    </View>
               )}
-              <ExpandableAdvice
-                title="English Advice"
-                text={recommend.ai_advice.advice_en}
-                lang="EN"
-              />
-              {recommend.ai_advice.advice_si ? (
-                <ExpandableAdvice
-                  title="සිංහල උපදෙස්"
-                  text={recommend.ai_advice.advice_si}
-                  lang="SI"
-                />
-              ) : null}
-              {recommend.ai_advice.urgent_action_en ? (
-                <View style={s.urgentBox}>
-                  <Ionicons name="flash" size={16} color="#B71C1C" />
-                  <Text style={s.urgentText}>{recommend.ai_advice.urgent_action_en}</Text>
-                </View>
-              ) : null}
-            </Section>
+
+              {/* ── Tab: Weather & Disease Risk ── */}
+              {activeTab === 'weather' && (
+                recommend?.weather_risk
+                  ? <WeatherRiskPanel weatherRisk={recommend.weather_risk} disease={recommend.disease} lang={lang} />
+                  : <View style={s.emptyTab}>
+                      <Ionicons name="cloud-offline-outline" size={40} color="#ccc" />
+                      <Text style={s.emptyTabText}>Weather risk data is not available.</Text>
+                    </View>
+              )}
+
+              {/* ── Tab: AI Advisory ── */}
+              {activeTab === 'advisory' && (
+                recommend?.ai_advice
+                  ? (
+                    <Section title="AI Advisory" icon="chatbubble-ellipses-outline">
+                      {!recommend.ai_advice.ai_enriched && (
+                        <View style={s.aiBanner}>
+                          <Ionicons name="information-circle-outline" size={18} color="#1565C0" />
+                          <Text style={s.aiBannerText}>Expert template-based advice</Text>
+                        </View>
+                      )}
+                      <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
+                        {lang === 'si'
+                          ? (recommend.ai_advice.advice_si || recommend.ai_advice.advice_en)
+                          : recommend.ai_advice.advice_en}
+                      </Text>
+                      {(recommend.ai_advice.urgent_action_en || recommend.ai_advice.urgent_action_si) && (
+                        <View style={s.urgentBox}>
+                          <Ionicons name="flash" size={16} color="#B71C1C" />
+                          <Text style={s.urgentText}>
+                            {lang === 'si'
+                              ? (recommend.ai_advice.urgent_action_si || recommend.ai_advice.urgent_action_en)
+                              : recommend.ai_advice.urgent_action_en}
+                          </Text>
+                        </View>
+                      )}
+                      {(recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si) && (
+                        <ExpandableBlock
+                          icon="trending-up-outline"
+                          title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : '7-Day Outlook'}
+                        >
+                          <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
+                            {lang === 'si'
+                              ? (recommend.ai_advice.outlook_si || recommend.ai_advice.outlook_en)
+                              : (recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si)}
+                          </Text>
+                        </ExpandableBlock>
+                      )}
+                    </Section>
+                  )
+                  : <View style={s.emptyTab}>
+                      <Ionicons name="chatbubble-outline" size={40} color="#ccc" />
+                      <Text style={s.emptyTabText}>AI advisory is not available.</Text>
+                    </View>
+              )}
+            </>
           )}
 
           {/* ── Model Details ── */}
@@ -999,4 +1062,27 @@ const s = StyleSheet.create({
   bodyText:       { fontSize: 13, color: '#444', lineHeight: 20 },
   bodyTextSi:     { fontSize: 13, color: '#4A148C', lineHeight: 20, marginTop: 6 },
   modelTag:       { fontSize: 11, color: '#aaa', fontStyle: 'italic', marginTop: 8, textAlign: 'right' },
+
+  /* Language toggle in banner */
+  langToggle:          { flexDirection: 'row', backgroundColor: 'rgba(0,0,0,0.25)', borderRadius: 20,
+                         padding: 3, marginTop: 14 },
+  langBtn:             { paddingHorizontal: 18, paddingVertical: 7, borderRadius: 16 },
+  langBtnActive:       { backgroundColor: '#fff' },
+  langBtnText:         { fontSize: 14, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
+  langBtnTextActive:   { color: '#2D7A4F' },
+
+  /* Tab bar */
+  tabBar:              { marginBottom: 14 },
+  tabBarInner:         { flexDirection: 'row', gap: 8, paddingBottom: 2 },
+  tabItem:             { flexDirection: 'row', alignItems: 'center', gap: 6,
+                         paddingHorizontal: 14, paddingVertical: 9,
+                         borderRadius: 22, borderWidth: 1.5, borderColor: '#2D7A4F',
+                         backgroundColor: '#fff' },
+  tabItemActive:       { backgroundColor: '#2D7A4F', borderColor: '#2D7A4F' },
+  tabLabel:            { fontSize: 13, fontWeight: '600', color: '#2D7A4F' },
+  tabLabelActive:      { color: '#fff' },
+
+  /* Empty tab placeholder */
+  emptyTab:            { alignItems: 'center', paddingVertical: 48, gap: 12 },
+  emptyTabText:        { fontSize: 14, color: '#aaa', textAlign: 'center' },
 });
