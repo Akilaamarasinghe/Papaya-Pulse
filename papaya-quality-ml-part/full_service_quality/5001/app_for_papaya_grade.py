@@ -61,7 +61,17 @@ def hex_to_rgb(hex_color):
     hex_color = str(hex_color).lstrip('#')
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
-def get_shap_explanation(input_features, prediction_idx, predicted_class):
+FEATURE_NAMES_SI = {
+    'district': 'දිස්ත්‍රික්කය',
+    'variety': 'ප්‍රභේදය',
+    'maturity': 'ඉදීමේ අවධිය',
+    'days_since_plucked': 'නේලා ගත් දින',
+    'R': 'රතු (R)',
+    'G': 'කොළ (G)',
+    'B': 'නිල් (B)',
+}
+
+def get_shap_explanation(input_features, prediction_idx, predicted_class, lang='en'):
     try:
         import shap
         feature_names = ['district', 'variety', 'maturity', 'days_since_plucked', 'R', 'G', 'B']
@@ -101,11 +111,17 @@ def get_shap_explanation(input_features, prediction_idx, predicted_class):
         
         top_features = feature_contributions[:3]
         
-        explanation_text = f"The model predicted Grade {predicted_class} based on these key factors: "
-        
-        for i, feat in enumerate(top_features, 1):
-            impact = "increases" if feat['contribution'] > 0 else "decreases"
-            explanation_text += f"{i}. {feat['feature'].replace('_', ' ').title()} (value: {feat['value']:.2f}) {impact} the likelihood of this grade (impact: {feat['contribution']:.4f}). "
+        if lang == 'si':
+            explanation_text = f"ආදර්ශකය ශ්‍රේණිය {predicted_class} යෙ මූල සිතා බළ කරුණු: "
+            for i, feat in enumerate(top_features, 1):
+                feat_name_si = FEATURE_NAMES_SI.get(feat['feature'], feat['feature'].replace('_', ' ').title())
+                impact = "ඉහල වැඩිෆු" if feat['contribution'] > 0 else "අවම වැඩිෆු"
+                explanation_text += f"{i}. {feat_name_si} ({impact}: {feat['contribution']:.4f}). "
+        else:
+            explanation_text = f"The model predicted Grade {predicted_class} based on these key factors: "
+            for i, feat in enumerate(top_features, 1):
+                impact = "increases" if feat['contribution'] > 0 else "decreases"
+                explanation_text += f"{i}. {feat['feature'].replace('_', ' ').title()} (value: {feat['value']:.2f}) {impact} the likelihood of this grade (impact: {feat['contribution']:.4f}). "
         
         return {
             'base_value': base_value,
@@ -175,7 +191,8 @@ def predict():
             all_probabilities[str(grade)] = float(prediction_proba[0][i])
         
         input_features_array = input_features.values
-        shap_explanation = get_shap_explanation(input_features_array, prediction[0], predicted_grade)
+        lang = request.args.get('lang', 'en')
+        shap_explanation = get_shap_explanation(input_features_array, prediction[0], predicted_grade, lang=lang)
         
         response = {
             'predicted_grade': predicted_grade,

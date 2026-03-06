@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
+import { useTheme } from '../../context/ThemeContext';
 import { FarmerQualityResponse } from '../../types';
 
 export default function FarmerResultScreen() {
   const params = useLocalSearchParams();
   const data: FarmerQualityResponse = params.data ? JSON.parse(params.data as string) : null;
   const category = (params.category as string) || 'best'; // 'best' | 'factory'
+  const { t } = useTheme();
 
   const notPapayaText = String((data as any)?.message || (data as any)?.prediction || '').toLowerCase();
   const isNotPapaya = (data as any)?.is_papaya === false || notPapayaText.includes('not a papaya');
@@ -30,7 +32,7 @@ export default function FarmerResultScreen() {
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>No data available</Text>
-          <PrimaryButton title="Go Back" onPress={() => router.back()} />
+          <PrimaryButton title={t('goBack')} onPress={() => router.back()} />
         </View>
       </SafeAreaView>
     );
@@ -41,20 +43,20 @@ export default function FarmerResultScreen() {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
           <View style={styles.headerCard}>
-            <Text style={styles.categoryTitle}>{category === 'factory' ? 'Factory Outlet Papayas' : 'Best Quality Papayas'}</Text>
-            <Text style={styles.categorySubtitle}>Image Analysis Result</Text>
+            <Text style={styles.categoryTitle}>{category === 'factory' ? t('factoryOutletPapayas') : t('bestQualityPapayas')}</Text>
+            <Text style={styles.categorySubtitle}>{t('imageAnalysisResult')}</Text>
           </View>
 
           <View style={[styles.gradeCard, { backgroundColor: '#F44336' }]}>
-            <Text style={[styles.gradeLabel, { color: '#FFFFFF' }]}>Quality Grade</Text>
+            <Text style={[styles.gradeLabel, { color: '#FFFFFF' }]}>{t('qualityGrade')}</Text>
             <View style={styles.gradeDisplay}>
-              <Text style={[styles.gradeValueTextOnly, { color: '#FFFFFF' }]}>Not a Papaya</Text>
+              <Text style={[styles.gradeValueTextOnly, { color: '#FFFFFF' }]}>{t('notAPapayaTitle')}</Text>
             </View>
-            <Text style={[styles.gradeLabelText, { color: '#FFFFFF' }]}>Do not proceed with grading</Text>
+            <Text style={[styles.gradeLabelText, { color: '#FFFFFF' }]}>{t('doNotProceedWithGrading')}</Text>
           </View>
 
           <PrimaryButton
-            title="Back to Quality Grader"
+            title={t('backToQualityGrader')}
             onPress={() => router.push('/quality')}
             style={styles.button}
           />
@@ -65,7 +67,6 @@ export default function FarmerResultScreen() {
 
   // Factory Outlet Result
   if (category === 'factory' && data.prediction) {
-    // Extract and clean the prediction value
     const predictionValue = String(data.prediction || '').trim();
     
     console.log('\n===== FACTORY OUTLET RENDERING =====');
@@ -80,15 +81,14 @@ export default function FarmerResultScreen() {
         ? {
             backgroundColor: '#4CAF50',
             textColor: '#FFFFFF',
-            subtitle: 'Small damages',
+            subtitle: t('smallDamagesSubtitle'),
           }
         : {
             backgroundColor: '#F44336',
             textColor: '#FFFFFF',
-            subtitle: 'More Damages',
+            subtitle: t('moreDamagesSubtitle'),
           };
 
-    // Parse confidence string like "85.5%"
     const confidenceValue = typeof data.confidence === 'string' 
       ? parseFloat((data.confidence as string).replace('%', '')) 
       : ((data.confidence as number) || 0) * 100;
@@ -97,12 +97,12 @@ export default function FarmerResultScreen() {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
           <View style={styles.headerCard}>
-            <Text style={styles.categoryTitle}>Factory Outlet Papayas</Text>
-            <Text style={styles.categorySubtitle}>Image Analysis Result</Text>
+            <Text style={styles.categoryTitle}>{t('factoryOutletPapayas')}</Text>
+            <Text style={styles.categorySubtitle}>{t('imageAnalysisResult')}</Text>
           </View>
 
           <View style={[styles.gradeCard, { backgroundColor: typeConfig.backgroundColor }]}> 
-            <Text style={[styles.gradeLabel, { color: typeConfig.textColor }]}>Quality Type</Text>
+            <Text style={[styles.gradeLabel, { color: typeConfig.textColor }]}>{t('qualityType')}</Text>
             <View style={styles.gradeDisplay}>
               <Text style={[styles.gradeValue, { color: typeConfig.textColor, fontSize: 48 }]}>
                 {predictionValue}
@@ -111,7 +111,7 @@ export default function FarmerResultScreen() {
             <Text style={[styles.gradeLabelText, { color: typeConfig.textColor }]}>{typeConfig.subtitle}</Text>
 
             <View style={styles.probabilityBox}>
-              <Text style={styles.probabilityLabel}>Confidence Score</Text>
+              <Text style={styles.probabilityLabel}>{t('confidenceScore')}</Text>
               <Text style={styles.probabilityValue}>{confidenceValue.toFixed(1)}%</Text>
             </View>
           </View>
@@ -119,22 +119,20 @@ export default function FarmerResultScreen() {
          
 
           <View style={styles.explanationCard}>
-            <Text style={styles.sectionTitle}>AI Analysis</Text>
+            <Text style={styles.sectionTitle}>{t('aiAnalysisSection')}</Text>
             <Text style={styles.explanationText}>{data.explanation}</Text>
           </View>
 
           <View style={styles.recommendationCard}>
-            <Text style={styles.sectionTitle}>Recommendations</Text>
+            <Text style={styles.sectionTitle}>{t('recommendations')}</Text>
             <Text style={styles.recommendationText}>
-              {predictionValue === 'Type A' &&
-                'Good quality for factory outlet. Suitable for processing with minimal preparation.'}
-              {predictionValue === 'Type B' &&
-                'Acceptable for factory processing. May require additional sorting or preparation.'}
+              {predictionValue === 'Type A' && t('typeARecommendation')}
+              {predictionValue === 'Type B' && t('typeBRecommendation')}
             </Text>
           </View>
 
           <PrimaryButton
-            title="Back to Quality Grader"
+            title={t('backToQualityGrader')}
             onPress={() => router.push('/quality')}
             style={styles.button}
           />
@@ -152,26 +150,26 @@ export default function FarmerResultScreen() {
       ? {
           backgroundColor: '#4CAF50',
           textColor: '#FFFFFF',
-          subtitle: 'Very suitable for sell',
+          subtitle: t('verySuitableForSell'),
         }
       : grade === '2'
       ? {
           backgroundColor: '#FFC107',
           textColor: '#1F2937',
-          subtitle: 'Normal suitable for sell',
+          subtitle: t('normalSuitableForSell'),
         }
       : {
           backgroundColor: '#F44336',
           textColor: '#FFFFFF',
-          subtitle: 'Quickly sell',
+          subtitle: t('quicklySell'),
         };
 
-  const getCategoryTitle = () => (category === 'best' ? 'Best Quality Papayas' : 'Factory Outlet Papayas');
+  const getCategoryTitle = () => (category === 'best' ? t('bestQualityPapayas') : t('factoryOutletPapayas'));
 
   const getGradeDescription = () => {
-    if (grade === '1') return 'Excellent! Top-tier quality for premium markets.';
-    if (grade === '2') return 'Good quality suitable for best quality segment.';
-    return 'Standard quality — suitable for standard market or processing.';
+    if (grade === '1') return t('gradeExcellentDesc');
+    if (grade === '2') return t('gradeGoodDesc');
+    return t('gradeStandardDesc');
   };
 
   return (
@@ -179,45 +177,45 @@ export default function FarmerResultScreen() {
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <View style={styles.headerCard}>
           <Text style={styles.categoryTitle}>{getCategoryTitle()}</Text>
-          <Text style={styles.categorySubtitle}>AI-Powered Grading Result</Text>
+          <Text style={styles.categorySubtitle}>{t('aiPoweredGradingResult')}</Text>
         </View>
 
         <View style={[styles.gradeCard, { backgroundColor: gradeConfig.backgroundColor }]}>
-          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>Quality Grade</Text>
+          <Text style={[styles.gradeLabel, { color: gradeConfig.textColor }]}>{t('qualityGrade')}</Text>
           <View style={styles.gradeDisplay}>
-            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>Grade</Text>
+            <Text style={[styles.gradePrefix, { color: gradeConfig.textColor }]}>{t('gradePrefix')}</Text>
             <Text style={[styles.gradeValue, { color: gradeConfig.textColor }]}>{grade}</Text>
           </View>
           <Text style={[styles.gradeLabelText, { color: gradeConfig.textColor }]}>{gradeConfig.subtitle}</Text>
 
           <View style={styles.probabilityBox}>
-            <Text style={styles.probabilityLabel}>Confidence Score</Text>
+            <Text style={styles.probabilityLabel}>{t('confidenceScore')}</Text>
             <Text style={styles.probabilityValue}>{((confidence || 0) * 100).toFixed(1)}%</Text>
           </View>
         </View>
 
         {/* Color Analysis Card */}
         <View style={styles.colorCard}>
-          <Text style={styles.sectionTitle}>Color Analysis</Text>
+          <Text style={styles.sectionTitle}>{t('colorAnalysisSection')}</Text>
           <View style={styles.colorRow}>
             <View style={[styles.colorSwatch, { backgroundColor: extracted_color }]} />
             <View style={styles.colorInfo}>
-              <Text style={styles.colorLabel}>Extracted Color</Text>
+              <Text style={styles.colorLabel}>{t('extractedColorLabel')}</Text>
               <Text style={styles.colorValue}>{extracted_color}</Text>
             </View>
           </View>
           <Text style={styles.colorDescription}>
-            This color was extracted from your papaya image and used for quality assessment.
+            {t('colorUsedForAssessment')}
           </Text>
         </View>
 
         {/* Grade Probabilities Card */}
         {all_probabilities && (
         <View style={styles.probabilitiesCard}>
-          <Text style={styles.sectionTitle}>Grade Probabilities</Text>
+          <Text style={styles.sectionTitle}>{t('gradeProbabilitiesSection')}</Text>
           {Object.entries(all_probabilities).map(([gradeKey, probability]) => (
             <View key={gradeKey} style={styles.probabilityRow}>
-              <Text style={styles.probabilityGrade}>Grade {gradeKey}</Text>
+              <Text style={styles.probabilityGrade}>{t('gradePrefix')} {gradeKey}</Text>
               <View style={styles.progressBar}>
                 <View
                   style={[
@@ -237,15 +235,15 @@ export default function FarmerResultScreen() {
 
         {/* AI Explanation Card */}
         <View style={styles.explanationCard}>
-          <Text style={styles.sectionTitle}>AI Analysis</Text>
+          <Text style={styles.sectionTitle}>{t('aiAnalysisSection')}</Text>
           <Text style={styles.explanationText}>{explanation}</Text>
         </View>
 
         {/* Top Features Card */}
         {top_features && top_features.length > 0 && (
           <View style={styles.featuresCard}>
-            <Text style={styles.sectionTitle}>Key Factors</Text>
-            <Text style={styles.featuresSubtitle}>Top factors influencing this grade:</Text>
+            <Text style={styles.sectionTitle}>{t('keyFactorsSection')}</Text>
+            <Text style={styles.featuresSubtitle}>{t('topFactorsInfluencing')}</Text>
             {top_features.map((feature, index) => (
               <View key={index} style={styles.featureItem}>
                 <View style={styles.featureHeader}>
@@ -258,7 +256,7 @@ export default function FarmerResultScreen() {
                   { color: feature.contribution > 0 ? '#4CAF50' : '#F44336' }
                 ]}>
                   Impact: {feature.contribution > 0 ? '+' : ''}{feature.contribution.toFixed(4)} 
-                  ({feature.contribution > 0 ? 'increases' : 'decreases'} grade likelihood)
+                  ({feature.contribution > 0 ? t('increasesGradeLikelihood') : t('decreasesGradeLikelihood')})
                 </Text>
               </View>
             ))}
@@ -267,19 +265,16 @@ export default function FarmerResultScreen() {
 
         {/* Recommendations Card */}
         <View style={styles.recommendationCard}>
-          <Text style={styles.sectionTitle}>Recommendations</Text>
+          <Text style={styles.sectionTitle}>{t('recommendations')}</Text>
           <Text style={styles.recommendationText}>
-            {grade === '1' &&
-              'Excellent! Premium standards met. List for best quality market at optimal pricing.'}
-            {grade === '2' &&
-              'Good quality. Market as best quality with competitive pricing and proper storage.'}
-            {grade === '3' &&
-              'Quality is standard. Consider factory outlet regrading for better returns or move to processing quickly.'}
+            {grade === '1' && t('grade1Recommendation')}
+            {grade === '2' && t('grade2Recommendation')}
+            {grade === '3' && t('grade3Recommendation')}
           </Text>
         </View>
 
         <PrimaryButton
-          title="Back to Quality Grader"
+          title={t('backToQualityGrader')}
           onPress={() => router.push('/quality')}
           style={styles.button}
         />

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { LabeledInput } from '../../components/shared/LabeledInput';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
@@ -12,6 +13,7 @@ import { District, PapayaVariety, MaturityLevel, QualityCategory, FarmerQualityR
 
 export default function FarmerInputScreen() {
   const { user } = useAuth();
+  const { t, language } = useTheme();
   const params = useLocalSearchParams();
   const category = (params.category as string) || 'best'; // 'best' or 'factory'
   const qualityCategory: QualityCategory = category === 'best' ? 'Best Quality' : 'factory outlet';
@@ -35,13 +37,12 @@ export default function FarmerInputScreen() {
   const varietyOptions = [
     { label: 'Red Lady', value: 'RedLady' as PapayaVariety },
     { label: 'Tainung', value: 'Tenim' as PapayaVariety },
-    
   ];
 
   const maturityOptions = [
-    { label: 'Unmature', value: 'unmature' as MaturityLevel },
-    { label: 'Half-Mature', value: 'half-mature' as MaturityLevel },
-    { label: 'Mature', value: 'mature' as MaturityLevel },
+    { label: t('unmatureLevel'), value: 'unmature' as MaturityLevel },
+    { label: t('halfMatureLevel'), value: 'half-mature' as MaturityLevel },
+    { label: t('matureLevel'), value: 'mature' as MaturityLevel },
   ];
 
   const pickImage = async () => {
@@ -62,15 +63,15 @@ export default function FarmerInputScreen() {
 
     // For mobile: Both best quality and factory outlet allow camera and gallery
     Alert.alert(
-      'Select Image',
-      'Choose how to add your papaya image',
+      t('selectImage') || 'Select Image',
+      t('chooseImageSource') || 'Choose how to add your papaya image',
       [
         {
-          text: 'Take Photo',
+          text: t('takePhoto'),
           onPress: async () => {
             const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
             if (!permissionResult.granted) {
-              Alert.alert('Permission Required', 'Camera permission is required');
+              Alert.alert(t('permissionRequired') || 'Permission Required', t('cameraPermission') || 'Camera permission is required');
               return;
             }
             const result = await ImagePicker.launchCameraAsync({
@@ -85,11 +86,11 @@ export default function FarmerInputScreen() {
           }
         },
         {
-          text: 'Choose from Gallery',
+          text: t('selectPhoto'),
           onPress: async () => {
             const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (!permissionResult.granted) {
-              Alert.alert('Permission Required', 'Gallery permission is required');
+              Alert.alert(t('permissionRequired') || 'Permission Required', t('galleryPermission') || 'Gallery permission is required');
               return;
             }
             const result = await ImagePicker.launchImageLibraryAsync({
@@ -104,7 +105,7 @@ export default function FarmerInputScreen() {
           }
         },
         {
-          text: 'Cancel',
+          text: t('cancel'),
           style: 'cancel'
         }
       ]
@@ -115,35 +116,35 @@ export default function FarmerInputScreen() {
     const photoType = category === 'best' ? 'papaya color' : 'damaged areas';
     
     if (!imageUri) {
-      Alert.alert('Error', `Please take a photo of ${photoType}`);
+      Alert.alert(t('error'), t('pleaseTakePhotoForGrading') || `Please take a photo for grading`);
       return;
     }
 
     // For best quality, validate all fields
     if (category === 'best') {
       if (!formData.district) {
-        Alert.alert('Error', 'Please select a district');
+        Alert.alert(t('error'), t('selectDistrict'));
         return;
       }
       
       if (!formData.variety) {
-        Alert.alert('Error', 'Please select a papaya variety');
+        Alert.alert(t('error'), t('selectVariety'));
         return;
       }
       
       if (!formData.maturity) {
-        Alert.alert('Error', 'Please select maturity level');
+        Alert.alert(t('error'), t('selectMaturity'));
         return;
       }
       
       if (!formData.days_since_picked) {
-        Alert.alert('Error', 'Please fill in days since picked');
+        Alert.alert(t('error'), t('fillDaysSincePicked') || 'Please fill in days since picked');
         return;
       }
 
       const daysSincePicked = parseInt(formData.days_since_picked);
       if (isNaN(daysSincePicked) || daysSincePicked < 1 || daysSincePicked > 7) {
-        Alert.alert('Error', 'Days since picked must be between 1 and 7 for freshness');
+        Alert.alert(t('error'), t('daysMustBeBetween') || 'Days since picked must be between 1 and 7 for freshness');
         return;
       }
     }
@@ -196,7 +197,7 @@ export default function FarmerInputScreen() {
           console.log('File appended to FormData');
         } catch (fetchError) {
           console.error('Error processing image for web:', fetchError);
-          Alert.alert('Error', 'Failed to process the selected image. Please try again.');
+          Alert.alert(t('error'), 'Failed to process the selected image. Please try again.');
           setLoading(false);
           return;
         }
@@ -211,6 +212,7 @@ export default function FarmerInputScreen() {
       
       formDataToSend.append('farmer_id', user?.uid || '');
       formDataToSend.append('quality_category', formData.quality_category);
+      formDataToSend.append('lang', language);
 
       // For best quality, include all fields
       if (category === 'best') {
@@ -274,17 +276,17 @@ export default function FarmerInputScreen() {
 
   const getPhotoLabel = () => {
     if (category === 'best') {
-      return 'Papaya Color Photo';
+      return t('papayaColorPhoto');
     } else {
-      return 'Damaged Areas Photo';
+      return t('damagedAreasPhoto');
     }
   };
 
   const getPhotoInstruction = () => {
     if (category === 'best') {
-      return 'Take a clear photo showing the papaya color';
+      return t('takeClearPhotoColor');
     } else {
-      return 'Take or choose a photo showing the papaya (damaged areas visible)';
+      return t('takePhotoShowingDamages');
     }
   };
 
@@ -292,12 +294,12 @@ export default function FarmerInputScreen() {
     <ScreenContainer>
       <View style={styles.header}>
         <Text style={styles.title}>
-          {category === 'best' ? 'Best Quality' : 'Factory Outlet'} Grading
+          {category === 'best' ? t('bestQualityGrading') : t('factoryOutletGrading')}
         </Text>
         <Text style={styles.subtitle}>
           {category === 'best' 
-            ? 'Enter papaya details for premium grading' 
-            : 'Upload papaya image for factory outlet grading'}
+            ? t('enterDetailsForPremiumGrading') 
+            : t('uploadImageForFactoryGrading')}
         </Text>
       </View>
 
@@ -305,31 +307,31 @@ export default function FarmerInputScreen() {
       {category === 'best' && (
         <>
           <Dropdown
-            label="District"
+            label={t('district')}
             value={formData.district || null}
             options={districtOptions}
             onChange={(value) => setFormData({ ...formData, district: value })}
-            placeholder="Select District"
+            placeholder={t('selectDistrict')}
           />
 
           <Dropdown
-            label="Variety"
+            label={t('variety')}
             value={formData.variety || null}
             options={varietyOptions}
             onChange={(value) => setFormData({ ...formData, variety: value })}
-            placeholder="Select Variety"
+            placeholder={t('selectVariety')}
           />
 
           <Dropdown
-            label="Maturity Level"
+            label={t('selectMaturity')}
             value={formData.maturity || null}
             options={maturityOptions}
             onChange={(value) => setFormData({ ...formData, maturity: value })}
-            placeholder="Select Maturity Level"
+            placeholder={t('selectMaturity')}
           />
 
           <LabeledInput
-            label="Days Since Picked (1-7 for freshness)"
+            label={t('daysSincePicked')}
             value={formData.days_since_picked}
             onChangeText={(text) => setFormData({ ...formData, days_since_picked: text })}
             placeholder="e.g., 2"
@@ -350,14 +352,14 @@ export default function FarmerInputScreen() {
       </View>
 
       <PrimaryButton
-        title={imageUri ? 'Change Photo' : (Platform.OS === 'web' ? 'Choose Photo' : (category === 'factory' ? 'Add Photo' : 'Take Photo'))}
+        title={imageUri ? t('retake') : (Platform.OS === 'web' ? t('selectPhoto') : t('takePhoto'))}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
       />
 
       <PrimaryButton
-        title="Generate Grade"
+        title={t('submitGrading')}
         onPress={submitGrading}
         loading={loading}
         disabled={!imageUri}
@@ -365,7 +367,7 @@ export default function FarmerInputScreen() {
       />
 
       <PrimaryButton
-        title="Cancel"
+        title={t('cancel')}
         onPress={() => router.back()}
         variant="outline"
       />

@@ -16,6 +16,32 @@ app = Flask(__name__)
 
 MODEL_DIR = "models_for_customers"
 
+TRANSLATIONS_SI = {
+    "ripeness": {
+        "unripe": "පතුරු නල්ලේ",
+        "semi-ripe": "අර්ධ ඉදුණු",
+        "ripe": "ඉදුණු",
+        "overripe": "අතිඉදුණු",
+    },
+    "taste": {
+        "sweet": "මිහිරි",
+        "bitter": "තිත්ත",
+        "balanced": "සමභර",
+        "sour": "ඇර",
+        "mild": "සුමදු",
+    },
+    "quality": {
+        "1": "ශ්‍රේණිය 1",
+        "2": "ශ්‍රේණිය 2",
+        "3": "ශ්‍රේණිය 3",
+    },
+    "buy": {
+        "buy": "මිලදී ගන්න",
+        "do not buy": "මිලදී නොගන්න",
+        "consider": "සශ්කරු කරන්න",
+    },
+}
+
 FEATURES = joblib.load(f"{MODEL_DIR}/features.pkl")
 
 MODELS = {
@@ -143,6 +169,7 @@ def predict_customer_recomandations():
         return jsonify({"error": "city and image are required"}), 400
 
     city = request.form["city"]
+    lang = request.args.get('lang', 'en')
 
     image = Image.open(request.files["image"]).convert("RGB")
     papaya_result = predict_pipeline(image)
@@ -177,6 +204,16 @@ def predict_customer_recomandations():
 
         xai[key] = shap_explanation(model, X, FEATURES)
 
+    # Translate outputs for Sinhala
+    display_outputs = dict(outputs)
+    if lang == 'si':
+        for key, trans_map in TRANSLATIONS_SI.items():
+            raw_val = str(outputs.get(key, '')).lower()
+            for en_key, si_val in trans_map.items():
+                if raw_val == en_key.lower():
+                    display_outputs[key] = si_val
+                    break
+
     suggestion = generate_final_suggestion(
     color_ratios={
         "green": green,
@@ -193,7 +230,8 @@ def predict_customer_recomandations():
     xai_explanations=xai,
     temperature_for_taste=(
         0.65 if outputs["taste"].lower() == "sweet" else 0.4
-    )
+    ),
+    lang=lang
 )
     return jsonify({
         "color_ratios": {
@@ -204,10 +242,10 @@ def predict_customer_recomandations():
         "papaya_probability": papaya_result["papaya_prob"],
         "weather_last_7_days": weather,
         "predictions": {
-            "ripeness_stage": outputs["ripeness"],
-            "taste": outputs["taste"],
-            "quality_grade": outputs["quality"],
-            "buying_recommendation": outputs["buy"]
+            "ripeness_stage": display_outputs["ripeness"],
+            "taste": display_outputs["taste"],
+            "quality_grade": display_outputs["quality"],
+            "buying_recommendation": display_outputs["buy"]
         },
         "final_suggestion": suggestion
     })
