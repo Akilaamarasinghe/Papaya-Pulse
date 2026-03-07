@@ -14,9 +14,9 @@ import { LeafDiseaseResponse, LeafPredictionHistory, GrowthStage } from '../../t
 const HISTORY_KEY = 'leaf_disease_history';
 
 const GROWTH_STAGES: { key: GrowthStage; label: string; icon: string }[] = [
-  { key: 'vegetative', label: 'Vegetative',  icon: '🌱' },
-  { key: 'flowering',  label: 'Flowering',   icon: '🌸' },
-  { key: 'fruiting',   label: 'Fruiting',    icon: '🍈' },
+  { key: 'vegetative', label: 'Matara',      icon: 'location-outline' },
+  { key: 'flowering',  label: 'Galle',       icon: 'location-outline' },
+  { key: 'fruiting',   label: 'Hambantota',  icon: 'location-outline' },
 ];
 
 export default function LeafScanScreen() {
@@ -128,8 +128,8 @@ export default function LeafScanScreen() {
 
         {/* ── Growth Stage Selector ── */}
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Plant Growth Stage</Text>
-          <Text style={styles.cardHint}>Select your papaya plant{"'"} current stage for better advice</Text>
+          <Text style={styles.cardLabel}>District of Farm Harvest</Text>
+          <Text style={styles.cardHint}>Select your District of Farm Harvest{"'"}  for better advice</Text>
           <View style={styles.stageRow}>
             {GROWTH_STAGES.map((s) => (
               <TouchableOpacity
@@ -137,7 +137,12 @@ export default function LeafScanScreen() {
                 style={[styles.stageChip, growthStage === s.key && styles.stageChipActive]}
                 onPress={() => setGrowthStage(s.key)}
               >
-                <Text style={styles.stageIcon}>{s.icon}</Text>
+                <Ionicons
+                  name={s.icon as any}
+                  size={22}
+                  color={growthStage === s.key ? '#2D7A4F' : '#999'}
+                  style={{ marginBottom: 4 }}
+                />
                 <Text style={[styles.stageLabel, growthStage === s.key && styles.stageLabelActive]}>
                   {s.label}
                 </Text>
