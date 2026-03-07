@@ -657,11 +657,15 @@ type TabKey = typeof TABS[number]['key'];
 export default function LeafResultScreen() {
   const params   = useLocalSearchParams();
   const { user } = useAuth();
-  const [recommend, setRecommend]   = useState<LeafRecommendResponse | null>(null);
-  const [recLoading, setRecLoading] = useState(false);
-  const [recError, setRecError]     = useState<string | null>(null);
-  const [lang, setLang]             = useState<'en' | 'si'>('en');
-  const [activeTab, setActiveTab]   = useState<TabKey>('treatment');
+  const [recommend, setRecommend]       = useState<LeafRecommendResponse | null>(null);
+  const [recLoading, setRecLoading]     = useState(false);
+  const [recError, setRecError]         = useState<string | null>(null);
+  // AI Advisory is fetched lazily — only when the user taps that tab
+  const [aiLoading, setAiLoading]       = useState(false);
+  const [aiError, setAiError]           = useState<string | null>(null);
+  const [aiFetched, setAiFetched]       = useState(false);
+  const [lang, setLang]                 = useState<'en' | 'si'>('en');
+  const [activeTab, setActiveTab]       = useState<TabKey>('treatment');
 
   const data: LeafDiseaseResponse | null = params.data
     ? JSON.parse(params.data as string)
@@ -672,7 +676,7 @@ export default function LeafResultScreen() {
   const isHealthy = data?.disease === 'Healthy';
   const isDisease = data && !isNotLeaf && !isHealthy;
 
-  // ── Fetch recommendation when a disease is detected ──
+  // ── Step 1: Fast fetch — treatment/prevention/weather (no GPT) ──
   useEffect(() => {
     if (!isDisease || !data) return;
     const mlDisease = diseaseToML[data.disease] || data.disease.toLowerCase();
@@ -686,7 +690,7 @@ export default function LeafResultScreen() {
         growth_stage:      growthStage,
         soil_type:         'sandy_loam',
         district,
-        include_ai_advice: true,
+        include_ai_advice: false,   // ← skip GPT here — loads instantly
       })
       .then((r) => setRecommend(r.data))
       .catch((e) => {
@@ -696,6 +700,34 @@ export default function LeafResultScreen() {
       .finally(() => setRecLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.disease, data?.severity, growthStage, isDisease, user?.district]);
+
+  // ── Step 2: Lazy GPT fetch — triggered when user taps "AI Advisory" tab ──
+  useEffect(() => {
+    if (activeTab !== 'advisory' || !isDisease || !data || aiFetched) return;
+    const mlDisease = diseaseToML[data.disease] || data.disease.toLowerCase();
+    const district  = (user?.district || 'galle').toLowerCase();
+    setAiLoading(true);
+    setAiError(null);
+    api
+      .post<LeafRecommendResponse>('/leaf/recommend', {
+        disease:           mlDisease,
+        severity:          data.severity || 'moderate',
+        growth_stage:      growthStage,
+        soil_type:         'sandy_loam',
+        district,
+        include_ai_advice: true,   // ← GPT only called here
+      })
+      .then((r) => {
+        setRecommend((prev) => prev ? { ...prev, ...r.data } : r.data);
+        setAiFetched(true);
+      })
+      .catch((e) => {
+        console.warn('AI Advisory err:', e);
+        setAiError('Could not load AI advisory. Please try again.');
+      })
+      .finally(() => setAiLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, aiFetched]);
 
   // ── No data guard ──
   if (!data) {
@@ -909,50 +941,66 @@ export default function LeafResultScreen() {
                     </View>
               )}
 
-              {/* ── Tab: AI Advisory ── */}
+              {/* ── Tab: AI Advisory (lazy-loaded when tab is tapped) ── */}
               {activeTab === 'advisory' && (
-                recommend?.ai_advice
+                aiLoading
                   ? (
-                    <Section title="AI Advisory" icon="chatbubble-ellipses-outline">
-                      {!recommend.ai_advice.ai_enriched && (
-                        <View style={s.aiBanner}>
-                          <Ionicons name="information-circle-outline" size={18} color="#1565C0" />
-                          <Text style={s.aiBannerText}>Expert template-based advice</Text>
-                        </View>
-                      )}
-                      <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
-                        {lang === 'si'
-                          ? (recommend.ai_advice.advice_si || recommend.ai_advice.advice_en)
-                          : recommend.ai_advice.advice_en}
-                      </Text>
-                      {(recommend.ai_advice.urgent_action_en || recommend.ai_advice.urgent_action_si) && (
-                        <View style={s.urgentBox}>
-                          <Ionicons name="flash" size={16} color="#B71C1C" />
-                          <Text style={s.urgentText}>
-                            {lang === 'si'
-                              ? (recommend.ai_advice.urgent_action_si || recommend.ai_advice.urgent_action_en)
-                              : recommend.ai_advice.urgent_action_en}
-                          </Text>
-                        </View>
-                      )}
-                      {(recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si) && (
-                        <ExpandableBlock
-                          icon="trending-up-outline"
-                          title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : '7-Day Outlook'}
-                        >
+                    <View style={s.loadRow}>
+                      <ActivityIndicator color="#2e7d32" />
+                      <Text style={s.loadText}>Loading personalised advice…</Text>
+                    </View>
+                  )
+                  : aiError
+                    ? (
+                      <View style={s.emptyTab}>
+                        <Ionicons name="alert-circle-outline" size={40} color="#e53935" />
+                        <Text style={s.emptyTabText}>{aiError}</Text>
+                      </View>
+                    )
+                    : recommend?.ai_advice
+                      ? (
+                        <Section title="AI Advisory" icon="chatbubble-ellipses-outline">
+                          {!recommend.ai_advice.ai_enriched && (
+                            <View style={s.aiBanner}>
+                              <Ionicons name="information-circle-outline" size={18} color="#1565C0" />
+                              <Text style={s.aiBannerText}>Expert template-based advice</Text>
+                            </View>
+                          )}
                           <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
                             {lang === 'si'
-                              ? (recommend.ai_advice.outlook_si || recommend.ai_advice.outlook_en)
-                              : (recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si)}
+                              ? (recommend.ai_advice.advice_si || recommend.ai_advice.advice_en)
+                              : recommend.ai_advice.advice_en}
                           </Text>
-                        </ExpandableBlock>
-                      )}
-                    </Section>
-                  )
-                  : <View style={s.emptyTab}>
-                      <Ionicons name="chatbubble-outline" size={40} color="#ccc" />
-                      <Text style={s.emptyTabText}>AI advisory is not available.</Text>
-                    </View>
+                          {(recommend.ai_advice.urgent_action_en || recommend.ai_advice.urgent_action_si) && (
+                            <View style={s.urgentBox}>
+                              <Ionicons name="flash" size={16} color="#B71C1C" />
+                              <Text style={s.urgentText}>
+                                {lang === 'si'
+                                  ? (recommend.ai_advice.urgent_action_si || recommend.ai_advice.urgent_action_en)
+                                  : recommend.ai_advice.urgent_action_en}
+                              </Text>
+                            </View>
+                          )}
+                          {(recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si) && (
+                            <ExpandableBlock
+                              icon="trending-up-outline"
+                              title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : '7-Day Outlook'}
+                            >
+                              <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
+                                {lang === 'si'
+                                  ? (recommend.ai_advice.outlook_si || recommend.ai_advice.outlook_en)
+                                  : (recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si)}
+                              </Text>
+                            </ExpandableBlock>
+                          )}
+                        </Section>
+                      )
+                      : (
+                        <View style={s.emptyTab}>
+                          <Ionicons name="chatbubble-outline" size={40} color="#ccc" />
+                          <Text style={s.emptyTabText}>Tap this tab to load  advisory.</Text>
+                        </View>
+                      )
               )}
             </>
           )}
