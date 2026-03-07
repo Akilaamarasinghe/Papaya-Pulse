@@ -28,6 +28,23 @@ const diseaseToML: Record<string, string> = {
   'Mosaic virus': 'mosaic',
 };
 
+// Sinhala disease names shown in the banner
+const DISEASE_NAME_SI: Record<string, string> = {
+  Anthracnose:    'ඇන්ත්‍රැක්නෝස් / කලු පුල්ලි රෝගය',
+  'Mite disease': 'රතු මකුළු මයිටාවන්',
+  'Mosaic virus': 'වලාකුලු රෝගය',
+  Curl:           'කොලකොඩ වීම',
+  Healthy:        'නිරෝගී',
+};
+
+// Bilingual severity labels
+const SEV_SI: Record<string, string> = {
+  mild:     'මෘදු',
+  moderate: 'මධ්‍යම',
+  severe:   'දරුණු',
+  unknown:  'නොදනී',
+};
+
 // ─── UI helpers ───────────────────────────────────────────────────────────
 
 const SEV_COLOR: Record<string, string> = {
@@ -696,9 +713,10 @@ export default function LeafResultScreen() {
   }
 
   // ── Status banner ──
-  const bannerBg    = isNotLeaf ? '#607D8B' : isHealthy ? '#2E7D32' : '#C62828';
-  const bannerLabel = isNotLeaf ? 'Not a Papaya Leaf' : isHealthy ? 'Healthy Leaf ✅' : data.disease;
-  const bannerIcon: any  = isNotLeaf ? 'close-circle' : isHealthy ? 'checkmark-circle' : 'warning';
+  const bannerBg      = isNotLeaf ? '#607D8B' : isHealthy ? '#2E7D32' : '#C62828';
+  const bannerLabel   = isNotLeaf ? 'Not a Papaya Leaf' : isHealthy ? 'Healthy Leaf ✅' : data.disease;
+  const bannerLabelSi = isDisease ? (DISEASE_NAME_SI[data.disease] ?? '') : '';
+  const bannerIcon: any = isNotLeaf ? 'close-circle' : isHealthy ? 'checkmark-circle' : 'warning';
 
   return (
     <SafeAreaView style={s.safe} edges={['bottom']}>
@@ -709,8 +727,21 @@ export default function LeafResultScreen() {
           <Ionicons name={bannerIcon} size={36} color="#fff" style={{ marginBottom: 8 }} />
           <Text style={s.bannerLabel}>Diagnosis Result</Text>
           <Text style={s.bannerDisease}>{bannerLabel}</Text>
+          {bannerLabelSi ? (
+            <Text style={s.bannerDiseaseSi}>{bannerLabelSi}</Text>
+          ) : null}
           {isDisease && (
-            <Text style={s.bannerSub}>{data.disease} detected on papaya leaf</Text>
+            <>
+              <Text style={s.bannerSub}>{data.disease} detected on papaya leaf</Text>
+              <Text style={s.bannerSubSi}>පැපොල් කොළයේ {bannerLabelSi || bannerLabel} හඳුනාගත් ල.</Text>
+              {data.severity && data.severity !== 'unknown' && (
+                <View style={s.bannerSevRow}>
+                  <Text style={s.bannerSevChip}>
+                    {data.severity.toUpperCase()}  •  {SEV_SI[data.severity] ?? data.severity}
+                  </Text>
+                </View>
+              )}
+            </>
           )}
           {isNotLeaf && (
             <Text style={s.bannerSub}>Please retake with a papaya leaf in frame</Text>
@@ -990,9 +1021,15 @@ const s = StyleSheet.create({
 
   /* Banner */
   banner:        { paddingTop: 36, paddingBottom: 32, paddingHorizontal: 24, alignItems: 'center' },
-  bannerLabel:   { fontSize: 13, color: 'rgba(255,255,255,0.75)', letterSpacing: 1, textTransform: 'uppercase' },
-  bannerDisease: { fontSize: 30, fontWeight: '800', color: '#fff', textAlign: 'center', marginTop: 4, marginBottom: 6 },
-  bannerSub:     { fontSize: 14, color: 'rgba(255,255,255,0.8)', textAlign: 'center' },
+  bannerLabel:    { fontSize: 13, color: 'rgba(255,255,255,0.75)', letterSpacing: 1, textTransform: 'uppercase' },
+  bannerDisease:  { fontSize: 28, fontWeight: '800', color: '#fff', textAlign: 'center', marginTop: 4, marginBottom: 2 },
+  bannerDiseaseSi:{ fontSize: 16, fontWeight: '600', color: 'rgba(255,255,255,0.85)', textAlign: 'center', marginBottom: 6 },
+  bannerSub:      { fontSize: 13, color: 'rgba(255,255,255,0.75)', textAlign: 'center' },
+  bannerSubSi:    { fontSize: 13, color: 'rgba(255,255,255,0.7)', textAlign: 'center', marginTop: 2, fontStyle: 'italic' },
+  bannerSevRow:   { marginTop: 8 },
+  bannerSevChip:  { backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 12,
+                    paddingHorizontal: 14, paddingVertical: 5,
+                    fontSize: 13, fontWeight: '700', color: '#fff', letterSpacing: 0.5 },
 
   body: { padding: 16, paddingTop: 20 },
   hint: { fontSize: 14, color: '#555', lineHeight: 20, marginTop: 12 },
