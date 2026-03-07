@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, Platform, ActionSheetIOS } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
@@ -23,6 +23,40 @@ export default function CustomerInputScreen() {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [city, setCity] = useState<string>(user?.district || 'Galle');
 
+  const openGallery = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert(t('permissionRequired') || 'Permission Required', t('galleryPermission') || 'Gallery permission is required');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert(t('permissionRequired') || 'Permission Required', t('cameraPermission') || 'Camera permission is required');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
   const pickImage = async () => {
     if (Platform.OS === 'web') {
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -31,42 +65,39 @@ export default function CustomerInputScreen() {
         aspect: [4, 3],
         quality: 0.8,
       });
-
       if (!result.canceled) {
         setImageUri(result.assets[0].uri);
       }
       return;
     }
 
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    
-    if (!permissionResult.granted) {
-      Alert.alert(t('permissionRequired') || 'Permission Required', t('cameraPermission') || 'Camera permission is required');
-      return;
-    }
-
-    Alert.alert(
-      t('photoInstructions'),
-      t('showFullPapaya'),
-      [
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
         {
-          text: 'OK',
-
-          onPress: async () => {
-            const result = await ImagePicker.launchCameraAsync({
-              mediaTypes: 'images',
-              allowsEditing: true,
-              aspect: [4, 3],
-              quality: 0.8,
-            });
-
-            if (!result.canceled) {
-              setImageUri(result.assets[0].uri);
-            }
-          }
+          options: [
+            t('cancel') || 'Cancel',
+            t('chooseFromGallery') || 'Choose from Gallery',
+            t('openCamera') || 'Open Camera',
+          ],
+          cancelButtonIndex: 0,
+        },
+        (buttonIndex) => {
+          if (buttonIndex === 1) openGallery();
+          else if (buttonIndex === 2) openCamera();
         }
-      ]
-    );
+      );
+    } else {
+      // Android
+      Alert.alert(
+        t('papayaPhotoLabel') || 'Select Photo',
+        undefined,
+        [
+          { text: t('chooseFromGallery') || 'Choose from Gallery', onPress: openGallery },
+          { text: t('openCamera') || 'Open Camera', onPress: openCamera },
+          { text: t('cancel') || 'Cancel', style: 'cancel' },
+        ]
+      );
+    }
   };
 
   const submitGrading = async () => {
@@ -170,7 +201,7 @@ export default function CustomerInputScreen() {
       )}
 
       <PrimaryButton
-        title={imageUri ? t('retake') : (Platform.OS === 'web' ? t('choosePhotoFullPapaya') : t('takePhotoFullPapaya'))}
+        title={imageUri ? t('retake') : t('choosePhotoFullPapaya')}
         onPress={pickImage}
         variant="secondary"
         style={styles.button}
