@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Animated, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ import { Card } from '../../components/shared/Card';
 
 export default function HomeScreen() {
   const { user, loading } = useAuth();
-  const { currentTheme, t } = useTheme();
+  const { currentTheme, t, language, setLanguage } = useTheme();
   const colors = Colors[currentTheme];
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -128,11 +128,30 @@ export default function HomeScreen() {
 
         {/* ── Section Header ── */}
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            {isFarmer ? '🚀 Your Tools' : '🛍️ Your Tools'}
-          </Text>
+          <View style={styles.sectionTitleRow}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              {isFarmer ? '🚀 Your Tools' : '🛍️ Your Tools'}
+            </Text>
+            {/* Language toggle pill */}
+            <View style={[styles.langPill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <TouchableOpacity
+                style={[styles.langBtn, language === 'en' && { backgroundColor: colors.primary }]}
+                onPress={() => setLanguage('en')}
+              >
+                <Text style={[styles.langBtnText, { color: language === 'en' ? '#fff' : colors.placeholder }]}>EN</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.langBtn, language === 'si' && { backgroundColor: colors.primary }]}
+                onPress={() => setLanguage('si')}
+              >
+                <Text style={[styles.langBtnText, { color: language === 'si' ? '#fff' : colors.placeholder }]}>සි</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <Text style={[styles.sectionSubtitle, { color: colors.placeholder }]}>
-            {isFarmer ? 'Manage your papaya farm with AI' : 'Make smarter buying decisions'}
+            {isFarmer
+              ? (language === 'si' ? 'AI සහිතව ඔබේ පැපොල් ගොවිතැන කළමනාකරණය කරන්න' : 'Manage your papaya farm with AI')
+              : (language === 'si' ? 'වඩා හොඳ ගැනුම් තීරණ ගන්න' : 'Make smarter buying decisions')}
           </Text>
         </View>
 
@@ -295,11 +314,31 @@ const styles = StyleSheet.create({
   sectionHeader: {
     marginBottom: 14,
   },
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 3,
+  },
   sectionTitle: {
     fontSize: 21,
     fontWeight: '800',
-    marginBottom: 3,
     letterSpacing: 0.1,
+  },
+  langPill: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  langBtn: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  langBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   sectionSubtitle: {
     fontSize: 13.5,
