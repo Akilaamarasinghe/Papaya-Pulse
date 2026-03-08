@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert, Platform, ActionSheetIOS } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { Dropdown } from '../../components/shared/Dropdown';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import api from '../../config/api';
-import { CustomerQualityResponse } from '../../types';
+import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../context/ThemeContext';
+import { ScreenContainer } from '../../../components/shared/ScreenContainer';
+import { Dropdown } from '../../../components/shared/Dropdown';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import api from '../../../config/api';
+import { CustomerQualityResponse } from '../../../types';
 
 const cityOptions = [
   { label: 'Galle', value: 'Galle' },
@@ -186,10 +186,10 @@ export default function CustomerInputScreen() {
       <View style={styles.instructionBox}>
         <Text style={styles.instructionTitle}>{t('photoInstructionsTitle')}</Text>
         <Text style={styles.instructionText}>
-          {'• '}{t('showFullPapaya')}{'\n'}
-          {'• '}{t('ensureGoodLightingHint')}{'\n'}
-          {'• '}{t('captureFromClearAngle')}{'\n'}
-          {'• '}{t('includeWholePapayaInFrame')}
+          {'ΓÇó '}{t('showFullPapaya')}{'\n'}
+          {'ΓÇó '}{t('ensureGoodLightingHint')}{'\n'}
+          {'ΓÇó '}{t('captureFromClearAngle')}{'\n'}
+          {'ΓÇó '}{t('includeWholePapayaInFrame')}
         </Text>
       </View>
 

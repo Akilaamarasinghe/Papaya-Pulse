@@ -1,10 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { useTheme } from '../../context/ThemeContext';
-import { CustomerQualityResponse } from '../../types';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import { useTheme } from '../../../context/ThemeContext';
+import { CustomerQualityResponse } from '../../../types';
 
 function normalizeCustomerGrade(raw: string): '1' | '2' | '3' {
   const source = String(raw || '').trim();
@@ -172,7 +172,7 @@ export default function CustomerResultScreen() {
     if (normalizedTaste.includes('sweet')) {
       return {
         label: t('sweetTaste'),
-        emoji: '😋',
+        emoji: '≡ƒÿï',
         color: '#4CAF50',
         description: t('sweetTasteDesc'),
       };
@@ -185,7 +185,7 @@ export default function CustomerResultScreen() {
     ) {
       return {
         label: t('lessTaste'),
-        emoji: '😐',
+        emoji: '≡ƒÿÉ',
         color: '#FF9800',
         description: t('lessTasteDesc'),
       };
@@ -194,7 +194,7 @@ export default function CustomerResultScreen() {
     if (normalizedTaste.includes('balanced') || normalizedTaste.includes('mild')) {
       return {
         label: t('balancedTaste'),
-        emoji: '🙂',
+        emoji: '≡ƒÖé',
         color: '#2196F3',
         description: t('balancedTasteDesc'),
       };
@@ -203,13 +203,13 @@ export default function CustomerResultScreen() {
     return safeAvgTemp >= 25
       ? {
           label: t('moreTaste'),
-          emoji: '😋',
+          emoji: '≡ƒÿï',
           color: '#4CAF50',
           description: t('tasteWeatherDesc'),
         }
       : {
           label: t('lessTaste'),
-          emoji: '😐',
+          emoji: '≡ƒÿÉ',
           color: '#FF9800',
           description: t('tasteWeatherDesc'),
         };
@@ -268,7 +268,7 @@ export default function CustomerResultScreen() {
 
           <View style={styles.tempBox}>
             <Text style={styles.tempLabel}>{t('avgGrowingTemp')}</Text>
-            <Text style={styles.tempValue}>{safeAvgTemp.toFixed(1)}°C</Text>
+            <Text style={styles.tempValue}>{safeAvgTemp.toFixed(1)}┬░C</Text>
           </View>
         </View>
 

@@ -1,16 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+﻿import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { Colors } from '../../constants/theme';
-import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { Card } from '../../components/shared/Card';
+import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../context/ThemeContext';
+import { Colors } from '../../../constants/theme';
+import { ScreenContainer } from '../../../components/shared/ScreenContainer';
+import { Card } from '../../../components/shared/Card';
 
 export default function QualityIndexScreen() {
   const { user } = useAuth();
-  const { t, language, currentTheme } = useTheme();
+  const { t, language, currentTheme, setLanguage } = useTheme();
   const colors = Colors[currentTheme];
 
   if (!user) {
@@ -26,6 +27,26 @@ export default function QualityIndexScreen() {
 
   return (
     <ScreenContainer>
+      <View style={styles.navRow}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={20} color={colors.primary} />
+          <Text style={[styles.backBtnText, { color: colors.primary }]}>Back</Text>
+        </TouchableOpacity>
+        <View style={[styles.langPill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'en' && { backgroundColor: colors.primary }]}
+            onPress={() => setLanguage('en')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'en' ? '#fff' : colors.placeholder }]}>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'si' && { backgroundColor: colors.primary }]}
+            onPress={() => setLanguage('si')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'si' ? '#fff' : colors.placeholder }]}>සි</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <LinearGradient
         colors={
           currentTheme === 'dark'
@@ -78,6 +99,36 @@ export default function QualityIndexScreen() {
 }
 
 const styles = StyleSheet.create({
+  navRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  backBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  langPill: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  langBtn: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  langBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
   msgBox: {
     marginTop: 60,
     alignItems: 'center',

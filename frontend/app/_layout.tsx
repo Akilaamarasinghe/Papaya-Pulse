@@ -21,10 +21,6 @@ function RootNavigator() {
         <Stack.Screen name="login" />
         <Stack.Screen name="signup" />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="growth" options={{ headerShown: false }} />
-        <Stack.Screen name="quality" options={{ headerShown: false }} />
-        <Stack.Screen name="market" options={{ headerShown: false }} />
-        <Stack.Screen name="leaf" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       <StatusBar style={currentTheme === 'dark' ? 'light' : 'dark'} />

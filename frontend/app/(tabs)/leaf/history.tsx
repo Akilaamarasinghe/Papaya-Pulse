@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList, Image,
   TouchableOpacity, Alert,
@@ -7,12 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { LeafPredictionHistory } from '../../types';
+import { LeafPredictionHistory } from '../../../types';
 
 const HISTORY_KEY = 'leaf_disease_history';
 
 const pct = (v?: number) =>
-  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : '—';
+  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : 'ΓÇö';
 
 const fmtStage = (s?: string | null) =>
   s ? s.replace(/[_-]/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase()) : null;
@@ -20,7 +20,7 @@ const fmtStage = (s?: string | null) =>
 const fmtDate = (ts: string) => {
   const d = new Date(ts);
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    + ' · '
+    + ' ┬╖ '
     + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
@@ -116,18 +116,18 @@ export default function LeafHistoryScreen() {
     );
   };
 
-  // ── Loading ──
+  // ΓöÇΓöÇ Loading ΓöÇΓöÇ
   if (loading) {
     return (
       <SafeAreaView style={s.safe}>
         <View style={s.center}>
-          <Text style={s.loadText}>Loading history…</Text>
+          <Text style={s.loadText}>Loading historyΓÇª</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  // ── Empty ──
+  // ΓöÇΓöÇ Empty ΓöÇΓöÇ
   if (history.length === 0) {
     return (
       <SafeAreaView style={s.safe} edges={['bottom']}>
@@ -148,7 +148,7 @@ export default function LeafHistoryScreen() {
     );
   }
 
-  // ── List ──
+  // ΓöÇΓöÇ List ΓöÇΓöÇ
   return (
     <SafeAreaView style={s.safe} edges={['bottom']}>
       <FlatList

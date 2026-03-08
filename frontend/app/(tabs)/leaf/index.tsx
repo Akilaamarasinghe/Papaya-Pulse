@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
 } from 'react-native';
@@ -6,8 +6,8 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../context/ThemeContext';
-import { Colors } from '../../constants/theme';
+import { useTheme } from '../../../context/ThemeContext';
+import { Colors } from '../../../constants/theme';
 
 const DISEASES = [
   { name: 'Anthracnose',  icon: '🍂', color: '#D32F2F', bg: '#FFEBEE', desc: 'Dark sunken lesions on leaves and fruits' },
@@ -24,17 +24,38 @@ const HOW_IT_WORKS = [
 ];
 
 export default function LeafIndexScreen() {
-  const { currentTheme } = useTheme();
+  const { currentTheme, language, setLanguage } = useTheme();
   const colors = Colors[currentTheme];
   const isDark = currentTheme === 'dark';
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: isDark ? '#0F2A1A' : '#2D7A4F' }]} edges={['top']}>
+      {/* Nav row: back + language toggle */}
+      <View style={styles.navRow}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={20} color="#fff" />
+          <Text style={styles.backBtnText}>Back</Text>
+        </TouchableOpacity>
+        <View style={styles.langPill}>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'en' && styles.langBtnActive]}
+            onPress={() => setLanguage('en')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'en' ? '#fff' : 'rgba(255,255,255,0.6)' }]}>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'si' && styles.langBtnActive]}
+            onPress={() => setLanguage('si')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'si' ? '#fff' : 'rgba(255,255,255,0.6)' }]}>සි</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[styles.scroll, { backgroundColor: colors.background }]}
       >
-        {/* ── Gradient Hero ── */}
+        {/* ΓöÇΓöÇ Gradient Hero ΓöÇΓöÇ */}
         <LinearGradient
           colors={isDark ? ['#0F2A1A', '#0F172A'] : ['#2D7A4F', '#34D399']}
           style={styles.hero}
@@ -51,7 +72,7 @@ export default function LeafIndexScreen() {
           </Text>
         </LinearGradient>
 
-        {/* ── Primary Action ── */}
+        {/* ΓöÇΓöÇ Primary Action ΓöÇΓöÇ */}
         <TouchableOpacity
           style={[styles.scanBtn, { shadowColor: colors.primary }]}
           onPress={() => router.push('/leaf/scan' as any)}
@@ -74,7 +95,7 @@ export default function LeafIndexScreen() {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* ── Secondary Action ── */}
+        {/* ΓöÇΓöÇ Secondary Action ΓöÇΓöÇ */}
         <TouchableOpacity
           style={[styles.historyBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
           onPress={() => router.push('/leaf/history' as any)}
@@ -87,7 +108,7 @@ export default function LeafIndexScreen() {
           <Ionicons name="chevron-forward" size={18} color={colors.placeholder} />
         </TouchableOpacity>
 
-        {/* ── How it works ── */}
+        {/* ΓöÇΓöÇ How it works ΓöÇΓöÇ */}
         <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>How It Works</Text>
           <View style={styles.stepsRow}>
@@ -109,7 +130,7 @@ export default function LeafIndexScreen() {
           </View>
         </View>
 
-        {/* ── Detectable Diseases ── */}
+        {/* ΓöÇΓöÇ Detectable Diseases ΓöÇΓöÇ */}
         <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Detectable Conditions</Text>
           {DISEASES.map((d) => (
@@ -123,9 +144,9 @@ export default function LeafIndexScreen() {
           ))}
         </View>
 
-        {/* ── Tips ── */}
+        {/* ΓöÇΓöÇ Tips ΓöÇΓöÇ */}
         <View style={[styles.section, styles.tipsCard, { backgroundColor: colors.card, borderColor: isDark ? 'rgba(52,211,153,0.3)' : '#C8E6C9' }]}>
-          <Text style={[styles.sectionTitle, { color: '#34D399' }]}>📷 Tips for Best Results</Text>
+          <Text style={[styles.sectionTitle, { color: '#34D399' }]}>Tips for Best Results</Text>
           {[
             'Use natural daylight when possible',
             'Fill the frame with the leaf',
@@ -148,6 +169,42 @@ export default function LeafIndexScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1 },
   scroll: {},
+  navRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  backBtnText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  langPill: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.35)',
+    overflow: 'hidden',
+  },
+  langBtn: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  langBtnActive: {
+    backgroundColor: 'rgba(255,255,255,0.28)',
+  },
+  langBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
 
   /* Hero */
   hero: {

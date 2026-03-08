@@ -1,10 +1,10 @@
-import React from 'react';
+﻿import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { useTheme } from '../../context/ThemeContext';
-import { FarmerQualityResponse } from '../../types';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import { useTheme } from '../../../context/ThemeContext';
+import { FarmerQualityResponse } from '../../../types';
 
 export default function FarmerResultScreen() {
   const params = useLocalSearchParams();

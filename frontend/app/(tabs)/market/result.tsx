@@ -1,27 +1,27 @@
-import React from 'react';
+﻿import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../context/ThemeContext';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { MarketPriceResponse } from '../../types';
+import { useTheme } from '../../../context/ThemeContext';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import { MarketPriceResponse } from '../../../types';
 
 // Map English best_selling_day values to Sinhala
 const SELLING_DAY_SI_MAP: Record<string, string> = {
-  'today': 'අද',
-  'Today': 'අද',
-  'Week 0': 'අද',
-  'Week_0': 'අද',
-  'week0': 'අද',
-  'Week 1': 'සතිය 1',
-  'Week_1': 'සතිය 1',
-  'week1': 'සතිය 1',
-  'Week 2': 'සතිය 2',
-  'Week_2': 'සතිය 2',
-  'week2': 'සතිය 2',
-  '0': 'අද',
-  '1': 'සතිය 1',
-  '2': 'සතිය 2',
+  'today': 'α╢àα╢»',
+  'Today': 'α╢àα╢»',
+  'Week 0': 'α╢àα╢»',
+  'Week_0': 'α╢àα╢»',
+  'week0': 'α╢àα╢»',
+  'Week 1': 'α╖âα╢¡α╖Æα╢║ 1',
+  'Week_1': 'α╖âα╢¡α╖Æα╢║ 1',
+  'week1': 'α╖âα╢¡α╖Æα╢║ 1',
+  'Week 2': 'α╖âα╢¡α╖Æα╢║ 2',
+  'Week_2': 'α╖âα╢¡α╖Æα╢║ 2',
+  'week2': 'α╖âα╢¡α╖Æα╢║ 2',
+  '0': 'α╢àα╢»',
+  '1': 'α╖âα╢¡α╖Æα╢║ 1',
+  '2': 'α╖âα╢¡α╖Æα╢║ 2',
 };
 
 function getSellingDayDisplay(day: string, language: string): string {
@@ -92,14 +92,14 @@ export default function MarketResultScreen() {
           <Text style={styles.sectionTitle}>{t('whyThisPrice')}</Text>
           {explanationLines.map((line, index) => (
             <View key={index} style={styles.explanationItem}>
-              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.bullet}>ΓÇó</Text>
               <Text style={styles.explanationText}>{line}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.tipCard}>
-          <Text style={styles.tipTitle}>💡 {t('tip')}</Text>
+          <Text style={styles.tipTitle}>≡ƒÆí {t('tip')}</Text>
           <Text style={styles.tipText}>{t('marketTip')}</Text>
         </View>
 

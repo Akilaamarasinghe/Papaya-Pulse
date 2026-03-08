@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+﻿import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { Colors } from '../../constants/theme';
-import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { Card } from '../../components/shared/Card';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { Dropdown } from '../../components/shared/Dropdown';
-import api from '../../config/api';
-import { District, PapayaVariety, QualityGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../types';
+import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../context/ThemeContext';
+import { Colors } from '../../../constants/theme';
+import { ScreenContainer } from '../../../components/shared/ScreenContainer';
+import { Card } from '../../../components/shared/Card';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import { Dropdown } from '../../../components/shared/Dropdown';
+import api from '../../../config/api';
+import { District, PapayaVariety, QualityGrade, CultivationMethod, MarketPriceRequest, MarketPriceResponse } from '../../../types';
 
 export default function MarketIndexScreen() {
   const { user } = useAuth();
-  const { t, language, currentTheme } = useTheme();
+  const { t, language, currentTheme, setLanguage } = useTheme();
   const colors = Colors[currentTheme];
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,6 +30,26 @@ export default function MarketIndexScreen() {
 
   return (
     <ScreenContainer>
+      <View style={styles.navRow}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+          <Ionicons name="arrow-back" size={20} color={colors.primary} />
+          <Text style={[styles.backBtnText, { color: colors.primary }]}>Back</Text>
+        </TouchableOpacity>
+        <View style={[styles.langPill, { backgroundColor: colors.card, borderColor: colors.border }]}>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'en' && { backgroundColor: colors.primary }]}
+            onPress={() => setLanguage('en')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'en' ? '#fff' : colors.placeholder }]}>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.langBtn, language === 'si' && { backgroundColor: colors.primary }]}
+            onPress={() => setLanguage('si')}
+          >
+            <Text style={[styles.langBtnText, { color: language === 'si' ? '#fff' : colors.placeholder }]}>සි</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <LinearGradient
         colors={
           currentTheme === 'dark'
@@ -56,21 +77,21 @@ export default function MarketIndexScreen() {
       {user?.role === 'farmer' && (
         <>
           <Card
-            title={language === 'si' ? 'හොඳම ගුණාත්මක පැපොල්' : 'Best Quality Papayas'}
+            title={language === 'si' ? 'ශ්‍රේෂ්ඨ ගුණාත්මක පැපොල්' : 'Best Quality Papayas'}
             icon="star-outline"
             description={
               language === 'si'
-                ? 'ශ්‍රේෂ්ඨ ගුණාත්මක පැපොල් සඳහා වෙළඳපල මිල ලබා ගන්න'
+                ? 'ප්‍රිමියම් ගුණාත්මක පැපොල් සඳහා වෙළඳ මිල ගණනය'
                 : 'Predict market price for premium quality papayas'
             }
             onPress={() => router.push('/market/predict-form?category=best' as any)}
           />
           <Card
-            title={language === 'si' ? 'කර්මාන්තශාලා අලෙවිසැල්' : 'Factory Outlet Papayas'}
+            title={language === 'si' ? 'කර්මාන්ත ශාලා ප්‍රතිදානය' : 'Factory Outlet Papayas'}
             icon="business-outline"
             description={
               language === 'si'
-                ? 'කර්මාන්ත ශාලා සැකසීම සඳහා මිල ලබා ගන්න'
+                ? 'කර්මාන්ත සකස් කිරීම සඳහා මිල ගණනය'
                 : 'Predict price for factory processing papayas'
             }
             onPress={() => router.push('/market/predict-form?category=factory' as any)}
@@ -84,7 +105,7 @@ export default function MarketIndexScreen() {
           icon="camera-outline"
           description={
             language === 'si'
-              ? 'ඡායාරූපයක් ගෙන ශීර්ෂත්වය, මිල සහ වෙළඳපල උපදෙස් ලබා ගන්න'
+              ? 'ඉදුනු බව, මිල සහ වෙළඳ උපදෙස් ලබා ගන්න'
               : 'Take a photo to get ripeness, price estimate & market advice'
           }
           onPress={() => router.push('/market/customer-predict' as any)}
@@ -95,6 +116,36 @@ export default function MarketIndexScreen() {
 }
 
 const styles = StyleSheet.create({
+  navRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  backBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  backBtnText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  langPill: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    borderWidth: 1,
+    overflow: 'hidden',
+  },
+  langBtn: {
+    paddingHorizontal: 11,
+    paddingVertical: 5,
+    borderRadius: 20,
+  },
+  langBtnText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
   heroCard: {
     borderRadius: 28,
     marginBottom: 24,

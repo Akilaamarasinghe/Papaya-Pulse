@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Image, Alert, Platform,
   TouchableOpacity, ScrollView, ActivityIndicator,
@@ -8,8 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import api from '../../config/api';
-import { LeafDiseaseResponse, LeafPredictionHistory, GrowthStage } from '../../types';
+import api from '../../../config/api';
+import { LeafDiseaseResponse, LeafPredictionHistory, GrowthStage } from '../../../types';
 
 const HISTORY_KEY = 'leaf_disease_history';
 
@@ -95,7 +95,7 @@ export default function LeafScanScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* ── Image Preview ── */}
+        {/* ΓöÇΓöÇ Image Preview ΓöÇΓöÇ */}
         <TouchableOpacity
           style={[styles.previewBox, imageUri && styles.previewBoxFilled]}
           onPress={pickFromCamera}
@@ -112,7 +112,7 @@ export default function LeafScanScreen() {
           )}
         </TouchableOpacity>
 
-        {/* ── Camera / Gallery Row ── */}
+        {/* ΓöÇΓöÇ Camera / Gallery Row ΓöÇΓöÇ */}
         <View style={styles.sourceRow}>
           <TouchableOpacity style={[styles.sourceBtn, { backgroundColor: '#E8F5E9' }]} onPress={pickFromCamera} activeOpacity={0.8}>
             <Ionicons name="camera" size={24} color="#2D7A4F" />
@@ -126,7 +126,7 @@ export default function LeafScanScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* ── Growth Stage Selector ── */}
+        {/* ΓöÇΓöÇ Growth Stage Selector ΓöÇΓöÇ */}
         <View style={styles.card}>
           <Text style={styles.cardLabel}>District of Farm Harvest</Text>
           <Text style={styles.cardHint}>Select your District of Farm Harvest{"'"}  for better advice</Text>
@@ -151,7 +151,7 @@ export default function LeafScanScreen() {
           </View>
         </View>
 
-        {/* ── Analyze Button ── */}
+        {/* ΓöÇΓöÇ Analyze Button ΓöÇΓöÇ */}
         {imageUri && (
           <TouchableOpacity
             style={[styles.analyzeBtn, loading && styles.analyzeBtnDisabled]}
@@ -165,19 +165,19 @@ export default function LeafScanScreen() {
               <Ionicons name="search" size={22} color="#fff" />
             )}
             <Text style={styles.analyzeBtnText}>
-              {loading ? 'Analyzing…' : 'Analyze Leaf Disease'}
+              {loading ? 'AnalyzingΓÇª' : 'Analyze Leaf Disease'}
             </Text>
           </TouchableOpacity>
         )}
 
-        {/* ── Cancel ── */}
+        {/* ΓöÇΓöÇ Cancel ΓöÇΓöÇ */}
         <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
 
-        {/* ── Photo Tips ── */}
+        {/* ΓöÇΓöÇ Photo Tips ΓöÇΓöÇ */}
         <View style={styles.tipsCard}>
-          <Text style={styles.tipsTitle}>📷 Tips for Best Accuracy</Text>
+          <Text style={styles.tipsTitle}>Tips for Best Accuracy</Text>
           {[
             { icon: 'sunny-outline',    tip: 'Shoot in natural daylight' },
             { icon: 'expand-outline',   tip: 'Fill the frame with the leaf' },

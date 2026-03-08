@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   ActivityIndicator,
@@ -6,17 +6,17 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../../context/AuthContext';
-import api from '../../config/api';
+import { useAuth } from '../../../context/AuthContext';
+import api from '../../../config/api';
 import {
   LeafDiseaseResponse, LeafRecommendResponse, LeafWeatherRisk, DayRisk,
   GrowthStage, PreventionStep,
-} from '../../types';
+} from '../../../types';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 const pct = (v?: number) =>
-  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : '—';
+  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : 'ΓÇö';
 
 const fmtStage = (s?: string | null) =>
   s ? s.replace(/[_-]/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase()) : null;
@@ -30,22 +30,22 @@ const diseaseToML: Record<string, string> = {
 
 // Sinhala disease names shown in the banner
 const DISEASE_NAME_SI: Record<string, string> = {
-  Anthracnose:    'ඇන්ත්‍රැක්නෝස් / කලු පුල්ලි රෝගය',
-  'Mite disease': 'රතු මකුළු මයිටාවන්',
-  'Mosaic virus': 'වලාකුලු රෝගය',
-  Curl:           'කොලකොඩ වීම',
-  Healthy:        'නිරෝගී',
+  Anthracnose:    'α╢çα╢▒α╖èα╢¡α╖èΓÇìα╢╗α╖Éα╢Üα╖èα╢▒α╖¥α╖âα╖è / α╢Üα╢╜α╖ö α╢┤α╖öα╢╜α╖èα╢╜α╖Æ α╢╗α╖¥α╢£α╢║',
+  'Mite disease': 'α╢╗α╢¡α╖ö α╢╕α╢Üα╖öα╖àα╖ö α╢╕α╢║α╖Æα╢ºα╖Åα╖Çα╢▒α╖è',
+  'Mosaic virus': 'α╖Çα╢╜α╖Åα╢Üα╖öα╢╜α╖ö α╢╗α╖¥α╢£α╢║',
+  Curl:           'α╢Üα╖£α╢╜α╢Üα╖£α╢⌐ α╖Çα╖ôα╢╕',
+  Healthy:        'α╢▒α╖Æα╢╗α╖¥α╢£α╖ô',
 };
 
 // Bilingual severity labels
 const SEV_SI: Record<string, string> = {
-  mild:     'මෘදු',
-  moderate: 'මධ්‍යම',
-  severe:   'දරුණු',
-  unknown:  'නොදනී',
+  mild:     'α╢╕α╖ÿα╢»α╖ö',
+  moderate: 'α╢╕α╢░α╖èΓÇìα╢║α╢╕',
+  severe:   'α╢»α╢╗α╖öα╢½α╖ö',
+  unknown:  'α╢▒α╖£α╢»α╢▒α╖ô',
 };
 
-// ─── UI helpers ───────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ UI helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 const SEV_COLOR: Record<string, string> = {
   mild:     '#388E3C',
@@ -90,7 +90,7 @@ const DAY_RISK_DOT: Record<string, string> = {
   CRITICAL: '#8E24AA',
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Sub-components ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 function InfoChip({ label, value, color, bg }: { label: string; value: string; color: string; bg: string }) {
   return (
@@ -127,7 +127,7 @@ const sec = StyleSheet.create({
   title:  { fontSize: 16, fontWeight: '700', color: '#1A2E1A' },
 });
 
-// ─── Day Forecast Card ────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Day Forecast Card ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 function DayForecastCard({ day }: { day: DayRisk }) {
   const dot = DAY_RISK_DOT[day.day_risk] || '#888';
@@ -137,9 +137,9 @@ function DayForecastCard({ day }: { day: DayRisk }) {
       <Text style={fc.date}>{shortDate}</Text>
       <View style={[fc.dot, { backgroundColor: dot }]} />
       <Text style={fc.riskLabel}>{day.day_risk}</Text>
-      <Text style={fc.stat}>🌡 {day.tmean.toFixed(1)}°C</Text>
-      <Text style={fc.stat}>🌧 {day.rain_mm.toFixed(1)} mm</Text>
-      <Text style={fc.stat}>💧 {day.humidity_est.toFixed(0)}%</Text>
+      <Text style={fc.stat}>≡ƒîí {day.tmean.toFixed(1)}┬░C</Text>
+      <Text style={fc.stat}>≡ƒîº {day.rain_mm.toFixed(1)} mm</Text>
+      <Text style={fc.stat}>≡ƒÆº {day.humidity_est.toFixed(0)}%</Text>
     </View>
   );
 }
@@ -152,7 +152,7 @@ const fc = StyleSheet.create({
   stat:      { fontSize: 11, color: '#555', marginBottom: 2 },
 });
 
-// ─── Expandable block (generic) ────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Expandable block (generic) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 function ExpandableBlock({
   icon, title, children, defaultOpen = false,
@@ -200,7 +200,7 @@ const adv = StyleSheet.create({
   body:        { fontSize: 14, color: '#444', lineHeight: 22 },
 });
 
-// ─── Weather Risk Panel ────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Weather Risk Panel ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWeatherRisk; disease: string; lang: 'en' | 'si' }) {
   const rl    = weatherRisk.risk_level;
@@ -244,7 +244,7 @@ function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWea
 
       {/* Inspection frequency */}
       {frequencyText ? (
-        <Text style={s.frequencyText}>📋 {frequencyText}</Text>
+        <Text style={s.frequencyText}>≡ƒôï {frequencyText}</Text>
       ) : null}
 
       {/* 7-day weather summary chips */}
@@ -252,7 +252,7 @@ function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWea
         <View style={s.wsRow}>
           <View style={s.wsChip}>
             <Text style={s.wsLabel}>Avg Temp</Text>
-            <Text style={s.wsValue}>{weatherRisk.weather_summary.tmean_7d_avg_c}°C</Text>
+            <Text style={s.wsValue}>{weatherRisk.weather_summary.tmean_7d_avg_c}┬░C</Text>
           </View>
           <View style={s.wsChip}>
             <Text style={s.wsLabel}>Rain 7d</Text>
@@ -260,7 +260,7 @@ function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWea
           </View>
           <View style={s.wsChip}>
             <Text style={s.wsLabel}>Max Temp</Text>
-            <Text style={s.wsValue}>{weatherRisk.weather_summary.tmax_c}°C</Text>
+            <Text style={s.wsValue}>{weatherRisk.weather_summary.tmax_c}┬░C</Text>
           </View>
           <View style={s.wsChip}>
             <Text style={s.wsLabel}>Humidity</Text>
@@ -282,21 +282,21 @@ function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWea
 
       {/* Future disease outlook */}
       {outlookText && (
-        <ExpandableBlock icon="trending-up-outline" title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : 'What Could Happen (Next 7 Days)'} defaultOpen>
+        <ExpandableBlock icon="trending-up-outline" title={lang === 'si' ? 'α╢ëα╢»α╖Æα╢╗α╖Æ α╢»α╖Æα╢▒ 7 ΓÇö α╢àα╢┤α╖Üα╢Üα╖èα╖éα╖Æα╢¡ α╢¡α╢¡α╖èα╖Çα╢║' : 'What Could Happen (Next 7 Days)'} defaultOpen>
           <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{outlookText}</Text>
         </ExpandableBlock>
       )}
 
-      {/* Disease × weather explanation */}
+      {/* Disease ├ù weather explanation */}
       {explainText && (
-        <ExpandableBlock icon="information-circle-outline" title={lang === 'si' ? 'කාලගුණය රෝගයට බලපාන ආකාරය' : 'Why Weather Matters for This Disease'}>
+        <ExpandableBlock icon="information-circle-outline" title={lang === 'si' ? 'α╢Üα╖Åα╢╜α╢£α╖öα╢½α╢║ α╢╗α╖¥α╢£α╢║α╢º α╢╢α╢╜α╢┤α╖Åα╢▒ α╢åα╢Üα╖Åα╢╗α╢║' : 'Why Weather Matters for This Disease'}>
           <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{explainText}</Text>
         </ExpandableBlock>
       )}
 
       {/* XAI: why this risk level */}
       {whyText && (
-        <ExpandableBlock icon="analytics-outline" title={lang === 'si' ? 'ඇයි මෙම අවදානම් මට්ටම? (AI)' : 'Why This Risk Level? (Explainable AI)'} >
+        <ExpandableBlock icon="analytics-outline" title={lang === 'si' ? 'α╢çα╢║α╖Æ α╢╕α╖Öα╢╕ α╢àα╖Çα╢»α╖Åα╢▒α╢╕α╖è α╢╕α╢ºα╖èα╢ºα╢╕? (AI)' : 'Why This Risk Level? (Explainable AI)'} >
           <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>{whyText}</Text>
           {weatherRisk.model_used ? (
             <Text style={s.modelTag}>Powered by: ML weather_risk_model ({weatherRisk.model_used})</Text>
@@ -307,7 +307,7 @@ function WeatherRiskPanel({ weatherRisk, disease, lang }: { weatherRisk: LeafWea
   );
 }
 
-// ─── Prevention Guide Component ───────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Prevention Guide Component ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   chemical_inorganic: { bg: '#FFF3E0', text: '#E65100', border: '#FFB74D' },
@@ -317,10 +317,10 @@ const TYPE_COLORS: Record<string, { bg: string; text: string; border: string }> 
 };
 
 const TYPE_ICON: Record<string, string> = {
-  chemical_inorganic: '🧪',
-  chemical_organic:   '🌿',
-  biological:         '🔬',
-  cultural:           '🏗️',
+  chemical_inorganic: '≡ƒº¬',
+  chemical_organic:   '≡ƒî┐',
+  biological:         '≡ƒö¼',
+  cultural:           '≡ƒÅù∩╕Å',
 };
 
 function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' | 'si' }) {
@@ -334,7 +334,7 @@ function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' |
 
   return (
     <View style={ps.card}>
-      {/* ── Header row ── */}
+      {/* ΓöÇΓöÇ Header row ΓöÇΓöÇ */}
       <View style={ps.headerRow}>
         <View style={ps.stepCircle}>
           <Text style={ps.stepNum}>{step.step}</Text>
@@ -344,7 +344,7 @@ function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' |
           {/* Category badge */}
           <View style={[ps.typeBadge, { backgroundColor: colors.bg, borderColor: colors.border }]}>
             <Text style={[ps.typeText, { color: colors.text }]}>
-              {TYPE_ICON[step.type] ?? '•'} {step.type_label_en}
+              {TYPE_ICON[step.type] ?? 'ΓÇó'} {step.type_label_en}
             </Text>
           </View>
         </View>
@@ -356,7 +356,7 @@ function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' |
         </View>
       </View>
 
-      {/* ── PHI warning (if applicable) ── */}
+      {/* ΓöÇΓöÇ PHI warning (if applicable) ΓöÇΓöÇ */}
       {typeof step.phi_days === 'number' && (
         <View style={[ps.phiRow, { backgroundColor: step.phi_days > 7 ? '#FFEBEE' : '#FFF8E1' }]}>
           <Ionicons
@@ -372,7 +372,7 @@ function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' |
         </View>
       )}
 
-      {/* ── Dosage & timing ── */}
+      {/* ΓöÇΓöÇ Dosage & timing ΓöÇΓöÇ */}
       {(step.dosage || step.timing) && (
         <View style={ps.infoGrid}>
           {step.dosage ? (
@@ -399,10 +399,10 @@ function PreventionStepCard({ step, lang }: { step: PreventionStep; lang: 'en' |
         </View>
       )}
 
-      {/* ── Short description ── */}
+      {/* ΓöÇΓöÇ Short description ΓöÇΓöÇ */}
       <Text style={ps.descText}>{desc}</Text>
 
-      {/* ── Expandable AI how-to guide ── */}
+      {/* ΓöÇΓöÇ Expandable AI how-to guide ΓöÇΓöÇ */}
       <TouchableOpacity style={ps.expandBtn} onPress={() => setExpanded(e => !e)} activeOpacity={0.7}>
         <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color="#2D7A4F" />
         <Text style={ps.expandLabel}>How to Use as a Farmer</Text>
@@ -642,7 +642,7 @@ const ps = StyleSheet.create({
   },
 });
 
-// ─── Tab definitions ────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Tab definitions ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 const TABS = [
   { key: 'treatment',  label: 'Treatment',    icon: 'medkit-outline' },
@@ -652,7 +652,7 @@ const TABS = [
 ] as const;
 type TabKey = typeof TABS[number]['key'];
 
-// ─── Main Screen ──────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Main Screen ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export default function LeafResultScreen() {
   const params   = useLocalSearchParams();
@@ -660,7 +660,7 @@ export default function LeafResultScreen() {
   const [recommend, setRecommend]       = useState<LeafRecommendResponse | null>(null);
   const [recLoading, setRecLoading]     = useState(false);
   const [recError, setRecError]         = useState<string | null>(null);
-  // AI Advisory is fetched lazily — only when the user taps that tab
+  // AI Advisory is fetched lazily ΓÇö only when the user taps that tab
   const [aiLoading, setAiLoading]       = useState(false);
   const [aiError, setAiError]           = useState<string | null>(null);
   const [aiFetched, setAiFetched]       = useState(false);
@@ -676,7 +676,7 @@ export default function LeafResultScreen() {
   const isHealthy = data?.disease === 'Healthy';
   const isDisease = data && !isNotLeaf && !isHealthy;
 
-  // ── Step 1: Fast fetch — treatment/prevention/weather (no GPT) ──
+  // ΓöÇΓöÇ Step 1: Fast fetch ΓÇö treatment/prevention/weather (no GPT) ΓöÇΓöÇ
   useEffect(() => {
     if (!isDisease || !data) return;
     const mlDisease = diseaseToML[data.disease] || data.disease.toLowerCase();
@@ -690,7 +690,7 @@ export default function LeafResultScreen() {
         growth_stage:      growthStage,
         soil_type:         'sandy_loam',
         district,
-        include_ai_advice: false,   // ← skip GPT here — loads instantly
+        include_ai_advice: false,   // ΓåÉ skip GPT here ΓÇö loads instantly
       })
       .then((r) => setRecommend(r.data))
       .catch((e) => {
@@ -701,7 +701,7 @@ export default function LeafResultScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.disease, data?.severity, growthStage, isDisease, user?.district]);
 
-  // ── Step 2: Lazy GPT fetch — triggered when user taps "AI Advisory" tab ──
+  // ΓöÇΓöÇ Step 2: Lazy GPT fetch ΓÇö triggered when user taps "AI Advisory" tab ΓöÇΓöÇ
   useEffect(() => {
     if (activeTab !== 'advisory' || !isDisease || !data || aiFetched) return;
     const mlDisease = diseaseToML[data.disease] || data.disease.toLowerCase();
@@ -715,7 +715,7 @@ export default function LeafResultScreen() {
         growth_stage:      growthStage,
         soil_type:         'sandy_loam',
         district,
-        include_ai_advice: true,   // ← GPT only called here
+        include_ai_advice: true,   // ΓåÉ GPT only called here
       })
       .then((r) => {
         setRecommend((prev) => prev ? { ...prev, ...r.data } : r.data);
@@ -729,7 +729,7 @@ export default function LeafResultScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, aiFetched]);
 
-  // ── No data guard ──
+  // ΓöÇΓöÇ No data guard ΓöÇΓöÇ
   if (!data) {
     return (
       <SafeAreaView style={s.safe}>
@@ -744,9 +744,9 @@ export default function LeafResultScreen() {
     );
   }
 
-  // ── Status banner ──
+  // ΓöÇΓöÇ Status banner ΓöÇΓöÇ
   const bannerBg      = isNotLeaf ? '#607D8B' : isHealthy ? '#2E7D32' : '#C62828';
-  const bannerLabel   = isNotLeaf ? 'Not a Papaya Leaf' : isHealthy ? 'Healthy Leaf ✅' : data.disease;
+  const bannerLabel   = isNotLeaf ? 'Not a Papaya Leaf' : isHealthy ? 'Healthy Leaf Γ£à' : data.disease;
   const bannerLabelSi = isDisease ? (DISEASE_NAME_SI[data.disease] ?? '') : '';
   const bannerIcon: any = isNotLeaf ? 'close-circle' : isHealthy ? 'checkmark-circle' : 'warning';
 
@@ -754,7 +754,7 @@ export default function LeafResultScreen() {
     <SafeAreaView style={s.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* ── Status Banner ── */}
+        {/* ΓöÇΓöÇ Status Banner ΓöÇΓöÇ */}
         <View style={[s.banner, { backgroundColor: bannerBg }]}>
           <Ionicons name={bannerIcon} size={36} color="#fff" style={{ marginBottom: 8 }} />
           <Text style={s.bannerLabel}>Diagnosis Result</Text>
@@ -765,11 +765,11 @@ export default function LeafResultScreen() {
           {isDisease && (
             <>
               <Text style={s.bannerSub}>{data.disease} detected on papaya leaf</Text>
-              <Text style={s.bannerSubSi}>පැපොල් කොළයේ {bannerLabelSi || bannerLabel} හඳුනාගත් ල.</Text>
+              <Text style={s.bannerSubSi}>α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╢Üα╖£α╖àα╢║α╖Ü {bannerLabelSi || bannerLabel} α╖äα╢│α╖öα╢▒α╖Åα╢£α╢¡α╖è α╢╜.</Text>
               {data.severity && data.severity !== 'unknown' && (
                 <View style={s.bannerSevRow}>
                   <Text style={s.bannerSevChip}>
-                    {data.severity.toUpperCase()}  •  {SEV_SI[data.severity] ?? data.severity}
+                    {data.severity.toUpperCase()}  ΓÇó  {SEV_SI[data.severity] ?? data.severity}
                   </Text>
                 </View>
               )}
@@ -779,7 +779,7 @@ export default function LeafResultScreen() {
             <Text style={s.bannerSub}>Please retake with a papaya leaf in frame</Text>
           )}
 
-          {/* ── Language Toggle ── */}
+          {/* ΓöÇΓöÇ Language Toggle ΓöÇΓöÇ */}
           {isDisease && (
             <View style={s.langToggle}>
               <TouchableOpacity
@@ -794,7 +794,7 @@ export default function LeafResultScreen() {
                 onPress={() => setLang('si')}
                 activeOpacity={0.8}
               >
-                <Text style={[s.langBtnText, lang === 'si' && s.langBtnTextActive]}>සිංහල</Text>
+                <Text style={[s.langBtnText, lang === 'si' && s.langBtnTextActive]}>α╖âα╖Æα╢éα╖äα╢╜</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -802,7 +802,7 @@ export default function LeafResultScreen() {
 
         <View style={s.body}>
 
-          {/* ── Confidence Row ── */}
+          {/* ΓöÇΓöÇ Confidence Row ΓöÇΓöÇ */}
           <Section title="Detection Confidence" icon="analytics-outline">
             <View style={{ flexDirection: 'row', gap: 10 }}>
               <InfoChip
@@ -825,7 +825,7 @@ export default function LeafResultScreen() {
             )}
           </Section>
 
-          {/* ── Severity ── */}
+          {/* ΓöÇΓöÇ Severity ΓöÇΓöÇ */}
           {isDisease && data.severity !== 'unknown' && (
             <Section title="Disease Severity" icon="pulse-outline">
               <View style={[s.sevBadge, { backgroundColor: SEV_BG[data.severity] }]}>
@@ -847,7 +847,7 @@ export default function LeafResultScreen() {
             </Section>
           )}
 
-          {/* ── Tab Bar (shown when disease detected) ── */}
+          {/* ΓöÇΓöÇ Tab Bar (shown when disease detected) ΓöÇΓöÇ */}
           {isDisease && (
             <ScrollView
               horizontal
@@ -872,11 +872,11 @@ export default function LeafResultScreen() {
             </ScrollView>
           )}
 
-          {/* ── Loading / Error ── */}
+          {/* ΓöÇΓöÇ Loading / Error ΓöÇΓöÇ */}
           {isDisease && recLoading && (
             <View style={s.loadRow}>
               <ActivityIndicator color="#2D7A4F" size="small" />
-              <Text style={s.loadText}>Loading personalised advice…</Text>
+              <Text style={s.loadText}>Loading personalised adviceΓÇª</Text>
             </View>
           )}
           {isDisease && recError && (
@@ -886,10 +886,10 @@ export default function LeafResultScreen() {
             </View>
           )}
 
-          {/* ── Tab Content ── */}
+          {/* ΓöÇΓöÇ Tab Content ΓöÇΓöÇ */}
           {isDisease && recommend && !recLoading && (
             <>
-              {/* ── Tab: Treatment Recommendation ── */}
+              {/* ΓöÇΓöÇ Tab: Treatment Recommendation ΓöÇΓöÇ */}
               {activeTab === 'treatment' && (
                 <Section title="Treatment Recommendation" icon="medkit-outline">
                   <View style={s.recRow}>
@@ -899,7 +899,7 @@ export default function LeafResultScreen() {
                     <View style={{ flex: 1 }}>
                       <Text style={s.recLabel}>Fertilizer Action</Text>
                       <Text style={s.recValue}>
-                        {recommend.fertilizer?.action?.replace(/_/g, ' ') || '—'}
+                        {recommend.fertilizer?.action?.replace(/_/g, ' ') || 'ΓÇö'}
                       </Text>
                     </View>
                   </View>
@@ -921,7 +921,7 @@ export default function LeafResultScreen() {
                 </Section>
               )}
 
-              {/* ── Tab: Prevention & Treatment Steps ── */}
+              {/* ΓöÇΓöÇ Tab: Prevention & Treatment Steps ΓöÇΓöÇ */}
               {activeTab === 'prevention' && (
                 recommend?.prevention?.steps_detail?.length
                   ? <PreventionGuide steps={recommend.prevention.steps_detail} lang={lang} />
@@ -931,7 +931,7 @@ export default function LeafResultScreen() {
                     </View>
               )}
 
-              {/* ── Tab: Weather & Disease Risk ── */}
+              {/* ΓöÇΓöÇ Tab: Weather & Disease Risk ΓöÇΓöÇ */}
               {activeTab === 'weather' && (
                 recommend?.weather_risk
                   ? <WeatherRiskPanel weatherRisk={recommend.weather_risk} disease={recommend.disease} lang={lang} />
@@ -941,13 +941,13 @@ export default function LeafResultScreen() {
                     </View>
               )}
 
-              {/* ── Tab: AI Advisory (lazy-loaded when tab is tapped) ── */}
+              {/* ΓöÇΓöÇ Tab: AI Advisory (lazy-loaded when tab is tapped) ΓöÇΓöÇ */}
               {activeTab === 'advisory' && (
                 aiLoading
                   ? (
                     <View style={s.loadRow}>
                       <ActivityIndicator color="#2e7d32" />
-                      <Text style={s.loadText}>Loading personalised advice…</Text>
+                      <Text style={s.loadText}>Loading personalised adviceΓÇª</Text>
                     </View>
                   )
                   : aiError
@@ -984,7 +984,7 @@ export default function LeafResultScreen() {
                           {(recommend.ai_advice.outlook_en || recommend.ai_advice.outlook_si) && (
                             <ExpandableBlock
                               icon="trending-up-outline"
-                              title={lang === 'si' ? 'ඉදිරි දින 7 — අපේක්ෂිත තත්වය' : '7-Day Outlook'}
+                              title={lang === 'si' ? 'α╢ëα╢»α╖Æα╢╗α╖Æ α╢»α╖Æα╢▒ 7 ΓÇö α╢àα╢┤α╖Üα╢Üα╖èα╖éα╖Æα╢¡ α╢¡α╢¡α╖èα╖Çα╢║' : '7-Day Outlook'}
                             >
                               <Text style={lang === 'si' ? s.bodyTextSi : s.bodyText}>
                                 {lang === 'si'
@@ -1005,7 +1005,7 @@ export default function LeafResultScreen() {
             </>
           )}
 
-          {/* ── Model Details ── */}
+          {/* ΓöÇΓöÇ Model Details ΓöÇΓöÇ */}
           {data.model_metadata && (
             <Section title="Model Details" icon="hardware-chip-outline">
               <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -1019,7 +1019,7 @@ export default function LeafResultScreen() {
                   value={
                     data.model_metadata.inference_time_ms
                       ? `${data.model_metadata.inference_time_ms} ms`
-                      : '—'
+                      : 'ΓÇö'
                   }
                   color="#555" bg="#F5F5F5"
                 />
@@ -1027,7 +1027,7 @@ export default function LeafResultScreen() {
             </Section>
           )}
 
-          {/* ── Actions ── */}
+          {/* ΓöÇΓöÇ Actions ΓöÇΓöÇ */}
           <View style={s.actions}>
             <TouchableOpacity
               style={s.primaryAction}
@@ -1056,7 +1056,7 @@ export default function LeafResultScreen() {
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────
+// ΓöÇΓöÇΓöÇ Styles ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 const s = StyleSheet.create({
   safe:   { flex: 1, backgroundColor: '#F0F7F2' },

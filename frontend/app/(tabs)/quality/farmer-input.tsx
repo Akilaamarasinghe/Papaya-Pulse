@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { ScreenContainer } from '../../components/shared/ScreenContainer';
-import { LabeledInput } from '../../components/shared/LabeledInput';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { Dropdown } from '../../components/shared/Dropdown';
-import api from '../../config/api';
-import { District, PapayaVariety, MaturityLevel, QualityCategory, FarmerQualityRequest, FarmerQualityResponse } from '../../types';
+import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../context/ThemeContext';
+import { ScreenContainer } from '../../../components/shared/ScreenContainer';
+import { LabeledInput } from '../../../components/shared/LabeledInput';
+import { PrimaryButton } from '../../../components/shared/PrimaryButton';
+import { Dropdown } from '../../../components/shared/Dropdown';
+import api from '../../../config/api';
+import { District, PapayaVariety, MaturityLevel, QualityCategory, FarmerQualityRequest, FarmerQualityResponse } from '../../../types';
 
 export default function FarmerInputScreen() {
   const { user } = useAuth();
