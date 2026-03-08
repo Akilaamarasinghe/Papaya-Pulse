@@ -1,27 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import {
+  View, Text, StyleSheet, ScrollView,
+} from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../../context/ThemeContext';
+import { Colors } from '../../../constants/theme';
+import { ScreenContainer } from '../../../components/shared/ScreenContainer';
 import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { HarvestPredictionResponse } from '../../../types';
 
 export default function HarvestResultScreen() {
-  const { t, language } = useTheme();
+  const { currentTheme, t, language } = useTheme();
+  const colors = Colors[currentTheme];
+  const isDark = currentTheme === 'dark';
   const isSinhala = language === 'si';
   const params = useLocalSearchParams();
-  const data: HarvestPredictionResponse = params.data 
-    ? JSON.parse(params.data as string) 
+
+  const data: HarvestPredictionResponse | null = params.data
+    ? JSON.parse(params.data as string)
     : null;
 
   if (!data) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenContainer>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{t('noData')}</Text>
+          <Text style={[styles.errorText, { color: colors.placeholder }]}>{t('noData')}</Text>
           <PrimaryButton title={t('goBack')} onPress={() => router.back()} />
         </View>
-      </SafeAreaView>
+      </ScreenContainer>
     );
   }
 
@@ -29,15 +35,17 @@ export default function HarvestResultScreen() {
 
   const monthNamesEn = [
     'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'July', 'August', 'September', 'October', 'November', 'December',
   ];
   const monthNamesSi = [
     'ජනවාරි', 'පෙබරවාරි', 'මාර්තු', 'අප්‍රේල්', 'මැයි', 'ජූනි',
-    'ජූලි', 'අගෝස්තු', 'සැප්තැම්බර්', 'ඔක්තෝබර්', 'නොවැම්බර්', 'දෙසැම්බර්'
+    'ජූලි', 'අගෝස්තු', 'සැප්තැම්බර්', 'ඔක්තෝබර්', 'නොවැම්බර්', 'දෙසැම්බර්',
   ];
 
   const today = new Date();
-  const harvestDate = new Date(today.getTime() + predictions.harvest_days_remaining * 24 * 60 * 60 * 1000);
+  const harvestDate = new Date(
+    today.getTime() + predictions.harvest_days_remaining * 24 * 60 * 60 * 1000
+  );
   const monthIdx = harvestDate.getMonth();
   const harvestYear = harvestDate.getFullYear();
   const harvestMonthName = isSinhala ? monthNamesSi[monthIdx] : monthNamesEn[monthIdx];
@@ -49,51 +57,66 @@ export default function HarvestResultScreen() {
   const daysLabel = isSinhala ? 'දින' : 'days';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-        <View style={styles.resultCard}>
-          <Text style={styles.sectionTitle}>{t('harvestPredictionResults')}</Text>
-          
+    <ScreenContainer>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Prediction Results Card */}
+        <View style={[styles.resultCard, { backgroundColor: isDark ? colors.card : '#fff' }]}>
+          <Text style={[styles.sectionTitle, { color: isDark ? colors.text : '#333' }]}>
+            {t('harvestPredictionResults')}
+          </Text>
+
           <View style={styles.predictionBox}>
-            <View style={styles.predictionItem}>
-              <Text style={styles.predictionLabel}>{t('yieldPerTree')}</Text>
-              <Text style={styles.predictionValue}>
+            <View style={[styles.predictionItem, { backgroundColor: isDark ? '#1E293B' : '#F8F9FA' }]}>
+              <Text style={[styles.predictionLabel, { color: isDark ? '#9CA3AF' : '#666' }]}>
+                {t('yieldPerTree')}
+              </Text>
+              <Text style={[styles.predictionValue, { color: isDark ? '#34D399' : '#FF6B35' }]}>
                 {predictions.yield_per_tree.toFixed(2)} kg
               </Text>
             </View>
 
-            <View style={styles.predictionItem}>
-              <Text style={styles.predictionLabel}>{t('totalHarvestDays')}</Text>
-              <Text style={styles.predictionValue}>
+            <View style={[styles.predictionItem, { backgroundColor: isDark ? '#1E293B' : '#F8F9FA' }]}>
+              <Text style={[styles.predictionLabel, { color: isDark ? '#9CA3AF' : '#666' }]}>
+                {t('totalHarvestDays')}
+              </Text>
+              <Text style={[styles.predictionValue, { color: isDark ? '#34D399' : '#FF6B35' }]}>
                 {predictions.harvest_days_total} {daysLabel}
               </Text>
             </View>
 
-            <View style={styles.predictionItem}>
-              <Text style={styles.predictionLabel}>{t('daysRemaining')}</Text>
-              <Text style={styles.predictionValue}>
+            <View style={[styles.predictionItem, { backgroundColor: isDark ? '#1E293B' : '#F8F9FA' }]}>
+              <Text style={[styles.predictionLabel, { color: isDark ? '#9CA3AF' : '#666' }]}>
+                {t('daysRemaining')}
+              </Text>
+              <Text style={[styles.predictionValue, { color: isDark ? '#34D399' : '#FF6B35' }]}>
                 {predictions.harvest_days_remaining} {daysLabel}
               </Text>
             </View>
 
-            <View style={styles.predictionItem}>
-              <Text style={styles.predictionLabel}>{t('expectedHarvestMonth')}</Text>
-              <Text style={styles.predictionValue}>
+            <View style={[styles.predictionItem, { backgroundColor: isDark ? '#1E293B' : '#F8F9FA' }]}>
+              <Text style={[styles.predictionLabel, { color: isDark ? '#9CA3AF' : '#666' }]}>
+                {t('expectedHarvestMonth')}
+              </Text>
+              <Text style={[styles.predictionValue, { color: isDark ? '#34D399' : '#FF6B35' }]}>
                 {harvestMonthName} {harvestYear}
               </Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.explanationCard}>
-          <Text style={styles.sectionTitle}>{t('explanation')}</Text>
+        {/* Explanation Card */}
+        <View style={[styles.explanationCard, { backgroundColor: isDark ? colors.card : '#fff' }]}>
+          <Text style={[styles.sectionTitle, { color: isDark ? colors.text : '#333' }]}>
+            {t('explanation')}
+          </Text>
           {explanationLines.map((line, index) => (
-            <Text 
-              key={index} 
+            <Text
+              key={index}
               style={[
                 styles.explanationText,
+                { color: isDark ? '#D1D5DB' : '#333' },
                 line.trim() === '' && styles.emptyLine,
-                line.startsWith('-') && styles.bulletPoint
+                line.startsWith('-') && styles.bulletPoint,
               ]}
             >
               {line}
@@ -107,21 +130,11 @@ export default function HarvestResultScreen() {
           style={styles.button}
         />
       </ScrollView>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-  },
-  scroll: {
-    flex: 1,
-  },
-  content: {
-    padding: 20,
-  },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -130,59 +143,51 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: '#666',
     marginBottom: 20,
   },
   resultCard: {
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 16,
   },
   predictionBox: {
     gap: 16,
   },
   predictionItem: {
-    backgroundColor: '#F8F9FA',
     padding: 16,
     borderRadius: 12,
   },
   predictionLabel: {
     fontSize: 14,
-    color: '#666',
     marginBottom: 4,
   },
   predictionValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
   },
   explanationCard: {
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
   },
   explanationText: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#333',
     marginBottom: 12,
   },
   emptyLine: {
@@ -190,9 +195,9 @@ const styles = StyleSheet.create({
   },
   bulletPoint: {
     marginLeft: 8,
-    color: '#555',
   },
   button: {
     marginTop: 8,
+    marginBottom: 32,
   },
 });

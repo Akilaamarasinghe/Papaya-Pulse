@@ -2,6 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AuthProvider } from '../context/AuthContext';
 import { ThemeProvider as CustomThemeProvider, useTheme } from '../context/ThemeContext';
@@ -30,11 +31,13 @@ function RootNavigator() {
 
 export default function RootLayout() {
   return (
-    <CustomThemeProvider>
-      <AuthProvider>
-        <RootNavigator />
-      </AuthProvider>
-    </CustomThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <CustomThemeProvider>
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
+      </CustomThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 

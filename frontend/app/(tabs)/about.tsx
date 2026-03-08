@@ -120,7 +120,7 @@ export default function AboutScreen() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={[styles.copyright, { color: colors.placeholder }]}>© 2025 Papaya Pulse. All rights reserved.</Text>
+        <Text style={[styles.copyright, { color: colors.placeholder }]}>© 2026 Papaya Pulse. All rights reserved.</Text>
         <Text style={[styles.footerText, { color: colors.text }]}>Made in Sri Lanka 🇱🇰</Text>
       </View>
     </ScrollView>

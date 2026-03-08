@@ -120,6 +120,7 @@ export default function HarvestFormScreen() {
         pathname: '/growth/harvest-result' as any,
         params: {
           data: JSON.stringify(response.data),
+          input: JSON.stringify(requestData),
         },
       });
     } catch (error: any) {

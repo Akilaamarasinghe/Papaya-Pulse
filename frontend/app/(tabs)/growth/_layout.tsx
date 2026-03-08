@@ -3,7 +3,7 @@ import { useTheme } from '../../../context/ThemeContext';
 import { Colors } from '../../../constants/theme';
 
 export default function GrowthLayout() {
-  const { currentTheme } = useTheme();
+  const { currentTheme, language } = useTheme();
   const colors = Colors[currentTheme];
 
   return (
@@ -18,12 +18,12 @@ export default function GrowthLayout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="stage-check" options={{ title: 'Stage Check' }} />
-      <Stack.Screen name="stage-result" options={{ title: 'Growth Stage Result' }} />
-      <Stack.Screen name="stage-history" options={{ title: 'Stage Scan History', headerShown: false }} />
-      <Stack.Screen name="harvest-form" options={{ title: 'Harvest Prediction' }} />
-      <Stack.Screen name="harvest-result" options={{ title: 'Results' }} />
-      <Stack.Screen name="harvest-history" options={{ title: 'Harvest History', headerShown: false }} />
+      <Stack.Screen name="stage-check" options={{ title: language === 'si' ? 'අදියර පරීක්ෂාව' : 'Stage Check' }} />
+      <Stack.Screen name="stage-result" options={{ title: language === 'si' ? 'වර්ධන අදියර ප්‍රතිඵලය' : 'Growth Stage Result' }} />
+      <Stack.Screen name="stage-history" options={{ title: language === 'si' ? 'අදියර ඉතිහාසය' : 'Stage Scan History' }} />
+      <Stack.Screen name="harvest-form" options={{ title: language === 'si' ? 'අස්වැන්න පුරෝකථනය' : 'Harvest Prediction' }} />
+      <Stack.Screen name="harvest-result" options={{ title: language === 'si' ? 'ප්‍රතිඵල' : 'Results' }} />
+      <Stack.Screen name="harvest-history" options={{ title: language === 'si' ? 'අස්වැන්න ඉතිහාසය' : 'Harvest History' }} />
     </Stack>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { Colors } from '../../constants/theme';
@@ -16,11 +16,10 @@ export const LabeledInput: React.FC<LabeledInputProps> = ({
 }) => {
   const { currentTheme } = useTheme();
   const colors = Colors[currentTheme];
-  const [focused, setFocused] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: focused ? colors.primary : colors.subtext }]}>
+      <Text style={[styles.label, { color: colors.placeholder }]}>
         {label.toUpperCase()}
       </Text>
       <View
@@ -28,12 +27,7 @@ export const LabeledInput: React.FC<LabeledInputProps> = ({
           styles.inputWrapper,
           {
             backgroundColor: colors.inputBackground,
-            borderColor: error
-              ? colors.error
-              : focused
-              ? colors.primary
-              : colors.inputBorder,
-            shadowColor: focused ? colors.primary : 'transparent',
+            borderColor: error ? colors.error : colors.inputBorder,
           },
         ]}
       >
@@ -44,8 +38,6 @@ export const LabeledInput: React.FC<LabeledInputProps> = ({
             style,
           ]}
           placeholderTextColor={colors.placeholder}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
           {...props}
         />
       </View>
