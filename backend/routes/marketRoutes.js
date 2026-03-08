@@ -31,6 +31,7 @@ router.post('/predict', authMiddleware, async (req, res) => {
       total_harvest_count,
       avg_weight_per_fruit,
       expected_selling_date,
+      language = 'en',
     } = req.body;
 
     // Determine which endpoint to use based on quality grade
@@ -56,6 +57,7 @@ router.post('/predict', authMiddleware, async (req, res) => {
       total_harvest_papaya_units_count: total_harvest_count,
       avg_weight_kg: avg_weight_per_fruit,
       expect_selling_week: sellingWeekMap[expected_selling_date] || 0,
+      language: language,
     };
 
     console.log(`Calling Farmer ML service: ${FARMER_ML_URL}${endpoint}`);
@@ -79,13 +81,17 @@ router.post('/predict', authMiddleware, async (req, res) => {
 
     const predictions = mlResponse.data.predictions;
 
-    // Format response for frontend
+    // Format response for frontend – include both English and Sinhala where available
     const response = {
       predicted_price_per_kg: predictions.price_per_kg,
       predicted_total_income: predictions.total_harvest_value,
       suggested_selling_day: predictions.best_selling_day,
+      suggested_selling_day_si: predictions.best_selling_day_si || predictions.best_selling_day,
       explanation: [
         mlResponse.data.summary || 'Market price prediction completed successfully.',
+      ],
+      explanation_si: [
+        mlResponse.data.summary_si || mlResponse.data.summary || 'Market price prediction completed successfully.',
       ],
       xai_factors: mlResponse.data.xai_factors || [],
     };
@@ -122,7 +128,7 @@ router.post('/customer-predict', authMiddleware, upload.single('file'), async (r
       return res.status(400).json({ error: 'Image file is required' });
     }
 
-    const { city, seller_price } = req.body;
+    const { city, seller_price, language = 'en' } = req.body;
 
     if (!city) {
       return res.status(400).json({ error: 'City/district is required' });
@@ -138,6 +144,7 @@ router.post('/customer-predict', authMiddleware, upload.single('file'), async (r
     if (seller_price) {
       formData.append('seller_price', seller_price);
     }
+    formData.append('language', language);
 
     console.log(`Calling Customer ML service: ${CUSTOMER_ML_URL}/sachini-cus-predict`);
 

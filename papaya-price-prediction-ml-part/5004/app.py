@@ -35,6 +35,13 @@ RIPENESS_LABELS = {
     3: "Overripe"
 }
 
+RIPENESS_LABELS_SI = {
+    0: "නොඉදුණු",
+    1: "අර්ධ ඉදුණු",
+    2: "වෙළඳපලට සූදානම්",
+    3: "අධිකව ඉදුණු"
+}
+
 # ---------------- UTIL FUNCTIONS ----------------
 def rgb_to_ratios(rgb):
     r, g, b = rgb
@@ -123,6 +130,8 @@ def predict():
     seller_price = request.form.get("seller_price")
     seller_price = float(seller_price) if seller_price else None
 
+    language = request.form.get("language", "en")
+
     # ---------- PAPAYA CHECK ----------
     papaya_check = predict_pipeline(image)
     if not papaya_check["is_papaya"]:
@@ -156,6 +165,7 @@ def predict():
     X1_t = ripeness_preproc.transform(X1)
     ripeness_pred = int(ripeness_model.predict(X1_t)[0])
     ripeness_label = RIPENESS_LABELS[ripeness_pred]
+    ripeness_label_si = RIPENESS_LABELS_SI[ripeness_pred]
     confidence = round(max(ripeness_model.predict_proba(X1_t)[0]) * 100, 2)
 
     ripeness_features = (
@@ -214,6 +224,7 @@ def predict():
         "month": month,
         "rainfall_mm": rainfall,
         "ripeness": ripeness_label,
+        "ripeness_si": ripeness_label_si,
         "confidence_percent": confidence,
         "color_ratios": ratios,
         "ripeness_drivers": ripeness_shap, 
@@ -221,13 +232,13 @@ def predict():
         "seller_price": seller_price
     }
 
-    final_suggestion = generate_market_suggestion(payload)
-    
+    final_suggestion = generate_market_suggestion(payload, language=language)
 
     # ---------- RESPONSE ----------
     return jsonify({
         "analysis": payload,
-        "final_market_advice": final_suggestion
+        "final_market_advice": final_suggestion.get("en", final_suggestion) if isinstance(final_suggestion, dict) else final_suggestion,
+        "final_market_advice_si": final_suggestion.get("si", "") if isinstance(final_suggestion, dict) else "",
     })
 
 

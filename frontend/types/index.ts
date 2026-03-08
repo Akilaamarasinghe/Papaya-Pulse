@@ -193,13 +193,16 @@ export interface MarketPriceRequest {
   total_harvest_count: number;
   avg_weight_per_fruit: number;
   expected_selling_date: string;
+  language?: string;
 }
 
 export interface MarketPriceResponse {
   predicted_price_per_kg: number;
   predicted_total_income: number;
   suggested_selling_day: string;
+  suggested_selling_day_si?: string;
   explanation: string[];
+  explanation_si?: string[];
 }
 
 // ── Customer Market Prediction Types (5004 service) ───────────────────────────
@@ -219,6 +222,7 @@ export interface CustomerMarketAnalysis {
   month: number;
   rainfall_mm: number;
   ripeness: string;
+  ripeness_si?: string;
   confidence_percent: number;
   color_ratios: {
     green: number;
@@ -233,6 +237,7 @@ export interface CustomerMarketAnalysis {
 export interface CustomerMarketResponse {
   analysis: CustomerMarketAnalysis;
   final_market_advice: string;
+  final_market_advice_si?: string;
 }
 // ─────────────────────────────────────────────────────────────────────────────
 

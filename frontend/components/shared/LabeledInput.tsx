@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { Colors } from '../../constants/theme';
@@ -8,32 +8,47 @@ interface LabeledInputProps extends TextInputProps {
   error?: string;
 }
 
-export const LabeledInput: React.FC<LabeledInputProps> = ({ 
-  label, 
-  error, 
+export const LabeledInput: React.FC<LabeledInputProps> = ({
+  label,
+  error,
   style,
-  ...props 
+  ...props
 }) => {
   const { currentTheme } = useTheme();
   const colors = Colors[currentTheme];
+  const [focused, setFocused] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
-      <TextInput
+      <Text style={[styles.label, { color: focused ? colors.primary : colors.subtext }]}>
+        {label.toUpperCase()}
+      </Text>
+      <View
         style={[
-          styles.input,
+          styles.inputWrapper,
           {
             backgroundColor: colors.inputBackground,
-            borderColor: colors.inputBorder,
-            color: colors.text,
+            borderColor: error
+              ? colors.error
+              : focused
+              ? colors.primary
+              : colors.inputBorder,
+            shadowColor: focused ? colors.primary : 'transparent',
           },
-          error && styles.inputError,
-          style,
         ]}
-        placeholderTextColor={colors.placeholder}
-        {...props}
-      />
+      >
+        <TextInput
+          style={[
+            styles.input,
+            { color: colors.text },
+            style,
+          ]}
+          placeholderTextColor={colors.placeholder}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          {...props}
+        />
+      </View>
       {error && <Text style={[styles.error, { color: colors.error }]}>{error}</Text>}
     </View>
   );
@@ -41,24 +56,32 @@ export const LabeledInput: React.FC<LabeledInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 8,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    marginBottom: 7,
+  },
+  inputWrapper: {
+    borderRadius: 16,
+    borderWidth: 1.5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 0,
   },
   input: {
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 16,
-    borderWidth: 1,
-  },
-  inputError: {
-    borderColor: '#FF3B30',
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    fontSize: 15,
+    fontWeight: '500',
   },
   error: {
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 5,
+    marginLeft: 4,
   },
 });

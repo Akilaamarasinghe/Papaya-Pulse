@@ -49,6 +49,13 @@ FACTORY = load_artifacts("factory_outlet_ml_models/papaya_price_model_complete.p
 with open("summary_templates.json", "r", encoding="utf-8") as f:
     SUMMARY_TEMPLATES = json.load(f)
 
+# Load Sinhala summary templates if available
+try:
+    with open("summary_templates_si.json", "r", encoding="utf-8") as f:
+        SUMMARY_TEMPLATES_SI = json.load(f)
+except FileNotFoundError:
+    SUMMARY_TEMPLATES_SI = []
+
 # =====================================================
 # SHAP EXPLAINERS
 # =====================================================
@@ -77,6 +84,37 @@ FEATURE_TO_TEXT = {
     "quality_encoded": "crop quality",
     "early_week": "selling timing",
     "expect_selling_week": "planned selling time"
+}
+
+FEATURE_TO_TEXT_SI = {
+    "rainfall_impact_score": "මෑත කාලගුණ තත්ත්ව",
+    "last7_days_rainfall": "මෑත වර්ෂාපතනය",
+    "month_encoded": "ඍතු කාලය",
+    "month_sin": "සෘතු වෙළඳපල චක්‍රය",
+    "harvest_density": "අස්වනු ප්‍රමාණය",
+    "total_weight_kg": "මුළු අස්වනු ප්‍රමාණය",
+    "avg_weight_kg": "ඵල ප්‍රමාණය",
+    "quality_encoded": "ෙගොාදවිතැන් ගුණාත්මකභාවය",
+    "early_week": "විකුණුම් කාලය",
+    "expect_selling_week": "සැලසුම් කළ විකිණීමේ වේලාව"
+}
+
+# Sinhala selling day mapping
+SELLING_DAY_SI = {
+    "today": "අද",
+    "Today": "අද",
+    "Week 0": "අද",
+    "Week_0": "අද",
+    "week0": "අද",
+    "0": "අද",
+    "Week 1": "සතිය 1",
+    "Week_1": "සතිය 1",
+    "week1": "සතිය 1",
+    "1": "සතිය 1",
+    "Week 2": "සතිය 2",
+    "Week_2": "සතිය 2",
+    "week2": "සතිය 2",
+    "2": "සතිය 2",
 }
 
 # =====================================================
@@ -192,6 +230,44 @@ def generate_template_summary(input_data, predictions, shap_items):
         time_phrase=time_phrase
     )
 
+
+def generate_template_summary_si(input_data, predictions, shap_items):
+    """Generate a Sinhala template-based market summary."""
+    crop = input_data["variety"].replace("_", " ")
+    price = predictions["price_per_kg"]
+    best_day = predictions["best_selling_day"]
+    time_phrase_si = SELLING_DAY_SI.get(best_day, best_day)
+
+    positives = [f for f in shap_items if f["impact"] > 0][:3]
+    negatives = [f for f in shap_items if f["impact"] < 0][:1]
+
+    positive_reasons_si = ", ".join(
+        FEATURE_TO_TEXT_SI.get(f["feature"], f["feature"].replace("_", " "))
+        for f in positives
+    ) or "වත්මන් වෙළඳපල තත්ත්ව"
+
+    negative_clause_si = ""
+    if negatives:
+        neg_si = FEATURE_TO_TEXT_SI.get(
+            negatives[0]["feature"],
+            negatives[0]["feature"].replace("_", " ")
+        )
+        negative_clause_si = f"කෙසේ නමුත්, {neg_si} මිල තරමක් අඩු කරයි. "
+
+    templates_si = SUMMARY_TEMPLATES_SI if SUMMARY_TEMPLATES_SI else [
+        "{positive_reasons_si} නිසා වෙළඳපල මිල හොඳ ලෙස ක්‍රියාත්මක වේ. "
+        "{negative_clause_si}{crop} හි දැනට මිල LKR {price:.2f} per kg ලෙස ඇත. "
+        "{time_phrase_si} විකිණීම ලාභදායී ලෙස අපේක්ෂා කෙරේ."
+    ]
+
+    return random.choice(templates_si).format(
+        positive_reasons_si=positive_reasons_si,
+        negative_clause_si=negative_clause_si,
+        crop=crop,
+        price=price,
+        time_phrase_si=time_phrase_si
+    )
+
 # =====================================================
 # BEST QUALITY ENDPOINT
 # =====================================================
@@ -199,6 +275,7 @@ def generate_template_summary(input_data, predictions, shap_items):
 def martket_data_predict():
     try:
         data = request.get_json()
+        language = data.get("language", "en")
         month = get_current_month()
         lat, lon = geocode_district(data["district"])
         rainfall = get_last7_days_rainfall(lat, lon)
@@ -225,16 +302,21 @@ def martket_data_predict():
 
         predictions = {
             "best_selling_day": best_day,
+            "best_selling_day_si": SELLING_DAY_SI.get(str(best_day), best_day),
             "price_per_kg": round(price, 2),
             "total_harvest_value": round(
                 price * data["total_harvest_papaya_units_count"] * data["avg_weight_kg"], 2
             )
         }
 
+        summary_en = generate_template_summary(data, predictions, shap_items)
+        summary_si = generate_template_summary_si(data, predictions, shap_items)
+
         return jsonify({
             "success": True,
             "predictions": predictions,
-            "summary": generate_template_summary(data, predictions, shap_items),
+            "summary": summary_en,
+            "summary_si": summary_si,
             "xai_factors": shap_items,
             "timestamp": datetime.now().isoformat()
         })
@@ -249,6 +331,7 @@ def martket_data_predict():
 def factory_outlet_price_predict():
     try:
         data = request.get_json()
+        language = data.get("language", "en")
         month = get_current_month()
         lat, lon = geocode_district(data["district"])
         rainfall = get_last7_days_rainfall(lat, lon)
@@ -275,16 +358,21 @@ def factory_outlet_price_predict():
 
         predictions = {
             "best_selling_day": best_day,
+            "best_selling_day_si": SELLING_DAY_SI.get(str(best_day), best_day),
             "price_per_kg": round(price, 2),
             "total_harvest_value": round(
                 price * data["total_harvest_papaya_units_count"] * data["avg_weight_kg"], 2
             )
         }
 
+        summary_en = generate_template_summary(data, predictions, shap_items)
+        summary_si = generate_template_summary_si(data, predictions, shap_items)
+
         return jsonify({
             "success": True,
             "predictions": predictions,
-            "summary": generate_template_summary(data, predictions, shap_items),
+            "summary": summary_en,
+            "summary_si": summary_si,
             "xai_factors": shap_items,
             "timestamp": datetime.now().isoformat()
         })

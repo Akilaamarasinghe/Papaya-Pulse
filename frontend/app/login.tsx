@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Colors } from '../constants/theme';
@@ -61,20 +62,23 @@ export default function LoginScreen() {
         }}
       >
         <LinearGradient
-          colors={currentTheme === 'dark' 
-            ? ['rgba(255, 160, 107, 0.2)', 'rgba(255, 107, 53, 0.05)']
-            : ['rgba(255, 107, 53, 0.1)', 'rgba(255, 160, 107, 0.05)']
+          colors={
+            currentTheme === 'dark'
+              ? ['#1E2D45', '#0F172A']
+              : ['#FF6B35', '#FF9A70']
           }
-          style={styles.headerGradient}
+          style={styles.heroCard}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <View style={styles.header}>
-            <Text style={styles.emoji}>🌿</Text>
-            <Text style={[styles.title, { color: colors.primary }]}>Papaya Pulse</Text>
-            <Text style={[styles.subtitle, { color: colors.text }]}>{t('welcome')}</Text>
-            <Text style={[styles.description, { color: colors.placeholder }]}>Sign in to continue</Text>
+          <View style={styles.heroDecor1} />
+          <View style={styles.heroDecor2} />
+          <View style={styles.heroAvatarBox}>
+            <Text style={styles.heroEmoji}>🥭</Text>
           </View>
+          <Text style={styles.heroTitle}>Papaya Pulse</Text>
+          <Text style={styles.heroSubtitle}>{t('welcome')}</Text>
+          <Text style={styles.heroDesc}>Sign in to continue</Text>
         </LinearGradient>
       </Animated.View>
 
@@ -113,31 +117,60 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  headerGradient: {
-    borderRadius: 24,
+  heroCard: {
+    borderRadius: 28,
     marginBottom: 32,
-    padding: 24,
-  },
-  header: {
+    padding: 32,
     alignItems: 'center',
+    overflow: 'hidden',
+    position: 'relative',
   },
-  emoji: {
-    fontSize: 64,
+  heroDecor1: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -70,
+    right: -50,
+  },
+  heroDecor2: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: -40,
+    left: -25,
+  },
+  heroAvatarBox: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
-  title: {
-    fontSize: 42,
-    fontWeight: '900',
-    marginBottom: 8,
-    letterSpacing: 0.5,
+  heroEmoji: {
+    fontSize: 40,
   },
-  subtitle: {
-    fontSize: 24,
+  heroTitle: {
+    fontSize: 34,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    marginBottom: 6,
+    letterSpacing: 0.4,
+  },
+  heroSubtitle: {
+    fontSize: 18,
     fontWeight: '600',
+    color: 'rgba(255,255,255,0.88)',
     marginBottom: 4,
   },
-  description: {
-    fontSize: 16,
+  heroDesc: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.65)',
   },
   button: {
     marginTop: 8,

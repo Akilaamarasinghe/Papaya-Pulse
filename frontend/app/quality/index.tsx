@@ -1,22 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { Colors } from '../../constants/theme';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { Card } from '../../components/shared/Card';
 
 export default function QualityIndexScreen() {
   const { user } = useAuth();
-  const { t, language } = useTheme();
+  const { t, language, currentTheme } = useTheme();
+  const colors = Colors[currentTheme];
 
-  // If no user, don't show anything
   if (!user) {
     return (
       <ScreenContainer>
-        <View style={styles.header}>
-          <Text style={styles.title}>{t('pleaseLogin')}</Text>
-          <Text style={styles.subtitle}>{t('loginToAccess')}</Text>
+        <View style={styles.msgBox}>
+          <Text style={[styles.msgTitle, { color: colors.text }]}>{t('pleaseLogin')}</Text>
+          <Text style={[styles.msgSub, { color: colors.placeholder }]}>{t('loginToAccess')}</Text>
         </View>
       </ScreenContainer>
     );
@@ -24,16 +26,28 @@ export default function QualityIndexScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.header}>
-        <Text style={styles.title}>{t('papayaQualityGrader')}</Text>
-        <Text style={styles.subtitle}>
-          {user.role === 'farmer' 
+      <LinearGradient
+        colors={
+          currentTheme === 'dark'
+            ? ['#3A2A08', '#0F172A']
+            : ['#FBBF24', '#F59E0B']
+        }
+        style={styles.heroCard}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.heroDecor} />
+        <View style={styles.heroAvatarBox}>
+          <Text style={styles.heroEmoji}>⭐</Text>
+        </View>
+        <Text style={styles.heroTitle}>{t('papayaQualityGrader')}</Text>
+        <Text style={styles.heroDesc}>
+          {user.role === 'farmer'
             ? t('selectPapayaCategoryToGrade')
             : t('checkPapayaQualityBeforeBuying')}
         </Text>
-      </View>
+      </LinearGradient>
 
-      {/* FARMER SIDE - Show two category options */}
       {user.role === 'farmer' && (
         <>
           <Card
@@ -42,7 +56,6 @@ export default function QualityIndexScreen() {
             description={t('gradePremiumDescription')}
             onPress={() => router.push('/quality/farmer-input?category=best' as any)}
           />
-
           <Card
             title={t('factoryOutletPapayas')}
             icon="business-outline"
@@ -52,7 +65,6 @@ export default function QualityIndexScreen() {
         </>
       )}
 
-      {/* CUSTOMER SIDE - Show single option */}
       {user.role === 'customer' && (
         <Card
           title={t('checkQuality')}
@@ -66,18 +78,59 @@ export default function QualityIndexScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 24,
+  msgBox: {
+    marginTop: 60,
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+  msgTitle: {
+    fontSize: 20,
+    fontWeight: '700',
     marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
+  msgSub: {
+    fontSize: 15,
+  },
+  heroCard: {
+    borderRadius: 28,
+    marginBottom: 24,
+    padding: 26,
+    alignItems: 'center',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  heroDecor: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    top: -60,
+    right: -45,
+  },
+  heroAvatarBox: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  heroEmoji: {
+    fontSize: 34,
+  },
+  heroTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 6,
+    letterSpacing: 0.2,
+    textAlign: 'center',
+  },
+  heroDesc: {
+    fontSize: 13.5,
+    color: 'rgba(255,255,255,0.75)',
+    textAlign: 'center',
   },
 });
 

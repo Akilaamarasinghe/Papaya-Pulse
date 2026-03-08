@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { Colors } from '../constants/theme';
@@ -64,10 +65,24 @@ export default function SignUpScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>{t('createAccount')}</Text>
-        <Text style={[styles.subtitle, { color: colors.placeholder }]}>{t('joinPapayaPulse')}</Text>
-      </View>
+      <LinearGradient
+        colors={
+          currentTheme === 'dark'
+            ? ['#1E2D45', '#0F172A']
+            : ['#FF6B35', '#FF9A70']
+        }
+        style={styles.heroCard}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.heroDecor1} />
+        <View style={styles.heroDecor2} />
+        <View style={styles.heroAvatarBox}>
+          <Text style={styles.heroEmoji}>🌾</Text>
+        </View>
+        <Text style={styles.heroTitle}>{t('createAccount')}</Text>
+        <Text style={styles.heroDesc}>{t('joinPapayaPulse')}</Text>
+      </LinearGradient>
 
       <LabeledInput
         label={t('fullName')}
@@ -135,16 +150,54 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 24,
+  heroCard: {
+    borderRadius: 28,
+    marginBottom: 28,
+    padding: 28,
+    alignItems: 'center',
+    overflow: 'hidden',
+    position: 'relative',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
+  heroDecor1: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -60,
+    right: -45,
   },
-  subtitle: {
-    fontSize: 16,
+  heroDecor2: {
+    position: 'absolute',
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: -35,
+    left: -22,
+  },
+  heroAvatarBox: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  heroEmoji: {
+    fontSize: 34,
+  },
+  heroTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 5,
+    letterSpacing: 0.2,
+  },
+  heroDesc: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.72)',
   },
   button: {
     marginTop: 8,

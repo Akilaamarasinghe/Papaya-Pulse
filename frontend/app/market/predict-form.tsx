@@ -34,45 +34,48 @@ export default function MarketPredictFormScreen() {
   ];
 
   const varietyOptions = [
-    { label: 'Red Lady', value: 'RedLady' as PapayaVariety },
-    { label: 'Tainung', value: 'Tenim' as PapayaVariety },
+    { label: language === 'si' ? 'රතු ලේඩි' : 'Red Lady', value: 'RedLady' as PapayaVariety },
+    { label: language === 'si' ? 'ටයිනුං' : 'Tainung', value: 'Tenim' as PapayaVariety },
   ];
 
   const cultivationOptions = [
-    { label: 'Organic', value: 'Organic' as CultivationMethod },
-    { label: 'Inorganic', value: 'Inorganic' as CultivationMethod },
+    { label: language === 'si' ? 'කාබනික' : 'Organic', value: 'Organic' as CultivationMethod },
+    { label: language === 'si' ? 'අකාබනික' : 'Inorganic', value: 'Inorganic' as CultivationMethod },
   ];
 
   // Different options based on category
   const gradeOptions = category === 'best'
     ? [
-        { label: 'Grade I', value: 'I' as QualityGrade },
-        { label: 'Grade II', value: 'II' as QualityGrade },
-        { label: 'Grade III', value: 'III' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය I' : 'Grade I', value: 'I' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය II' : 'Grade II', value: 'II' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය III' : 'Grade III', value: 'III' as QualityGrade },
       ]
     : [
-        { label: 'Grade A', value: 'A' as QualityGrade },
-        { label: 'Grade B', value: 'B' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය A' : 'Grade A', value: 'A' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය B' : 'Grade B', value: 'B' as QualityGrade },
       ];
 
   const sellingDayOptions = category === 'best'
     ? [
-        { label: 'Today', value: 'today' },
-        { label: '1 Day', value: '1day' },
-        { label: '2 Days', value: '2day' },
-        { label: '3 Days', value: '3day' },
-        { label: '4 Days', value: '4day' },
-        { label: '5 Days', value: '5day' },
+        { label: language === 'si' ? 'අද' : 'Today', value: 'today' },
+        { label: language === 'si' ? 'දින 1 කින්' : '1 Day', value: '1day' },
+        { label: language === 'si' ? 'දින 2 කින්' : '2 Days', value: '2day' },
+        { label: language === 'si' ? 'දින 3 කින්' : '3 Days', value: '3day' },
+        { label: language === 'si' ? 'දින 4 කින්' : '4 Days', value: '4day' },
+        { label: language === 'si' ? 'දින 5 කින්' : '5 Days', value: '5day' },
       ]
     : [
-        { label: 'Today', value: 'today' },
-        { label: '1 Day', value: '1day' },
-        { label: '2 Days', value: '2day' },
+        { label: language === 'si' ? 'අද' : 'Today', value: 'today' },
+        { label: language === 'si' ? 'දින 1 කින්' : '1 Day', value: '1day' },
+        { label: language === 'si' ? 'දින 2 කින්' : '2 Days', value: '2day' },
       ];
 
   const predictPrice = async () => {
     if (!formData.total_harvest_count || !formData.avg_weight_per_fruit || !formData.expected_selling_date) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert(
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර සියලු ක්ෂේත්‍ර පුරවන්න' : 'Please fill in all fields'
+      );
       return;
     }
 
@@ -80,7 +83,10 @@ export default function MarketPredictFormScreen() {
     const avgWeight = parseFloat(formData.avg_weight_per_fruit);
 
     if (isNaN(harvestCount) || isNaN(avgWeight) || harvestCount <= 0 || avgWeight <= 0) {
-      Alert.alert('Error', 'Please enter valid numbers');
+      Alert.alert(
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර වලංගු සංඛ්‍යා ඇතුළත් කරන්න' : 'Please enter valid numbers'
+      );
       return;
     }
 
@@ -94,6 +100,7 @@ export default function MarketPredictFormScreen() {
         total_harvest_count: harvestCount,
         avg_weight_per_fruit: avgWeight,
         expected_selling_date: formData.expected_selling_date,
+        language: language,
       };
 
       const response = await api.post<MarketPriceResponse>(
@@ -110,7 +117,12 @@ export default function MarketPredictFormScreen() {
       });
     } catch (error: any) {
       console.error('Market price prediction error:', error);
-      Alert.alert('Error', 'Failed to predict market price. Please try again.');
+      Alert.alert(
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si'
+          ? 'වෙළඳපල මිල පුරෝකථනය අසාර්ථක විය. නැවත උත්සාහ කරන්න.'
+          : 'Failed to predict market price. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -121,8 +133,8 @@ export default function MarketPredictFormScreen() {
     : (language === 'si' ? 'කර්මාන්තශාලා අලෙවිසැල් පැපොල්' : 'Factory Outlet Papayas');
 
   const categoryDesc = category === 'best'
-    ? 'Grade premium papayas for best market pricing'
-    : 'Grade papayas suitable for factory processing';
+    ? (language === 'si' ? 'හොඳම වෙළඳපල මිලකට ශ්‍රේෂ්ඨ පැපොල් ශ්‍රේණිගත කරන්න' : 'Grade premium papayas for best market pricing')
+    : (language === 'si' ? 'කාර්මික සැකසීමට සුදුසු පැපොල් ශ්‍රේණිගත කරන්න' : 'Grade papayas suitable for factory processing');
 
   return (
     <ScreenContainer>

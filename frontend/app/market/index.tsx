@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { Colors } from '../../constants/theme';
 import { ScreenContainer } from '../../components/shared/ScreenContainer';
 import { Card } from '../../components/shared/Card';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
@@ -12,7 +14,8 @@ import { District, PapayaVariety, QualityGrade, CultivationMethod, MarketPriceRe
 
 export default function MarketIndexScreen() {
   const { user } = useAuth();
-  const { t, language } = useTheme();
+  const { t, language, currentTheme } = useTheme();
+  const colors = Colors[currentTheme];
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     district: user?.district || 'Galle' as District,
@@ -26,18 +29,30 @@ export default function MarketIndexScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.header}>
-        <Text style={styles.title}>
+      <LinearGradient
+        colors={
+          currentTheme === 'dark'
+            ? ['#1A2A3A', '#0F172A']
+            : ['#60A5FA', '#3B82F6']
+        }
+        style={styles.heroCard}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.heroDecor} />
+        <View style={styles.heroAvatarBox}>
+          <Text style={styles.heroEmoji}>💰</Text>
+        </View>
+        <Text style={styles.heroTitle}>
           {language === 'si' ? 'වෙළඳපල මිල පුරෝකථනය' : 'Market Price Prediction'}
         </Text>
-        <Text style={styles.subtitle}>
+        <Text style={styles.heroDesc}>
           {language === 'si'
             ? 'පුරෝකථනය සඳහා ප්‍රවර්ගය තෝරන්න'
             : 'Select a category for prediction'}
         </Text>
-      </View>
+      </LinearGradient>
 
-      {/* FARMER CARDS – only for farmers */}
       {user?.role === 'farmer' && (
         <>
           <Card
@@ -50,7 +65,6 @@ export default function MarketIndexScreen() {
             }
             onPress={() => router.push('/market/predict-form?category=best' as any)}
           />
-
           <Card
             title={language === 'si' ? 'කර්මාන්තශාලා අලෙවිසැල්' : 'Factory Outlet Papayas'}
             icon="business-outline"
@@ -64,7 +78,6 @@ export default function MarketIndexScreen() {
         </>
       )}
 
-      {/* CUSTOMER CARD – only for customers */}
       {user?.role === 'customer' && (
         <Card
           title={language === 'si' ? 'පැපොල් ස්කෑන් කරන්න' : 'Scan Papaya for Market Price'}
@@ -82,6 +95,48 @@ export default function MarketIndexScreen() {
 }
 
 const styles = StyleSheet.create({
+  heroCard: {
+    borderRadius: 28,
+    marginBottom: 24,
+    padding: 26,
+    alignItems: 'center',
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  heroDecor: {
+    position: 'absolute',
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    top: -60,
+    right: -45,
+  },
+  heroAvatarBox: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  heroEmoji: {
+    fontSize: 34,
+  },
+  heroTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 6,
+    letterSpacing: 0.2,
+    textAlign: 'center',
+  },
+  heroDesc: {
+    fontSize: 13.5,
+    color: 'rgba(255,255,255,0.75)',
+    textAlign: 'center',
+  },
   header: {
     marginBottom: 24,
   },
@@ -115,3 +170,4 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
 });
+

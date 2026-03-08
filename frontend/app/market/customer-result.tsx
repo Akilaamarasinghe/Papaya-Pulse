@@ -5,13 +5,24 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 
-/* ── Ripeness colour helper ── */
+/* ── Ripeness label → Sinhala mapping ── */
+const RIPENESS_SI: Record<string, string> = {
+  'Unripe': 'නොඉදුණු',
+  'Half ripe': 'අර්ධ ඉදුණු',
+  'Half Ripe': 'අර්ධ ඉදුණු',
+  'Market ready': 'වෙළඳපලට සූදානම්',
+  'Market Ready': 'වෙළඳපලට සූදානම්',
+  'Overripe': 'අධිකව ඉදුණු',
+  'Over ripe': 'අධිකව ඉදුණු',
+};
+
+/* ── Ripeness colour helper (always uses English key for colour) ── */
 function ripenessColour(label: string): string {
   const l = (label ?? '').toLowerCase();
-  if (l.includes('unripe')) return '#4CAF50';
-  if (l.includes('half')) return '#FFC107';
-  if (l.includes('market') || l.includes('ready')) return '#FF9800';
-  if (l.includes('over')) return '#F44336';
+  if (l.includes('unripe') || l.includes('නොඉදුණු')) return '#4CAF50';
+  if (l.includes('half') || l.includes('අර්ධ')) return '#FFC107';
+  if (l.includes('market') || l.includes('ready') || l.includes('සූදානම්')) return '#FF9800';
+  if (l.includes('over') || l.includes('අධික')) return '#F44336';
   return '#9E9E9E';
 }
 
@@ -39,7 +50,7 @@ const barStyles = StyleSheet.create({
 
 /* ── Main screen ── */
 export default function CustomerResultScreen() {
-  const { language } = useTheme();
+  const { language, t } = useTheme();
   const params = useLocalSearchParams();
 
   // Parse raw ML model output from port 5004
@@ -54,11 +65,9 @@ export default function CustomerResultScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>
-            {language === 'si' ? 'දත්ත නොමැත' : 'No data available'}
-          </Text>
+          <Text style={styles.errorText}>{t('noData')}</Text>
           <PrimaryButton
-            title={language === 'si' ? 'ආපසු යන්න' : 'Go Back'}
+            title={t('goBack')}
             onPress={() => router.back()}
           />
         </View>
@@ -73,7 +82,7 @@ export default function CustomerResultScreen() {
         <View style={styles.errorContainer}>
           <Text style={styles.errorIcon}>🚫</Text>
           <Text style={styles.errorTitle}>
-            {language === 'si' ? 'දෝෂයකි' : 'Detection Failed'}
+            {language === 'si' ? 'හඳුනා ගැනීම අසාර්ථකයි' : 'Detection Failed'}
           </Text>
           <Text style={styles.errorText}>
             {raw.error === 'Not a papaya'
@@ -83,7 +92,7 @@ export default function CustomerResultScreen() {
               : raw.error}
           </Text>
           <PrimaryButton
-            title={language === 'si' ? 'නැවත උත්සාහ කරන්න' : 'Try Again'}
+            title={t('tryAgain')}
             onPress={() => router.back()}
           />
         </View>
@@ -93,15 +102,23 @@ export default function CustomerResultScreen() {
 
   // ── Defensive field extraction ──
   const analysis = raw.analysis ?? raw;
-  const final_market_advice: string =
-    raw.final_market_advice ?? raw.market_advice ?? analysis.market_advice ?? analysis.advice ?? '';
+
+  // Use Sinhala market advice if language is 'si' and backend provides it; fall back to English
+  const final_market_advice: string = language === 'si'
+    ? (raw.final_market_advice_si ?? raw.final_market_advice ?? raw.market_advice ?? analysis.market_advice ?? analysis.advice ?? '')
+    : (raw.final_market_advice ?? raw.market_advice ?? analysis.market_advice ?? analysis.advice ?? '');
 
   const location: string = analysis.location ?? analysis.district ?? raw.location ?? 'N/A';
   const month: string = analysis.month ?? raw.month ?? 'N/A';
   const rainfall_mm: number = parseFloat(analysis.rainfall_mm ?? analysis.rainfall ?? raw.rainfall_mm ?? 0);
 
-  const ripeness: string =
+  // Always use English ripeness key for colour logic; display in chosen language
+  const ripeness_en: string =
     analysis.ripeness ?? analysis.ripeness_stage ?? analysis.predicted_class ?? raw.ripeness ?? raw.predicted_class ?? 'Unknown';
+
+  const ripenessDisplay: string = language === 'si'
+    ? (analysis.ripeness_si ?? RIPENESS_SI[ripeness_en] ?? ripeness_en)
+    : ripeness_en;
 
   const confidence_percent: number = parseFloat(
     analysis.confidence_percent ?? analysis.confidence ?? raw.confidence_percent ?? raw.confidence ?? 0
@@ -136,7 +153,7 @@ export default function CustomerResultScreen() {
       ? parseFloat(raw.seller_price)
       : null;
 
-  const ripenColour = ripenessColour(ripeness);
+  const ripenColour = ripenessColour(ripeness_en);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -145,40 +162,38 @@ export default function CustomerResultScreen() {
         {/* ── Ripeness Card ── */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            🍈 {language === 'si' ? 'ශීර්ෂත්ව විශ්ලේෂණය' : 'Ripeness Analysis'}
+            🍈 {t('ripenessAnalysis')}
           </Text>
           <View style={[styles.ripenessBadge, { backgroundColor: ripenColour + '22', borderColor: ripenColour }]}>
-            <Text style={[styles.ripenessLabel, { color: ripenColour }]}>{ripeness}</Text>
+            <Text style={[styles.ripenessLabel, { color: ripenColour }]}>{ripenessDisplay}</Text>
             <Text style={styles.confidence}>
-              {language === 'si' ? 'විශ්වාසය' : 'Confidence'}: {confidence_percent.toFixed(1)}%
+              {t('confidenceLabel')}: {confidence_percent.toFixed(1)}%
             </Text>
           </View>
-          <Text style={styles.subTitle}>
-            {language === 'si' ? 'වර්ණ නිදර්ශනය' : 'Colour Breakdown'}
-          </Text>
-          <ColourRatioBar label={language === 'si' ? 'කොළ' : 'Green'}  value={color_ratios.green}  colour="#4CAF50" />
-          <ColourRatioBar label={language === 'si' ? 'කහ'  : 'Yellow'} value={color_ratios.yellow} colour="#FFC107" />
-          <ColourRatioBar label={language === 'si' ? 'තැඹිලි' : 'Orange'} value={color_ratios.orange} colour="#FF9800" />
+          <Text style={styles.subTitle}>{t('colourBreakdown')}</Text>
+          <ColourRatioBar label={t('colourGreen')}  value={color_ratios.green}  colour="#4CAF50" />
+          <ColourRatioBar label={t('colourYellow')} value={color_ratios.yellow} colour="#FFC107" />
+          <ColourRatioBar label={t('colourOrange')} value={color_ratios.orange} colour="#FF9800" />
         </View>
 
         {/* ── Weather Info Card ── */}
         {(location !== 'N/A' || month !== 'N/A' || rainfall_mm > 0) && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>
-              🌦️ {language === 'si' ? 'කාලගුණ සාරාංශය' : 'Weather Summary'}
+              🌦️ {t('weatherSummary')}
             </Text>
             <View style={styles.weatherRow}>
               <View style={styles.weatherItem}>
                 <Text style={styles.weatherValue}>{location}</Text>
-                <Text style={styles.weatherMeta}>{language === 'si' ? 'ස්ථානය' : 'Location'}</Text>
+                <Text style={styles.weatherMeta}>{t('locationLabel')}</Text>
               </View>
               <View style={styles.weatherItem}>
                 <Text style={styles.weatherValue}>{rainfall_mm.toFixed(1)} mm</Text>
-                <Text style={styles.weatherMeta}>{language === 'si' ? 'වර්ෂාපතනය (දින 7)' : '7-day Rainfall'}</Text>
+                <Text style={styles.weatherMeta}>{t('rainfall7Day')}</Text>
               </View>
               <View style={styles.weatherItem}>
                 <Text style={styles.weatherValue}>{month}</Text>
-                <Text style={styles.weatherMeta}>{language === 'si' ? 'මාසය' : 'Month'}</Text>
+                <Text style={styles.weatherMeta}>{t('monthLabel')}</Text>
               </View>
             </View>
           </View>
@@ -187,7 +202,7 @@ export default function CustomerResultScreen() {
         {/* ── Price Table Card ── */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            💰 {language === 'si' ? 'අනුමාන මිල (LKR/kg)' : 'Estimated Price (LKR/kg)'}
+            💰 {t('estimatedPriceLKR')}
           </Text>
           {price_table.map((row, idx) => (
             <View key={row.variety + idx} style={styles.priceRow}>
@@ -197,9 +212,7 @@ export default function CustomerResultScreen() {
           ))}
           {seller_price != null && (
             <View style={styles.sellerPriceBox}>
-              <Text style={styles.sellerPriceLabel}>
-                {language === 'si' ? 'අලෙවිකරු ඉල්ලන මිල:' : 'Seller Asking Price:'}
-              </Text>
+              <Text style={styles.sellerPriceLabel}>{t('sellerAskingPriceLabel')}</Text>
               <Text style={styles.sellerPriceValue}>Rs. {seller_price.toFixed(2)}/kg</Text>
             </View>
           )}
@@ -209,14 +222,14 @@ export default function CustomerResultScreen() {
         {final_market_advice ? (
           <View style={[styles.card, styles.adviceCard]}>
             <Text style={styles.sectionTitle}>
-              🧠 {language === 'si' ? 'වෙළඳපල උපදේශය' : 'Market Advice'}
+              🧠 {t('marketAdviceTitle')}
             </Text>
             <Text style={styles.adviceText}>{final_market_advice}</Text>
           </View>
         ) : null}
 
         <PrimaryButton
-          title={language === 'si' ? 'නිම කරන්න' : 'Done'}
+          title={t('done')}
           onPress={() => router.back()}
           style={styles.doneButton}
         />

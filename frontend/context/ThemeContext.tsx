@@ -283,7 +283,44 @@ const translations: Record<Language, Record<string, string>> = {
     'bestSellingTime': 'Best Selling Time',
     'whyThisPrice': 'Why This Price?',
     'tip': 'Tip',
-    
+
+    // Market - Selling Day Options
+    'sellingToday': 'Today',
+    'selling1Day': '1 Day Later',
+    'selling2Days': '2 Days Later',
+    'selling3Days': '3 Days Later',
+    'selling4Days': '4 Days Later',
+    'selling5Days': '5 Days Later',
+
+    // Market - Category Descriptions
+    'categoryDescBest': 'Grade premium papayas for best market pricing',
+    'categoryDescFactory': 'Grade papayas suitable for factory processing',
+
+    // Market - Customer Result Labels
+    'ripenessAnalysis': 'Ripeness Analysis',
+    'colourBreakdown': 'Colour Breakdown',
+    'weatherSummary': 'Weather Summary',
+    'estimatedPriceLKR': 'Estimated Price (LKR/kg)',
+    'marketAdviceTitle': 'Market Advice',
+    'locationLabel': 'Location',
+    'rainfall7Day': '7-day Rainfall',
+    'monthLabel': 'Month',
+    'sellerAskingPriceLabel': 'Seller Asking Price:',
+    'confidenceLabel': 'Confidence',
+    'colourGreen': 'Green',
+    'colourYellow': 'Yellow',
+    'colourOrange': 'Orange',
+
+    // Market - Ripeness Labels
+    'ripenessUnripe': 'Unripe',
+    'ripenessHalfRipe': 'Half Ripe',
+    'ripenessMarketReady': 'Market Ready',
+    'ripenessOverripe': 'Overripe',
+
+    // Market - Farmer Result
+    'marketPriceSummary': 'Market Price Summary',
+    'marketTip': 'Market prices fluctuate based on supply and demand. Consider selling during the suggested time window for optimal returns.',
+
     // Harvest Module
     'harvestPredictionResults': 'Harvest Prediction Results',
     'enterPlantingDetails': 'Enter your planting details',
@@ -684,7 +721,44 @@ const translations: Record<Language, Record<string, string>> = {
     'bestSellingTime': 'හොඳම විකුණුම් කාලය',
     'whyThisPrice': 'මෙම මිල ඇයි?',
     'tip': 'උපදෙස',
-    
+
+    // Market - Selling Day Options
+    'sellingToday': 'අද',
+    'selling1Day': 'දින 1 කින්',
+    'selling2Days': 'දින 2 කින්',
+    'selling3Days': 'දින 3 කින්',
+    'selling4Days': 'දින 4 කින්',
+    'selling5Days': 'දින 5 කින්',
+
+    // Market - Category Descriptions
+    'categoryDescBest': 'හොඳම වෙළඳපල මිලකට ශ්‍රේෂ්ඨ පැපොල් ශ්‍රේණිගත කරන්න',
+    'categoryDescFactory': 'කාර්මික සැකසීමට සුදුසු පැපොල් ශ්‍රේණිගත කරන්න',
+
+    // Market - Customer Result Labels
+    'ripenessAnalysis': 'ශීර්ෂත්ව විශ්ලේෂණය',
+    'colourBreakdown': 'වර්ණ නිදර්ශනය',
+    'weatherSummary': 'කාලගුණ සාරාංශය',
+    'estimatedPriceLKR': 'අනුමාන මිල (LKR/kg)',
+    'marketAdviceTitle': 'වෙළඳපල උපදේශය',
+    'locationLabel': 'ස්ථානය',
+    'rainfall7Day': 'වර්ෂාපතනය (දින 7)',
+    'monthLabel': 'මාසය',
+    'sellerAskingPriceLabel': 'අලෙවිකරු ඉල්ලන මිල:',
+    'confidenceLabel': 'විශ්වාසය',
+    'colourGreen': 'කොළ',
+    'colourYellow': 'කහ',
+    'colourOrange': 'තැඹිලි',
+
+    // Market - Ripeness Labels
+    'ripenessUnripe': 'නොඉදුණු',
+    'ripenessHalfRipe': 'අර්ධ ඉදුණු',
+    'ripenessMarketReady': 'වෙළඳපලට සූදානම්',
+    'ripenessOverripe': 'අධිකව ඉදුණු',
+
+    // Market - Farmer Result
+    'marketPriceSummary': 'වෙළඳපල මිල සාරාංශය',
+    'marketTip': 'වෙළඳපල මිල ගණන් සැපයුම සහ ඉල්ලුම මත පදනම්ව උච්චාවචනය වේ. ප්‍රශස්ත ප්‍රතිලාභ සඳහා යෝජිත කාල කවුළුව තුළ විකිණීම සලකා බලන්න.',
+
     // Harvest Module
     'harvestPredictionResults': 'අස්වනු පුරෝකථන ප්‍රතිඵල',
     'enterPlantingDetails': 'ඔබේ රෝපණ විස්තර ඇතුළත් කරන්න',

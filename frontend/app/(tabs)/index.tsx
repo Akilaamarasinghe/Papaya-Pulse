@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Colors } from '../../constants/theme';
@@ -51,91 +52,116 @@ export default function HomeScreen() {
     return null;
   }
 
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return { text: 'Good Morning', icon: '☀️' };
+    if (h < 17) return { text: 'Good Afternoon', icon: '🌤️' };
+    return { text: 'Good Evening', icon: '🌙' };
+  })();
+
+  const dateStr = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const isFarmer = user.role === 'farmer';
+
   return (
     <ScreenContainer>
-      <Animated.View
-        style={{
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        }}
-      >
+      <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+
+        {/* ── Hero Header ── */}
         <LinearGradient
-          colors={currentTheme === 'dark' 
-            ? ['rgba(255, 160, 107, 0.15)', 'rgba(255, 107, 53, 0.05)']
-            : ['rgba(255, 107, 53, 0.08)', 'rgba(255, 160, 107, 0.02)']
+          colors={
+            currentTheme === 'dark'
+              ? ['#1E2D45', '#0F172A']
+              : ['#FF6B35', '#FF9A70']
           }
-          style={styles.headerGradient}
+          style={styles.heroCard}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          <View style={styles.header}>
-            <Text style={[styles.emoji]}>🌿</Text>
-            <Text style={[styles.title, { color: colors.primary }]}>Papaya Pulse</Text>
-            <Text style={[styles.subtitle, { color: colors.text }]}>
-              {t('welcome')}, {user.name}!
-            </Text>
-            <View style={[styles.badge, { backgroundColor: currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(255,107,53,0.1)' }]}>
-              <Text style={[styles.role, { color: colors.primary }]}>
-                {user.role === 'farmer' ? '🌾 Farmer' : '🛒 Customer'} • {user.district}
-              </Text>
+          <View style={styles.decorCircle1} />
+          <View style={styles.decorCircle2} />
+
+          <View style={styles.heroTop}>
+            <View style={styles.heroTextBlock}>
+              <Text style={styles.heroDate}>{dateStr}</Text>
+              <Text style={styles.heroGreeting}>{greeting.icon} {greeting.text},</Text>
+              <Text style={styles.heroName}>{user.name}!</Text>
+            </View>
+            <View style={styles.heroAvatar}>
+              <Text style={styles.heroAvatarEmoji}>{isFarmer ? '🌾' : '🛒'}</Text>
             </View>
           </View>
+
+          <View style={styles.heroBadge}>
+            <Ionicons name="location-outline" size={13} color="rgba(255,255,255,0.85)" />
+            <Text style={styles.heroBadgeText}>
+              {user.district} · {isFarmer ? 'Farmer' : 'Customer'}
+            </Text>
+          </View>
+
+          <View style={styles.brandTag}>
+            <Text style={styles.brandTagText}>🥭 Papaya Pulse</Text>
+          </View>
         </LinearGradient>
+
+        {/* ── Quick Stats ── */}
+        <View style={styles.statsRow}>
+          {[
+            { icon: 'trending-up-outline', color: colors.success, label: 'Market', value: 'Live' },
+            { icon: 'analytics-outline',   color: colors.info,    label: 'AI',     value: 'Powered' },
+            { icon: 'shield-checkmark-outline', color: colors.primary, label: 'Smart', value: 'Analysis' },
+          ].map((s) => (
+            <View
+              key={s.label}
+              style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}
+            >
+              <Ionicons name={s.icon as any} size={20} color={s.color} />
+              <Text style={[styles.statValue, { color: colors.text }]}>{s.value}</Text>
+              <Text style={[styles.statLabel, { color: colors.placeholder }]}>{s.label}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* ── Section Header ── */}
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+            {isFarmer ? '🚀 Your Tools' : '🛍️ Your Tools'}
+          </Text>
+          <Text style={[styles.sectionSubtitle, { color: colors.placeholder }]}>
+            {isFarmer ? 'Manage your papaya farm with AI' : 'Make smarter buying decisions'}
+          </Text>
+        </View>
+
+        {/* ── Module Cards ── */}
+        <View style={styles.modules}>
+          {isFarmer && (
+            <>
+              <Card title={t('growthStage')} icon="leaf" description={t('growthStageDesc')} onPress={() => router.push('/growth' as any)} />
+              <Card title={t('qualityCheck')} icon="star" description={t('qualityCheckDesc')} onPress={() => router.push('/quality' as any)} />
+              <Card title={t('marketPrice')} icon="cash" description={t('marketPriceDesc')} onPress={() => router.push('/market' as any)} />
+              <Card title={t('leafDisease')} icon="scan" description={t('leafDiseaseDesc')} onPress={() => router.push('/leaf' as any)} />
+            </>
+          )}
+          {user.role === 'customer' && (
+            <>
+              <Card title={t('qualityCheck')} icon="star" description={t('qualityCheckDesc')} onPress={() => router.push('/quality' as any)} />
+              <Card title={t('marketPrice')} icon="cash" description={t('marketPriceDesc')} onPress={() => router.push('/market' as any)} />
+            </>
+          )}
+        </View>
+
+        {/* ── Footer ── */}
+        <View style={[styles.footer, { borderTopColor: colors.border }]}>
+          <Text style={[styles.footerText, { color: colors.placeholder }]}>
+            🇱🇰 Empowering Sri Lanka's Papaya Farmers
+          </Text>
+        </View>
+
       </Animated.View>
-
-      <View style={styles.modules}>
-        {/* Farmer Dashboard - Shows all 4 options */}
-        {user.role === 'farmer' && (
-          <>
-            <Card
-              title={t('growthStage')}
-              icon="leaf"
-              description={t('growthStageDesc')}
-              onPress={() => router.push('/growth' as any)}
-            />
-
-            <Card
-              title={t('qualityCheck')}
-              icon="star"
-              description={t('qualityCheckDesc')}
-              onPress={() => router.push('/quality' as any)}
-            />
-
-            <Card
-              title={t('marketPrice')}
-              icon="cash"
-              description={t('marketPriceDesc')}
-              onPress={() => router.push('/market' as any)}
-            />
-
-            <Card
-              title={t('leafDisease')}
-              icon="scan"
-              description={t('leafDiseaseDesc')}
-              onPress={() => router.push('/leaf' as any)}
-            />
-          </>
-        )}
-
-        {/* Customer Dashboard - Shows only Quality Check and Market Prediction */}
-        {user.role === 'customer' && (
-          <>
-            <Card
-              title={t('qualityCheck')}
-              icon="star"
-              description={t('qualityCheckDesc')}
-              onPress={() => router.push('/quality' as any)}
-            />
-
-            <Card
-              title={t('marketPrice')}
-              icon="cash"
-              description={t('marketPriceDesc')}
-              onPress={() => router.push('/market' as any)}
-            />
-          </>
-        )}
-      </View>
     </ScreenContainer>
   );
 }
@@ -146,42 +172,150 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerGradient: {
-    borderRadius: 24,
-    marginBottom: 24,
-    padding: 24,
+  /* Hero */
+  heroCard: {
+    borderRadius: 28,
+    padding: 26,
+    marginBottom: 20,
+    overflow: 'hidden',
+    minHeight: 195,
+    position: 'relative',
   },
-  header: {
+  decorCircle1: {
+    position: 'absolute',
+    width: 190,
+    height: 190,
+    borderRadius: 95,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -60,
+    right: -45,
+  },
+  decorCircle2: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: -38,
+    left: -22,
+  },
+  heroTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  heroTextBlock: {
+    flex: 1,
+  },
+  heroDate: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.65)',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  heroGreeting: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.82)',
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  heroName: {
+    fontSize: 26,
+    color: '#FFFFFF',
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  heroAvatar: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 12,
   },
-  emoji: {
-    fontSize: 48,
-    marginBottom: 12,
+  heroAvatarEmoji: {
+    fontSize: 28,
   },
-  title: {
-    fontSize: 40,
-    fontWeight: '900',
-    marginBottom: 12,
-    letterSpacing: 0.5,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: '600',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  badge: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+  heroBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 20,
-    marginTop: 8,
+    alignSelf: 'flex-start',
+    gap: 5,
+    marginBottom: 4,
   },
-  role: {
-    fontSize: 16,
+  heroBadgeText: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 12.5,
     fontWeight: '600',
+  },
+  brandTag: {
+    position: 'absolute',
+    bottom: 14,
+    right: 18,
+  },
+  brandTagText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  /* Stats Row */
+  statsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+  },
+  statCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    gap: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  statValue: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  statLabel: {
+    fontSize: 10.5,
+    fontWeight: '500',
+  },
+  /* Section */
+  sectionHeader: {
+    marginBottom: 14,
+  },
+  sectionTitle: {
+    fontSize: 21,
+    fontWeight: '800',
+    marginBottom: 3,
+    letterSpacing: 0.1,
+  },
+  sectionSubtitle: {
+    fontSize: 13.5,
   },
   modules: {
-    marginBottom: 24,
+    marginBottom: 20,
+  },
+  /* Footer */
+  footer: {
+    paddingTop: 14,
+    borderTopWidth: 1,
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  footerText: {
+    fontSize: 12.5,
+    fontWeight: '500',
   },
 });

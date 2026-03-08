@@ -117,6 +117,7 @@ export default function CustomerPredictScreen() {
       if (sellerPrice.trim()) {
         formData.append('seller_price', sellerPrice.trim());
       }
+      formData.append('language', language);
 
       const response = await api.post<CustomerMarketResponse>(
         '/market/customer-predict',

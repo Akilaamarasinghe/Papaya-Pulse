@@ -6,8 +6,34 @@ import { useTheme } from '../../context/ThemeContext';
 import { PrimaryButton } from '../../components/shared/PrimaryButton';
 import { MarketPriceResponse } from '../../types';
 
+// Map English best_selling_day values to Sinhala
+const SELLING_DAY_SI_MAP: Record<string, string> = {
+  'today': 'අද',
+  'Today': 'අද',
+  'Week 0': 'අද',
+  'Week_0': 'අද',
+  'week0': 'අද',
+  'Week 1': 'සතිය 1',
+  'Week_1': 'සතිය 1',
+  'week1': 'සතිය 1',
+  'Week 2': 'සතිය 2',
+  'Week_2': 'සතිය 2',
+  'week2': 'සතිය 2',
+  '0': 'අද',
+  '1': 'සතිය 1',
+  '2': 'සතිය 2',
+};
+
+function getSellingDayDisplay(day: string, language: string): string {
+  if (language === 'si') {
+    // Check if a pre-translated Sinhala version exists
+    return SELLING_DAY_SI_MAP[day] ?? day;
+  }
+  return day;
+}
+
 export default function MarketResultScreen() {
-  const { t } = useTheme();
+  const { t, language } = useTheme();
   const params = useLocalSearchParams();
   const data: MarketPriceResponse = params.data 
     ? JSON.parse(params.data as string) 
@@ -25,6 +51,16 @@ export default function MarketResultScreen() {
   }
 
   const { predicted_price_per_kg, predicted_total_income, suggested_selling_day, explanation } = data;
+
+  // Use Sinhala selling day if language is 'si'; prefer backend-provided translation
+  const sellingDayDisplay = language === 'si'
+    ? ((data as any).suggested_selling_day_si || getSellingDayDisplay(suggested_selling_day, 'si'))
+    : suggested_selling_day;
+
+  // Use Sinhala explanation if language is 'si'; prefer backend-provided translation
+  const explanationLines: string[] = language === 'si'
+    ? ((data as any).explanation_si ?? explanation)
+    : explanation;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,13 +84,13 @@ export default function MarketResultScreen() {
 
           <View style={styles.timingBox}>
             <Text style={styles.timingLabel}>{t('bestSellingTime')}</Text>
-            <Text style={styles.timingValue}>{suggested_selling_day}</Text>
+            <Text style={styles.timingValue}>{sellingDayDisplay}</Text>
           </View>
         </View>
 
         <View style={styles.explanationCard}>
           <Text style={styles.sectionTitle}>{t('whyThisPrice')}</Text>
-          {explanation.map((line, index) => (
+          {explanationLines.map((line, index) => (
             <View key={index} style={styles.explanationItem}>
               <Text style={styles.bullet}>•</Text>
               <Text style={styles.explanationText}>{line}</Text>
@@ -64,11 +100,7 @@ export default function MarketResultScreen() {
 
         <View style={styles.tipCard}>
           <Text style={styles.tipTitle}>💡 {t('tip')}</Text>
-          <Text style={styles.tipText}>
-            {t('language') === 'si'
-              ? 'වෙළඳපල මිල ගණන් සැපයුම සහ ඉල්ලුම මත පදනම්ව උච්චාවචනය වේ. ප්‍රශස්ත ප්‍රතිලාභ සඳහා යෝජිත කාල කවුළුව තුළ විකිණීම සලකා බලන්න.'
-              : 'Market prices fluctuate based on supply and demand. Consider selling during the suggested time window for optimal returns.'}
-          </Text>
+          <Text style={styles.tipText}>{t('marketTip')}</Text>
         </View>
 
         <PrimaryButton

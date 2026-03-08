@@ -12,57 +12,88 @@ interface CardProps {
   description?: string;
 }
 
+const ICON_CONFIG: Record<string, { gradient: [string, string]; bg: string }> = {
+  leaf:  { gradient: ['#34D399', '#10B981'], bg: 'rgba(52,211,153,0.14)' },
+  star:  { gradient: ['#FBBF24', '#F59E0B'], bg: 'rgba(251,191,36,0.14)' },
+  cash:  { gradient: ['#60A5FA', '#3B82F6'], bg: 'rgba(96,165,250,0.14)' },
+  scan:  { gradient: ['#F472B6', '#EC4899'], bg: 'rgba(244,114,182,0.14)' },
+};
+
 export const Card: React.FC<CardProps> = ({ title, icon, onPress, description }) => {
   const { currentTheme } = useTheme();
   const colors = Colors[currentTheme];
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const handlePressIn = () => {
-    Animated.spring(scaleAnim, {
-      toValue: 0.96,
-      useNativeDriver: true,
-    }).start();
+  const cfg = ICON_CONFIG[icon] ?? {
+    gradient: [colors.primary, colors.primaryDark] as [string, string],
+    bg: `${colors.primary}22`,
   };
 
-  const handlePressOut = () => {
+  const handlePressIn = () =>
+    Animated.spring(scaleAnim, { toValue: 0.97, useNativeDriver: true }).start();
+
+  const handlePressOut = () =>
     Animated.spring(scaleAnim, {
       toValue: 1,
-      friction: 3,
+      friction: 4,
       tension: 40,
       useNativeDriver: true,
     }).start();
-  };
 
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-      <TouchableOpacity 
-        style={[styles.card, { 
-          backgroundColor: colors.card, 
-          borderColor: colors.border,
-          shadowColor: colors.shadow,
-        }]} 
-        onPress={onPress} 
+      <TouchableOpacity
+        style={[
+          styles.card,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+          },
+        ]}
+        onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        activeOpacity={0.9}
+        activeOpacity={0.95}
       >
+        {/* Left gradient accent bar */}
         <LinearGradient
-          colors={currentTheme === 'dark' 
-            ? ['rgba(255, 160, 107, 0.15)', 'rgba(255, 107, 53, 0.05)']
-            : ['rgba(255, 107, 53, 0.1)', 'rgba(255, 160, 107, 0.05)']
-          }
-          style={styles.iconContainer}
+          colors={cfg.gradient}
+          style={styles.accentBar}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <Ionicons name={icon as any} size={48} color={colors.primary} />
-        </LinearGradient>
+          end={{ x: 0, y: 1 }}
+        />
+
+        {/* Icon bubble */}
+        <View style={[styles.iconBubble, { backgroundColor: cfg.bg }]}>
+          <Ionicons name={icon as any} size={26} color={cfg.gradient[0]} />
+        </View>
+
+        {/* Text content */}
         <View style={styles.textContainer}>
           <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-          {description && <Text style={[styles.description, { color: colors.placeholder }]}>{description}</Text>}
+          {description && (
+            <Text
+              style={[styles.description, { color: colors.placeholder }]}
+              numberOfLines={2}
+            >
+              {description}
+            </Text>
+          )}
         </View>
-        <View style={[styles.arrowContainer, { backgroundColor: currentTheme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)' }]}>
-          <Ionicons name="chevron-forward" size={20} color={colors.primary} />
+
+        {/* Arrow */}
+        <View
+          style={[
+            styles.arrowBtn,
+            {
+              backgroundColor:
+                currentTheme === 'dark'
+                  ? 'rgba(255,255,255,0.07)'
+                  : 'rgba(0,0,0,0.04)',
+            },
+          ]}
+        >
+          <Ionicons name="chevron-forward" size={16} color={colors.primary} />
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -73,41 +104,51 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 20,
     borderRadius: 20,
-    marginBottom: 16,
+    marginBottom: 14,
     borderWidth: 1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 5,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    elevation: 4,
+    paddingVertical: 18,
+    paddingRight: 16,
+    paddingLeft: 0,
   },
-  iconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
+  accentBar: {
+    width: 4,
+    alignSelf: 'stretch',
+    marginRight: 16,
+  },
+  iconBubble: {
+    width: 54,
+    height: 54,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
+    marginRight: 14,
   },
   textContainer: {
     flex: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     marginBottom: 4,
-    letterSpacing: 0.2,
+    letterSpacing: 0.1,
   },
   description: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 12.5,
+    lineHeight: 17,
   },
-  arrowContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  arrowBtn: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft: 8,
   },
 });
