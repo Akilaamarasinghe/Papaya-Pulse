@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ const STAGE_PALETTE: Record<string, { bg: string; bgDark: string; accent: string
   d: { bg: '#FCE4EC', bgDark: '#301828', accent: '#880E4F', accentDark: '#F48FB1', border: '#E91E63' },
 };
 
-const STAGE_ICONS: Record<string, string> = { a: '≡ƒî▒', b: '≡ƒî┐', c: '≡ƒî╕', d: '≡ƒìê' };
+const STAGE_ICONS: Record<string, string> = { a: '🌱', b: '🌿', c: '🌸', d: '🍈' };
 
 function SectionCard({
   title,
@@ -79,7 +79,7 @@ export default function StageResultScreen() {
     );
   }
 
-  // ΓöÇΓöÇ Not a papaya ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  // ── Not a papaya ──────────────────────────────────
   if (!mlResult.is_papaya) {
     const val = mlResult.papaya_validation;
     return (
@@ -95,7 +95,7 @@ export default function StageResultScreen() {
               { backgroundColor: isDark ? '#3A1A1A' : '#FFEBEE', borderColor: colors.error },
             ]}
           >
-            <Text style={styles.notPapayaIcon}>Γ¥î</Text>
+            <Text style={styles.notPapayaIcon}>❌</Text>
             <Text style={[styles.notPapayaTitle, { color: colors.error }]}>{t('notPapaya')}</Text>
             <Text style={[styles.notPapayaDesc, { color: isDark ? '#EF9A9A' : '#B71C1C' }]}>
               {t('notPapayaDesc')}
@@ -110,7 +110,7 @@ export default function StageResultScreen() {
             ]}
           >
             <Text style={[styles.sectionCardTitle, { color: colors.error }]}>
-              ≡ƒôè {t('papayaValidation')}
+              📊 {t('papayaValidation')}
             </Text>
             <View style={styles.confidenceRow}>
               <Text style={[styles.confidenceLabel, { color: colors.placeholder }]}>
@@ -123,7 +123,7 @@ export default function StageResultScreen() {
             <View style={styles.confidenceRow}>
               <Text style={[styles.confidenceLabel, { color: colors.placeholder }]}>Papaya</Text>
               <Text style={[styles.confidenceValue, { color: colors.success }]}>
-                {val.probabilities['papaya'] ?? 0}% (needs ΓëÑ {val.threshold_required}%)
+                {val.probabilities['papaya'] ?? 0}% (needs ≥ {val.threshold_required}%)
               </Text>
             </View>
           </View>
@@ -144,7 +144,7 @@ export default function StageResultScreen() {
     );
   }
 
-  // ΓöÇΓöÇ Papaya detected ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  // ── Papaya detected ───────────────────────────────
   const grade = mlResult.grade_prediction;
   const guidance = mlResult.growth_guidance;
   const stageCode = grade?.grade?.toLowerCase() ?? 'a';
@@ -153,7 +153,7 @@ export default function StageResultScreen() {
   const si = <T,>(siVal: T | undefined, enVal: T): T =>
     isSinhala && siVal !== undefined ? siVal : enVal;
   const palette = STAGE_PALETTE[stageCode] ?? STAGE_PALETTE['a'];
-  const stageIcon = STAGE_ICONS[stageCode] ?? '≡ƒî▒';
+  const stageIcon = STAGE_ICONS[stageCode] ?? '🌱';
   const accentColor = isDark ? palette.accentDark : palette.accent;
   const bgColor = isDark ? palette.bgDark : palette.bg;
 
@@ -166,14 +166,14 @@ export default function StageResultScreen() {
           <Image source={{ uri: imageUri }} style={styles.topImage} />
         ) : null}
 
-        {/* ΓöÇΓöÇ Validation Badge ΓöÇΓöÇ */}
+        {/* ── Validation Badge ── */}
         <View
           style={[
             styles.validationBadge,
             { backgroundColor: isDark ? '#183018' : '#E8F5E9', borderColor: colors.success },
           ]}
         >
-          <Text style={styles.validationIcon}>Γ£à</Text>
+          <Text style={styles.validationIcon}>✅</Text>
           <View style={styles.validationText}>
             <Text style={[styles.validationTitle, { color: colors.success }]}>
               {t('validationPassed')}
@@ -184,7 +184,7 @@ export default function StageResultScreen() {
           </View>
         </View>
 
-        {/* ΓöÇΓöÇ Detected Stage Hero ΓöÇΓöÇ */}
+        {/* ── Detected Stage Hero ── */}
         {grade && (
           <View style={[styles.stageHero, { backgroundColor: bgColor, borderColor: palette.border }]}>
             <Text style={styles.stageHeroIcon}>{stageIcon}</Text>
@@ -204,9 +204,9 @@ export default function StageResultScreen() {
           </View>
         )}
 
-        {/* ΓöÇΓöÇ Stage Probabilities ΓöÇΓöÇ */}
+        {/* ── Stage Probabilities ── */}
         {grade && (
-          <SectionCard title="≡ƒôè Stage Probabilities" color={accentColor} borderColor={palette.border}>
+          <SectionCard title="📊 Stage Probabilities" color={accentColor} borderColor={palette.border}>
             {Object.entries(grade.probabilities).map(([key, val]) => (
               <View key={key} style={styles.probRow}>
                 <Text style={[styles.probLabel, { color: colors.text }]}>
@@ -229,17 +229,17 @@ export default function StageResultScreen() {
           </SectionCard>
         )}
 
-        {/* ΓöÇΓöÇ Stage Characteristics ΓöÇΓöÇ */}
+        {/* ── Stage Characteristics ── */}
         {guidance?.current_stage && (
-          <SectionCard title={`≡ƒöì ${t('stageCharacteristics')}`} color={accentColor} borderColor={palette.border}>
+          <SectionCard title={`🔍 ${t('stageCharacteristics')}`} color={accentColor} borderColor={palette.border}>
             <InfoRow
-              label={`≡ƒôÅ ${t('height')}`}
+              label={`📏 ${t('height')}`}
               value={si(guidance.current_stage.height_si, guidance.current_stage.height)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
             />
             <InfoRow
-              label={`ΓÅ▒ ${t('duration')}`}
+              label={`⏱ ${t('duration')}`}
               value={si(guidance.current_stage.duration_si, guidance.current_stage.duration)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
@@ -250,29 +250,29 @@ export default function StageResultScreen() {
           </SectionCard>
         )}
 
-        {/* ΓöÇΓöÇ Care Instructions ΓöÇΓöÇ */}
+        {/* ── Care Instructions ── */}
         {guidance?.care_instructions && (
-          <SectionCard title={`≡ƒî┐ ${t('careInstructions')}`} color={accentColor} borderColor={palette.border}>
+          <SectionCard title={`🌿 ${t('careInstructions')}`} color={accentColor} borderColor={palette.border}>
             <InfoRow
-              label={`≡ƒÆº ${t('watering')}`}
+              label={`💧 ${t('watering')}`}
               value={si(guidance.care_instructions.watering_si, guidance.care_instructions.watering)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
             />
             <InfoRow
-              label={`≡ƒî╛ ${t('fertilizer')}`}
+              label={`🌾 ${t('fertilizer')}`}
               value={si(guidance.care_instructions.fertilizer_si, guidance.care_instructions.fertilizer)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
             />
             <InfoRow
-              label={`≡ƒ¬▒ ${t('soilCare')}`}
+              label={`🪱 ${t('soilCare')}`}
               value={si(guidance.care_instructions.soil_si, guidance.care_instructions.soil)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
             />
             <InfoRow
-              label={`≡ƒ¢í∩╕Å ${t('protection')}`}
+              label={`🛡️ ${t('protection')}`}
               value={si(guidance.care_instructions.protection_si, guidance.care_instructions.protection)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
@@ -280,17 +280,17 @@ export default function StageResultScreen() {
           </SectionCard>
         )}
 
-        {/* ΓöÇΓöÇ Transition Guide ΓöÇΓöÇ */}
+        {/* ── Transition Guide ── */}
         {guidance?.transition_guide && (
-          <SectionCard title={`≡ƒÜÇ ${t('transitionGuide')}`} color={accentColor} borderColor={palette.border}>
+          <SectionCard title={`🚀 ${t('transitionGuide')}`} color={accentColor} borderColor={palette.border}>
             <InfoRow
-              label={`≡ƒÄ» ${t('nextStage')}`}
+              label={`🎯 ${t('nextStage')}`}
               value={si(guidance.transition_guide.next_stage_si, guidance.transition_guide.next_stage)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
             />
             <InfoRow
-              label={`≡ƒæü ${t('signsToWatch')}`}
+              label={`👁 ${t('signsToWatch')}`}
               value={si(guidance.transition_guide.signs_to_watch_si, guidance.transition_guide.signs_to_watch)}
               labelColor={colors.placeholder}
               valueColor={colors.text}
@@ -302,10 +302,10 @@ export default function StageResultScreen() {
           </SectionCard>
         )}
 
-        {/* ΓöÇΓöÇ Expert Guidance ΓöÇΓöÇ */}
+        {/* ── Expert Guidance ── */}
         {guidance?.expert_guidance &&
           !guidance.expert_guidance.toLowerCase().includes('unable') && (
-            <SectionCard title={`≡ƒÆí ${t('expertGuidance')}`} color={isDark ? '#C084FC' : '#7E22CE'} borderColor={isDark ? '#9333EA' : '#7E22CE'}>
+            <SectionCard title={`💡 ${t('expertGuidance')}`} color={isDark ? '#C084FC' : '#7E22CE'} borderColor={isDark ? '#9333EA' : '#7E22CE'}>
               <Text style={[styles.expertText, { color: colors.text }]}>{guidance.expert_guidance}</Text>
             </SectionCard>
           )}

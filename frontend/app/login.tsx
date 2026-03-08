@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, Alert, Animated, Image } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -74,7 +74,11 @@ export default function LoginScreen() {
           <View style={styles.heroDecor1} />
           <View style={styles.heroDecor2} />
           <View style={styles.heroAvatarBox}>
-            <Text style={styles.heroEmoji}>🥭</Text>
+            <Image
+              source={require('../assets/images/logo.png')}
+              style={styles.logoImg}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.heroTitle}>Papaya Pulse</Text>
           <Text style={styles.heroSubtitle}>{t('welcome')}</Text>
@@ -144,16 +148,18 @@ const styles = StyleSheet.create({
     left: -25,
   },
   heroAvatarBox: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    overflow: 'hidden',
   },
-  heroEmoji: {
-    fontSize: 40,
+  logoImg: {
+    width: 100,
+    height: 100,
   },
   heroTitle: {
     fontSize: 34,

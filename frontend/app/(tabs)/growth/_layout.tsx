@@ -20,8 +20,10 @@ export default function GrowthLayout() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="stage-check" options={{ title: 'Stage Check' }} />
       <Stack.Screen name="stage-result" options={{ title: 'Growth Stage Result' }} />
+      <Stack.Screen name="stage-history" options={{ title: 'Stage Scan History', headerShown: false }} />
       <Stack.Screen name="harvest-form" options={{ title: 'Harvest Prediction' }} />
       <Stack.Screen name="harvest-result" options={{ title: 'Results' }} />
+      <Stack.Screen name="harvest-history" options={{ title: 'Harvest History', headerShown: false }} />
     </Stack>
   );
 }

@@ -536,7 +536,7 @@ def build_farmer_explanation_si(
     explanation.append("අස්වනු නෙළීමට මෙතරම් කාලය ගත වන්නේ ඇයි:")
 
     explanation.append(
-        f"- උෂ්ණත්වය ({avg_temp:.1f}°C) ගෙඩි 익어ගන්නා වේගය පාලනය කරයි."
+        f"- උෂ්ණත්වය ({avg_temp:.1f}°C) ගෙඩි ගන්නා වේගය පාලනය කරයි."
     )
 
     explanation.append(

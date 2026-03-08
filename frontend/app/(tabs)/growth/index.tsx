@@ -59,12 +59,38 @@ export default function GrowthIndexScreen() {
         onPress={() => router.push('/growth/stage-check')}
       />
 
+      {/* Stage history button */}
+      <TouchableOpacity
+        style={[styles.historyBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+        onPress={() => router.push('/growth/stage-history' as any)}
+        activeOpacity={0.85}
+      >
+        <View style={[styles.historyIconBox, { backgroundColor: 'rgba(52,211,153,0.14)' }]}>
+          <Ionicons name="time-outline" size={20} color="#34D399" />
+        </View>
+        <Text style={[styles.historyBtnText, { color: colors.text }]}>View Stage Scan History</Text>
+        <Ionicons name="chevron-forward" size={18} color={colors.placeholder} />
+      </TouchableOpacity>
+
       <Card
         title={t('harvestPrediction')}
         icon="calendar"
         description={t('calculateHarvestTime')}
         onPress={() => router.push('/growth/harvest-form')}
       />
+
+      {/* Harvest history button */}
+      <TouchableOpacity
+        style={[styles.historyBtn, { backgroundColor: colors.card, borderColor: colors.border }]}
+        onPress={() => router.push('/growth/harvest-history' as any)}
+        activeOpacity={0.85}
+      >
+        <View style={[styles.historyIconBox, { backgroundColor: 'rgba(16,185,129,0.14)' }]}>
+          <Ionicons name="calendar-outline" size={20} color="#10B981" />
+        </View>
+        <Text style={[styles.historyBtnText, { color: colors.text }]}>View Harvest History</Text>
+        <Ionicons name="chevron-forward" size={18} color={colors.placeholder} />
+      </TouchableOpacity>
     </ScreenContainer>
   );
 }
@@ -141,5 +167,26 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     color: 'rgba(255,255,255,0.75)',
     textAlign: 'center',
+  },
+  historyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 14,
+    marginBottom: 10,
+  },
+  historyIconBox: {
+    width: 38,
+    height: 38,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  historyBtnText: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

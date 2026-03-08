@@ -181,9 +181,17 @@ export default function OnboardingScreen() {
       >
         {/* Icon */}
         <View style={styles.iconContainer}>
-          <View style={[styles.iconCircle, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
-            <Ionicons name={currentSlide.icon} size={80} color="#FFFFFF" />
-          </View>
+          {currentIndex === 0 ? (
+            <Image
+              source={require('../assets/images/logo.png')}
+              style={styles.logoImg}
+              resizeMode="contain"
+            />
+          ) : (
+            <View style={[styles.iconCircle, { backgroundColor: 'rgba(255,255,255,0.3)' }]}>
+              <Ionicons name={currentSlide.icon} size={80} color="#FFFFFF" />
+            </View>
+          )}
         </View>
 
         {/* Title */}
@@ -269,6 +277,10 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginBottom: 40,
+  },
+  logoImg: {
+    width: 200,
+    height: 200,
   },
   iconCircle: {
     width: 160,

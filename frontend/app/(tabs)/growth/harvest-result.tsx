@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,8 +32,8 @@ export default function HarvestResultScreen() {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
   const monthNamesSi = [
-    'α╢óα╢▒α╖Çα╖Åα╢╗α╖Æ', 'α╢┤α╖Öα╢╢α╢╗α╖Çα╖Åα╢╗α╖Æ', 'α╢╕α╖Åα╢╗α╖èα╢¡α╖ö', 'α╢àα╢┤α╖èΓÇìα╢╗α╖Üα╢╜α╖è', 'α╢╕α╖Éα╢║α╖Æ', 'α╢óα╖ûα╢▒α╖Æ',
-    'α╢óα╖ûα╢╜α╖Æ', 'α╢àα╢£α╖¥α╖âα╖èα╢¡α╖ö', 'α╖âα╖Éα╢┤α╖èα╢¡α╖Éα╢╕α╖èα╢╢α╢╗α╖è', 'α╢öα╢Üα╖èα╢¡α╖¥α╢╢α╢╗α╖è', 'α╢▒α╖£α╖Çα╖Éα╢╕α╖èα╢╢α╢╗α╖è', 'α╢»α╖Öα╖âα╖Éα╢╕α╖èα╢╢α╢╗α╖è'
+    'ජනවාරි', 'පෙබරවාරි', 'මාර්තු', 'අප්‍රේල්', 'මැයි', 'ජූනි',
+    'ජූලි', 'අගෝස්තු', 'සැප්තැම්බර්', 'ඔක්තෝබර්', 'නොවැම්බර්', 'දෙසැම්බර්'
   ];
 
   const today = new Date();
@@ -46,7 +46,7 @@ export default function HarvestResultScreen() {
     ? farmer_explanation_si
     : farmer_explanation;
 
-  const daysLabel = isSinhala ? 'α╢»α╖Æα╢▒' : 'days';
+  const daysLabel = isSinhala ? 'දින' : 'days';
 
   return (
     <SafeAreaView style={styles.container}>

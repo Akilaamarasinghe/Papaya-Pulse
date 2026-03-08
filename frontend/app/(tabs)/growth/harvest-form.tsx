@@ -1,6 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../../../context/ThemeContext';
 import { ScreenContainer } from '../../../components/shared/ScreenContainer';
 import { LabeledInput } from '../../../components/shared/LabeledInput';
@@ -8,7 +9,9 @@ import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import { Dropdown } from '../../../components/shared/Dropdown';
 import api from '../../../config/api';
 import { useAuth } from '../../../context/AuthContext';
-import { District, HarvestPredictionRequest, HarvestPredictionResponse } from '../../../types';
+import { District, HarvestPredictionRequest, HarvestPredictionResponse, HarvestPredictionHistory } from '../../../types';
+
+const HARVEST_HISTORY_KEY = 'harvest_prediction_history';
 
 export default function HarvestFormScreen() {
   const { user } = useAuth();
@@ -88,6 +91,29 @@ export default function HarvestFormScreen() {
       );
 
       console.log('Harvest prediction response:', response.data);
+
+      // Save to history
+      try {
+        const historyItem: HarvestPredictionHistory = {
+          id: Date.now().toString(),
+          timestamp: new Date().toISOString(),
+          input: {
+            district: requestData.district,
+            soil_type: requestData.soil_type,
+            watering_method: requestData.watering_method,
+            watering_frequency: requestData.watering_frequency,
+            trees_count: requestData.trees_count,
+            plant_month: requestData.plant_month,
+          },
+          result: response.data,
+        };
+        const existing = await AsyncStorage.getItem(HARVEST_HISTORY_KEY);
+        const list: HarvestPredictionHistory[] = existing ? JSON.parse(existing) : [];
+        list.unshift(historyItem);
+        await AsyncStorage.setItem(HARVEST_HISTORY_KEY, JSON.stringify(list.slice(0, 50)));
+      } catch (e) {
+        console.warn('Harvest history save failed:', e);
+      }
 
       // Navigate to result screen with data
       router.push({

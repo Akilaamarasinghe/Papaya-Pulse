@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
@@ -34,47 +34,47 @@ export default function MarketPredictFormScreen() {
   ];
 
   const varietyOptions = [
-    { label: language === 'si' ? 'α╢╗α╢¡α╖ö α╢╜α╖Üα╢⌐α╖Æ' : 'Red Lady', value: 'RedLady' as PapayaVariety },
-    { label: language === 'si' ? 'α╢ºα╢║α╖Æα╢▒α╖öα╢é' : 'Tainung', value: 'Tenim' as PapayaVariety },
+    { label: language === 'si' ? 'රතු ලේඩි' : 'Red Lady', value: 'RedLady' as PapayaVariety },
+    { label: language === 'si' ? 'ටයිනුං' : 'Tainung', value: 'Tenim' as PapayaVariety },
   ];
 
   const cultivationOptions = [
-    { label: language === 'si' ? 'α╢Üα╖Åα╢╢α╢▒α╖Æα╢Ü' : 'Organic', value: 'Organic' as CultivationMethod },
-    { label: language === 'si' ? 'α╢àα╢Üα╖Åα╢╢α╢▒α╖Æα╢Ü' : 'Inorganic', value: 'Inorganic' as CultivationMethod },
+    { label: language === 'si' ? 'කාබනික' : 'Organic', value: 'Organic' as CultivationMethod },
+    { label: language === 'si' ? 'අකාබනික' : 'Inorganic', value: 'Inorganic' as CultivationMethod },
   ];
 
   // Different options based on category
   const gradeOptions = category === 'best'
     ? [
-        { label: language === 'si' ? 'α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢║ I' : 'Grade I', value: 'I' as QualityGrade },
-        { label: language === 'si' ? 'α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢║ II' : 'Grade II', value: 'II' as QualityGrade },
-        { label: language === 'si' ? 'α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢║ III' : 'Grade III', value: 'III' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය I' : 'Grade I', value: 'I' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය II' : 'Grade II', value: 'II' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය III' : 'Grade III', value: 'III' as QualityGrade },
       ]
     : [
-        { label: language === 'si' ? 'α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢║ A' : 'Grade A', value: 'A' as QualityGrade },
-        { label: language === 'si' ? 'α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢║ B' : 'Grade B', value: 'B' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය A' : 'Grade A', value: 'A' as QualityGrade },
+        { label: language === 'si' ? 'ශ්‍රේණිය B' : 'Grade B', value: 'B' as QualityGrade },
       ];
 
   const sellingDayOptions = category === 'best'
     ? [
-        { label: language === 'si' ? 'α╢àα╢»' : 'Today', value: 'today' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 1 α╢Üα╖Æα╢▒α╖è' : '1 Day', value: '1day' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 2 α╢Üα╖Æα╢▒α╖è' : '2 Days', value: '2day' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 3 α╢Üα╖Æα╢▒α╖è' : '3 Days', value: '3day' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 4 α╢Üα╖Æα╢▒α╖è' : '4 Days', value: '4day' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 5 α╢Üα╖Æα╢▒α╖è' : '5 Days', value: '5day' },
+        { label: language === 'si' ? 'අද' : 'Today', value: 'today' },
+        { label: language === 'si' ? 'දින 1 කින්' : '1 Day', value: '1day' },
+        { label: language === 'si' ? 'දින 2 කින්' : '2 Days', value: '2day' },
+        { label: language === 'si' ? 'දින 3 කින්' : '3 Days', value: '3day' },
+        { label: language === 'si' ? 'දින 4 කින්' : '4 Days', value: '4day' },
+        { label: language === 'si' ? 'දින 5 කින්' : '5 Days', value: '5day' },
       ]
     : [
-        { label: language === 'si' ? 'α╢àα╢»' : 'Today', value: 'today' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 1 α╢Üα╖Æα╢▒α╖è' : '1 Day', value: '1day' },
-        { label: language === 'si' ? 'α╢»α╖Æα╢▒ 2 α╢Üα╖Æα╢▒α╖è' : '2 Days', value: '2day' },
+        { label: language === 'si' ? 'අද' : 'Today', value: 'today' },
+        { label: language === 'si' ? 'දින 1 කින්' : '1 Day', value: '1day' },
+        { label: language === 'si' ? 'දින 2 කින්' : '2 Days', value: '2day' },
       ];
 
   const predictPrice = async () => {
     if (!formData.total_harvest_count || !formData.avg_weight_per_fruit || !formData.expected_selling_date) {
       Alert.alert(
-        language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error',
-        language === 'si' ? 'α╢Üα╢╗α╖öα╢½α╖Åα╢Üα╢╗ α╖âα╖Æα╢║α╢╜α╖ö α╢Üα╖èα╖éα╖Üα╢¡α╖èΓÇìα╢╗ α╢┤α╖öα╢╗α╖Çα╢▒α╖èα╢▒' : 'Please fill in all fields'
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර සියලු ක්ෂේත්‍ර පුරවන්න' : 'Please fill in all fields'
       );
       return;
     }
@@ -84,8 +84,8 @@ export default function MarketPredictFormScreen() {
 
     if (isNaN(harvestCount) || isNaN(avgWeight) || harvestCount <= 0 || avgWeight <= 0) {
       Alert.alert(
-        language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error',
-        language === 'si' ? 'α╢Üα╢╗α╖öα╢½α╖Åα╢Üα╢╗ α╖Çα╢╜α╢éα╢£α╖ö α╖âα╢éα╢¢α╖èΓÇìα╢║α╖Å α╢çα╢¡α╖öα╖àα╢¡α╖è α╢Üα╢╗α╢▒α╖èα╢▒' : 'Please enter valid numbers'
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර වලංගු සංඛ්‍යා ඇතුළත් කරන්න' : 'Please enter valid numbers'
       );
       return;
     }
@@ -118,9 +118,9 @@ export default function MarketPredictFormScreen() {
     } catch (error: any) {
       console.error('Market price prediction error:', error);
       Alert.alert(
-        language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error',
+        language === 'si' ? 'දෝෂයකි' : 'Error',
         language === 'si'
-          ? 'α╖Çα╖Öα╖àα╢│α╢┤α╢╜ α╢╕α╖Æα╢╜ α╢┤α╖öα╢╗α╖¥α╢Üα╢«α╢▒α╢║ α╢àα╖âα╖Åα╢╗α╖èα╢«α╢Ü α╖Çα╖Æα╢║. α╢▒α╖Éα╖Çα╢¡ α╢ïα╢¡α╖èα╖âα╖Åα╖ä α╢Üα╢╗α╢▒α╖èα╢▒.'
+          ? 'වෙළඳපල මිල පුරෝකථනය අසාර්ථක විය. නැවත උත්සාහ කරන්න.'
           : 'Failed to predict market price. Please try again.'
       );
     } finally {
@@ -129,12 +129,12 @@ export default function MarketPredictFormScreen() {
   };
 
   const categoryTitle = category === 'best' 
-    ? (language === 'si' ? 'α╖äα╖£α╢│α╢╕ α╢£α╖öα╢½α╖Åα╢¡α╖èα╢╕α╢Ü α╢┤α╖Éα╢┤α╖£α╢╜α╖è' : 'Best Quality Papayas')
-    : (language === 'si' ? 'α╢Üα╢╗α╖èα╢╕α╖Åα╢▒α╖èα╢¡α╖üα╖Åα╢╜α╖Å α╢àα╢╜α╖Öα╖Çα╖Æα╖âα╖Éα╢╜α╖è α╢┤α╖Éα╢┤α╖£α╢╜α╖è' : 'Factory Outlet Papayas');
+    ? (language === 'si' ? 'හොඳම ගුණාත්මක පැපොල්' : 'Best Quality Papayas')
+    : (language === 'si' ? 'කර්මාන්තශාලා අලෙවිසැල් පැපොල්' : 'Factory Outlet Papayas');
 
   const categoryDesc = category === 'best'
-    ? (language === 'si' ? 'α╖äα╖£α╢│α╢╕ α╖Çα╖Öα╖àα╢│α╢┤α╢╜ α╢╕α╖Æα╢╜α╢Üα╢º α╖üα╖èΓÇìα╢╗α╖Üα╖éα╖èα╢¿ α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢£α╢¡ α╢Üα╢╗α╢▒α╖èα╢▒' : 'Grade premium papayas for best market pricing')
-    : (language === 'si' ? 'α╢Üα╖Åα╢╗α╖èα╢╕α╖Æα╢Ü α╖âα╖Éα╢Üα╖âα╖ôα╢╕α╢º α╖âα╖öα╢»α╖öα╖âα╖ö α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╖üα╖èΓÇìα╢╗α╖Üα╢½α╖Æα╢£α╢¡ α╢Üα╢╗α╢▒α╖èα╢▒' : 'Grade papayas suitable for factory processing');
+    ? (language === 'si' ? 'හොඳම වෙළඳපල මිලකට ශ්‍රේෂ්ඨ පැපොල් ශ්‍රේණිගත කරන්න' : 'Grade premium papayas for best market pricing')
+    : (language === 'si' ? 'කාර්මික සැකසීමට සුදුසු පැපොල් ශ්‍රේණිගත කරන්න' : 'Grade papayas suitable for factory processing');
 
   return (
     <ScreenContainer>

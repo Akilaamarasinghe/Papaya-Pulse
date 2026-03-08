@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Animated, TouchableOpacity, Image } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -104,7 +104,12 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.brandTag}>
-            <Text style={styles.brandTagText}>🥭 Papaya Pulse</Text>
+            <Image
+              source={require('../../assets/images/logo.png')}
+              style={styles.brandLogo}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandTagText}>Papaya Pulse</Text>
           </View>
         </LinearGradient>
 
@@ -277,6 +282,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 14,
     right: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  brandLogo: {
+    width: 22,
+    height: 22,
   },
   brandTagText: {
     color: 'rgba(255,255,255,0.5)',

@@ -269,6 +269,29 @@ export interface LeafPredictionHistory extends LeafDiseaseResponse {
   imageUri?: string;
 }
 
+// Growth Stage History
+export interface GrowthStageHistory {
+  id: string;
+  timestamp: string;
+  imageUri?: string;
+  result: GrowthStageMLResponse;
+}
+
+// Harvest Prediction History
+export interface HarvestPredictionHistory {
+  id: string;
+  timestamp: string;
+  input: {
+    district: string;
+    soil_type: string;
+    watering_method: string;
+    watering_frequency: number;
+    trees_count: number;
+    plant_month: number;
+  };
+  result: HarvestPredictionResponse;
+}
+
 // Leaf Disease Recommendation Types
 export type GrowthStage = 'vegetative' | 'flowering' | 'fruiting';
 

@@ -7,8 +7,10 @@ import {
   Alert,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../../context/ThemeContext';
@@ -16,7 +18,9 @@ import { Colors } from '../../../constants/theme';
 import { ScreenContainer } from '../../../components/shared/ScreenContainer';
 import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 import api from '../../../config/api';
-import { GrowthStageMLResponse } from '../../../types';
+import { GrowthStageMLResponse, GrowthStageHistory } from '../../../types';
+
+const STAGE_HISTORY_KEY = 'growth_stage_history';
 
 const STAGE_ICONS: Record<string, string> = {
   a: '🌱',
@@ -83,17 +87,39 @@ export default function StageCheckScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('file', {
-        uri: imageUri,
-        type: 'image/jpeg',
-        name: 'plant.jpg',
-      } as any);
+      if (Platform.OS === 'web') {
+        const res = await fetch(imageUri);
+        const blob = await res.blob();
+        formData.append('file', blob, 'plant.jpg');
+      } else {
+        formData.append('file', {
+          uri: imageUri,
+          type: 'image/jpeg',
+          name: 'plant.jpg',
+        } as any);
+      }
       formData.append('language', language);
 
       const response = await api.post<GrowthStageMLResponse>('/growth/stage', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 90000,
       });
+
+      // Save to history
+      try {
+        const historyItem: GrowthStageHistory = {
+          id: Date.now().toString(),
+          timestamp: new Date().toISOString(),
+          imageUri,
+          result: response.data,
+        };
+        const existing = await AsyncStorage.getItem(STAGE_HISTORY_KEY);
+        const list: GrowthStageHistory[] = existing ? JSON.parse(existing) : [];
+        list.unshift(historyItem);
+        await AsyncStorage.setItem(STAGE_HISTORY_KEY, JSON.stringify(list.slice(0, 50)));
+      } catch (e) {
+        console.warn('Stage history save failed:', e);
+      }
 
       router.push({
         pathname: '/growth/stage-result',

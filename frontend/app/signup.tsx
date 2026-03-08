@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../context/AuthContext';
@@ -78,7 +78,11 @@ export default function SignUpScreen() {
         <View style={styles.heroDecor1} />
         <View style={styles.heroDecor2} />
         <View style={styles.heroAvatarBox}>
-          <Text style={styles.heroEmoji}>🌾</Text>
+          <Image
+            source={require('../assets/images/logo.png')}
+            style={styles.logoImg}
+            resizeMode="contain"
+          />
         </View>
         <Text style={styles.heroTitle}>{t('createAccount')}</Text>
         <Text style={styles.heroDesc}>{t('joinPapayaPulse')}</Text>
@@ -177,16 +181,18 @@ const styles = StyleSheet.create({
     left: -22,
   },
   heroAvatarBox: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
+    overflow: 'hidden',
   },
-  heroEmoji: {
-    fontSize: 34,
+  logoImg: {
+    width: 90,
+    height: 90,
   },
   heroTitle: {
     fontSize: 26,

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList, Image,
   TouchableOpacity, Alert,
@@ -12,7 +12,7 @@ import { LeafPredictionHistory } from '../../../types';
 const HISTORY_KEY = 'leaf_disease_history';
 
 const pct = (v?: number) =>
-  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : 'ΓÇö';
+  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : '—';
 
 const fmtStage = (s?: string | null) =>
   s ? s.replace(/[_-]/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase()) : null;
@@ -20,7 +20,7 @@ const fmtStage = (s?: string | null) =>
 const fmtDate = (ts: string) => {
   const d = new Date(ts);
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-    + ' ┬╖ '
+    + ' · '
     + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
@@ -116,18 +116,18 @@ export default function LeafHistoryScreen() {
     );
   };
 
-  // ΓöÇΓöÇ Loading ΓöÇΓöÇ
+  // ── Loading ──
   if (loading) {
     return (
       <SafeAreaView style={s.safe}>
         <View style={s.center}>
-          <Text style={s.loadText}>Loading historyΓÇª</Text>
+          <Text style={s.loadText}>Loading history…</Text>
         </View>
       </SafeAreaView>
     );
   }
 
-  // ΓöÇΓöÇ Empty ΓöÇΓöÇ
+  // ── Empty ──
   if (history.length === 0) {
     return (
       <SafeAreaView style={s.safe} edges={['bottom']}>
@@ -148,7 +148,7 @@ export default function LeafHistoryScreen() {
     );
   }
 
-  // ΓöÇΓöÇ List ΓöÇΓöÇ
+  // ── List ──
   return (
     <SafeAreaView style={s.safe} edges={['bottom']}>
       <FlatList

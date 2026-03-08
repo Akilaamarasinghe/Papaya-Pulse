@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -34,10 +34,42 @@ export default function CustomerPredictScreen() {
     { label: 'Galle', value: 'Galle' as District },
   ];
 
-  /* ΓöÇΓöÇ Image picker ΓöÇΓöÇ */
-  const pickImage = async () => {
+  /* ── Gallery picker ── */
+  const pickFromGallery = async () => {
     if (Platform.OS === 'web') {
       const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: 'images',
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.8,
+      });
+      if (!result.canceled) setImageUri(result.assets[0].uri);
+      return;
+    }
+    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!granted) {
+      Alert.alert(
+        language === 'si' ? 'අවසරය අවශ්‍යය' : 'Permission Required',
+        language === 'si'
+          ? 'ගැලරි අවසරය අවශ්‍ය වේ'
+          : 'Gallery permission is required to choose a photo'
+      );
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+    if (!result.canceled) setImageUri(result.assets[0].uri);
+  };
+
+  /* ── Camera picker ── */
+  const pickImage = async () => {
+    if (Platform.OS === 'web') {
+      // Web: launchCameraAsync opens the device camera via browser
+      const result = await ImagePicker.launchCameraAsync({
         mediaTypes: 'images',
         allowsEditing: true,
         aspect: [4, 3],
@@ -50,22 +82,22 @@ export default function CustomerPredictScreen() {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) {
       Alert.alert(
-        language === 'si' ? 'α╢àα╖Çα╖âα╢╗α╢║ α╢àα╖Çα╖üα╖èΓÇìα╢║α╢║' : 'Permission Required',
+        language === 'si' ? 'අවසරය අවශ්‍යය' : 'Permission Required',
         language === 'si'
-          ? 'α╢Üα╖Éα╢╕α╢╗α╖Å α╢àα╖Çα╖âα╢╗α╢║ α╢àα╖Çα╖üα╖èΓÇìα╢║ α╖Çα╖Ü'
+          ? 'කැමරා අවසරය අවශ්‍ය වේ'
           : 'Camera permission is required to take a photo'
       );
       return;
     }
 
     Alert.alert(
-      language === 'si' ? 'α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤ α╢ïα╢┤α╢»α╖Öα╖âα╖è' : 'Photo Instructions',
+      language === 'si' ? 'ඡායාරූප උපදෙස්' : 'Photo Instructions',
       language === 'si'
-        ? 'α╖âα╢╕α╖èα╢┤α╖ûα╢╗α╖èα╢½ α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╢╡α╢╜α╢║ α╢┤α╖Öα╢▒α╖Öα╢▒ α╢┤α╢╗α╖Æα╢»α╖Æ, α╖äα╖£α╢│ α╢åα╢╜α╖¥α╢Üα╢║α╢Üα╖Æα╢▒α╖è α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤ α╢£α╢▒α╖èα╢▒.'
+        ? 'සම්පූර්ණ පැපොල් ඵලය පෙනෙන පරිදි, හොඳ ආලෝකයකින් ඡායාරූප ගන්න.'
         : 'Take a clear photo showing the FULL papaya with good lighting.',
       [
         {
-          text: language === 'si' ? 'α╖äα╢╗α╖Æ' : 'OK, Got it',
+          text: language === 'si' ? 'හරි' : 'OK, Got it',
           onPress: async () => {
             const result = await ImagePicker.launchCameraAsync({
               mediaTypes: 'images',
@@ -80,19 +112,19 @@ export default function CustomerPredictScreen() {
     );
   };
 
-  /* ΓöÇΓöÇ Submit ΓöÇΓöÇ */
+  /* ── Submit ── */
   const submit = async () => {
     if (!imageUri) {
       Alert.alert(
-        language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error',
-        language === 'si' ? 'α╢Üα╢╗α╖öα╢½α╖Åα╢Üα╢╗ α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤α╢║α╢Üα╖è α╢£α╢▒α╖èα╢▒' : 'Please take a photo of the papaya'
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර ඡායාරූපයක් ගන්න' : 'Please take a photo of the papaya'
       );
       return;
     }
     if (!city) {
       Alert.alert(
-        language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error',
-        language === 'si' ? 'α╢Üα╢╗α╖öα╢½α╖Åα╢Üα╢╗ α╢»α╖Æα╖âα╖èα╢¡α╖èΓÇìα╢╗α╖Æα╢Üα╖èα╢Üα╢║ α╢¡α╖¥α╢╗α╢▒α╖èα╢▒' : 'Please select a district'
+        language === 'si' ? 'දෝෂයකි' : 'Error',
+        language === 'si' ? 'කරුණාකර දිස්ත්‍රික්කය තෝරන්න' : 'Please select a district'
       );
       return;
     }
@@ -134,9 +166,9 @@ export default function CustomerPredictScreen() {
       const msg =
         error?.response?.data?.error ||
         (language === 'si'
-          ? 'α╖Çα╖Æα╖üα╖èα╢╜α╖Üα╖éα╢½α╢║ α╢àα╖âα╖Åα╢╗α╖èα╢«α╢Ü α╖Çα╖Æα╢║. α╢▒α╖Éα╖Çα╢¡ α╢ïα╢¡α╖èα╖âα╖Åα╖ä α╢Üα╢╗α╢▒α╖èα╢▒.'
+          ? 'විශ්ලේෂණය අසාර්ථක විය. නැවත උත්සාහ කරන්න.'
           : 'Failed to analyse papaya. Please try again.');
-      Alert.alert(language === 'si' ? 'α╢»α╖¥α╖éα╢║α╢Üα╖Æ' : 'Error', msg);
+      Alert.alert(language === 'si' ? 'දෝෂයකි' : 'Error', msg);
     } finally {
       setLoading(false);
     }
@@ -146,11 +178,11 @@ export default function CustomerPredictScreen() {
     <ScreenContainer>
       <View style={styles.header}>
         <Text style={styles.title}>
-          {language === 'si' ? 'α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╖âα╖èα╢Üα╖æα╢▒α╖è α╢Üα╢╗α╢▒α╖èα╢▒' : 'Scan Papaya'}
+          {language === 'si' ? 'පැපොල් ස්කෑන් කරන්න' : 'Scan Papaya'}
         </Text>
         <Text style={styles.subtitle}>
           {language === 'si'
-            ? 'α╖üα╖ôα╢╗α╖èα╖éα╢¡α╖èα╖Çα╢║, α╢╕α╖Æα╢╜ α╖âα╖ä α╖Çα╖Öα╖àα╢│α╢┤α╢╜ α╢ïα╢┤α╢»α╖Öα╖âα╖è α╢╜α╢╢α╖Å α╢£α╢▒α╖èα╢▒'
+            ? 'ශීර්ෂත්වය, මිල සහ වෙළඳපල උපදෙස් ලබා ගන්න'
             : 'Get ripeness, price estimate & market advice'}
         </Text>
       </View>
@@ -158,12 +190,12 @@ export default function CustomerPredictScreen() {
       {/* Instructions */}
       <View style={styles.instructionBox}>
         <Text style={styles.instructionTitle}>
-          ≡ƒô╕ {language === 'si' ? 'α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤ α╢ïα╢┤α╢»α╖Öα╖âα╖è:' : 'Photo Instructions:'}
+          📸 {language === 'si' ? 'ඡායාරූප උපදෙස්:' : 'Photo Instructions:'}
         </Text>
         <Text style={styles.instructionText}>
           {language === 'si'
-            ? `ΓÇó α╖âα╢╕α╖èα╢┤α╖ûα╢╗α╖èα╢½ α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╢╡α╢╜α╢║ α╢┤α╖Öα╢▒α╖Öα╢▒ α╢╜α╖Öα╖â α╢£α╢▒α╖èα╢▒\nΓÇó α╖äα╖£α╢│ α╢åα╢╜α╖¥α╢Üα╢║ α╖âα╖äα╖Æα╢¡α╖Ç\nΓÇó α╢╡α╢╜α╢║ α╢Üα╖Åα╢╕α╢╗α╢║α╖Ü α╢£α╖Öα╢╜α╖è α╢Üα╢╗α╢▒α╖èα╢▒\nΓÇó α╢┤α╖âα╖öα╢╢α╖Æα╢╕ α╖âα╢╗α╢╜ α╢Üα╢╗α╢▒α╖èα╢▒`
-            : `ΓÇó Show the FULL papaya (entire fruit visible)\nΓÇó Ensure good lighting\nΓÇó Keep the fruit in centre\nΓÇó Use a plain background`}
+            ? `• සම්පූර්ණ පැපොල් ඵලය පෙනෙන ලෙස ගන්න\n• හොඳ ආලෝකය සහිතව\n• ඵලය කාමරයේ ගෙල් කරන්න\n• පසුබිම සරල කරන්න`
+            : `• Show the FULL papaya (entire fruit visible)\n• Ensure good lighting\n• Keep the fruit in centre\n• Use a plain background`}
         </Text>
       </View>
 
@@ -171,7 +203,7 @@ export default function CustomerPredictScreen() {
       {imageUri && (
         <View style={styles.imageContainer}>
           <Text style={styles.imageLabel}>
-            {language === 'si' ? 'α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤α╢║' : 'Papaya Photo'}
+            {language === 'si' ? 'ඡායාරූපය' : 'Papaya Photo'}
           </Text>
           <Image source={{ uri: imageUri }} style={styles.image} resizeMode="cover" />
         </View>
@@ -180,19 +212,24 @@ export default function CustomerPredictScreen() {
       <PrimaryButton
         title={
           imageUri
-            ? (language === 'si' ? 'α╢▒α╖Éα╖Çα╢¡ α╢£α╢▒α╖èα╢▒' : 'Retake Photo')
-            : Platform.OS === 'web'
-            ? (language === 'si' ? 'α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤α╢║ α╢¡α╖¥α╢╗α╢▒α╖èα╢▒' : 'Choose Photo')
-            : (language === 'si' ? 'α╢íα╖Åα╢║α╖Åα╢╗α╖ûα╢┤ α╢£α╢▒α╖èα╢▒' : 'Take Photo')
+            ? (language === 'si' ? 'නැවත ගන්න' : 'Retake Photo')
+            : (language === 'si' ? 'කැමරාවෙන් ගන්න' : 'Take Photo (Camera)')
         }
         onPress={pickImage}
         variant="secondary"
         style={styles.photoButton}
       />
 
+      <PrimaryButton
+        title={language === 'si' ? 'ගැලරියෙන් තෝරන්න' : 'Choose from Gallery'}
+        onPress={pickFromGallery}
+        variant="outline"
+        style={styles.galleryButton}
+      />
+
       {/* District */}
       <Dropdown
-        label={language === 'si' ? 'α╢»α╖Æα╖âα╖èα╢¡α╖èΓÇìα╢╗α╖Æα╢Üα╖èα╢Üα╢║' : 'District'}
+        label={language === 'si' ? 'දිස්ත්‍රික්කය' : 'District'}
         value={city}
         options={districtOptions}
         onChange={(val) => setCity(val as District)}
@@ -202,20 +239,20 @@ export default function CustomerPredictScreen() {
       <LabeledInput
         label={
           language === 'si'
-            ? 'α╢àα╢╜α╖Öα╖Çα╖Æα╢Üα╢╗α╖ö α╢ëα╢╜α╖èα╢╜α╢▒ α╢╕α╖Æα╢╜ (LKR/kg) ΓÇô α╖Çα╖Æα╢Üα╢╜α╖èα╢┤'
-            : 'Seller Asking Price (LKR/kg) ΓÇô Optional'
+            ? 'අලෙවිකරු ඉල්ලන මිල (LKR/kg) – විකල්ප'
+            : 'Seller Asking Price (LKR/kg) – Optional'
         }
         value={sellerPrice}
         onChangeText={setSellerPrice}
-        placeholder={language === 'si' ? 'α╢ïα╢»α╖Å: 80' : 'e.g. 80'}
+        placeholder={language === 'si' ? 'උදා: 80' : 'e.g. 80'}
         keyboardType="decimal-pad"
       />
 
       <PrimaryButton
         title={
           loading
-            ? (language === 'si' ? 'α╖Çα╖Æα╖üα╖èα╢╜α╖Üα╖éα╢½α╢║ α╢Üα╢╗α╢╕α╖Æα╢▒α╖è...' : 'Analysing...')
-            : (language === 'si' ? 'α╖Çα╖Æα╖üα╖èα╢╜α╖Üα╖éα╢½α╢║ α╢åα╢╗α╢╕α╖èα╢╖ α╢Üα╢╗α╢▒α╖èα╢▒' : 'Analyse Papaya')
+            ? (language === 'si' ? 'විශ්ලේෂණය කරමින්...' : 'Analysing...')
+            : (language === 'si' ? 'විශ්ලේෂණය ආරම්භ කරන්න' : 'Analyse Papaya')
         }
         onPress={submit}
         loading={loading}
@@ -223,7 +260,7 @@ export default function CustomerPredictScreen() {
       />
 
       <PrimaryButton
-        title={language === 'si' ? 'α╢àα╖Çα╢╜α╢éα╢£α╖ö α╢Üα╢╗α╢▒α╖èα╢▒' : 'Cancel'}
+        title={language === 'si' ? 'අවලංගු කරන්න' : 'Cancel'}
         onPress={() => router.back()}
         variant="outline"
       />
@@ -280,6 +317,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   photoButton: {
+    marginBottom: 8,
+  },
+  galleryButton: {
     marginBottom: 16,
   },
   submitButton: {

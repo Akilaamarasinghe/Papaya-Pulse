@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, Image, Alert, Platform,
   TouchableOpacity, ScrollView, ActivityIndicator,
@@ -95,7 +95,7 @@ export default function LeafScanScreen() {
     <SafeAreaView style={styles.safe} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* ΓöÇΓöÇ Image Preview ΓöÇΓöÇ */}
+        {/* ── Image Preview ── */}
         <TouchableOpacity
           style={[styles.previewBox, imageUri && styles.previewBoxFilled]}
           onPress={pickFromCamera}
@@ -112,7 +112,7 @@ export default function LeafScanScreen() {
           )}
         </TouchableOpacity>
 
-        {/* ΓöÇΓöÇ Camera / Gallery Row ΓöÇΓöÇ */}
+        {/* ── Camera / Gallery Row ── */}
         <View style={styles.sourceRow}>
           <TouchableOpacity style={[styles.sourceBtn, { backgroundColor: '#E8F5E9' }]} onPress={pickFromCamera} activeOpacity={0.8}>
             <Ionicons name="camera" size={24} color="#2D7A4F" />
@@ -126,7 +126,7 @@ export default function LeafScanScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* ΓöÇΓöÇ Growth Stage Selector ΓöÇΓöÇ */}
+        {/* ── Growth Stage Selector ── */}
         <View style={styles.card}>
           <Text style={styles.cardLabel}>District of Farm Harvest</Text>
           <Text style={styles.cardHint}>Select your District of Farm Harvest{"'"}  for better advice</Text>
@@ -151,7 +151,7 @@ export default function LeafScanScreen() {
           </View>
         </View>
 
-        {/* ΓöÇΓöÇ Analyze Button ΓöÇΓöÇ */}
+        {/* ── Analyze Button ── */}
         {imageUri && (
           <TouchableOpacity
             style={[styles.analyzeBtn, loading && styles.analyzeBtnDisabled]}
@@ -165,17 +165,17 @@ export default function LeafScanScreen() {
               <Ionicons name="search" size={22} color="#fff" />
             )}
             <Text style={styles.analyzeBtnText}>
-              {loading ? 'AnalyzingΓÇª' : 'Analyze Leaf Disease'}
+              {loading ? 'Analyzing…' : 'Analyze Leaf Disease'}
             </Text>
           </TouchableOpacity>
         )}
 
-        {/* ΓöÇΓöÇ Cancel ΓöÇΓöÇ */}
+        {/* ── Cancel ── */}
         <TouchableOpacity style={styles.cancelBtn} onPress={() => router.back()}>
           <Text style={styles.cancelText}>Cancel</Text>
         </TouchableOpacity>
 
-        {/* ΓöÇΓöÇ Photo Tips ΓöÇΓöÇ */}
+        {/* ── Photo Tips ── */}
         <View style={styles.tipsCard}>
           <Text style={styles.tipsTitle}>Tips for Best Accuracy</Text>
           {[

@@ -1,32 +1,32 @@
-﻿import React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../../context/ThemeContext';
 import { PrimaryButton } from '../../../components/shared/PrimaryButton';
 
-/* ΓöÇΓöÇ Ripeness label ΓåÆ Sinhala mapping ΓöÇΓöÇ */
+/* ── Ripeness label → Sinhala mapping ── */
 const RIPENESS_SI: Record<string, string> = {
-  'Unripe': 'α╢▒α╖£α╢ëα╢»α╖öα╢½α╖ö',
-  'Half ripe': 'α╢àα╢╗α╖èα╢░ α╢ëα╢»α╖öα╢½α╖ö',
-  'Half Ripe': 'α╢àα╢╗α╖èα╢░ α╢ëα╢»α╖öα╢½α╖ö',
-  'Market ready': 'α╖Çα╖Öα╖àα╢│α╢┤α╢╜α╢º α╖âα╖ûα╢»α╖Åα╢▒α╢╕α╖è',
-  'Market Ready': 'α╖Çα╖Öα╖àα╢│α╢┤α╢╜α╢º α╖âα╖ûα╢»α╖Åα╢▒α╢╕α╖è',
-  'Overripe': 'α╢àα╢░α╖Æα╢Üα╖Ç α╢ëα╢»α╖öα╢½α╖ö',
-  'Over ripe': 'α╢àα╢░α╖Æα╢Üα╖Ç α╢ëα╢»α╖öα╢½α╖ö',
+  'Unripe': 'නොඉදුණු',
+  'Half ripe': 'අර්ධ ඉදුණු',
+  'Half Ripe': 'අර්ධ ඉදුණු',
+  'Market ready': 'වෙළඳපලට සූදානම්',
+  'Market Ready': 'වෙළඳපලට සූදානම්',
+  'Overripe': 'අධිකව ඉදුණු',
+  'Over ripe': 'අධිකව ඉදුණු',
 };
 
-/* ΓöÇΓöÇ Ripeness colour helper (always uses English key for colour) ΓöÇΓöÇ */
+/* ── Ripeness colour helper (always uses English key for colour) ── */
 function ripenessColour(label: string): string {
   const l = (label ?? '').toLowerCase();
-  if (l.includes('unripe') || l.includes('α╢▒α╖£α╢ëα╢»α╖öα╢½α╖ö')) return '#4CAF50';
-  if (l.includes('half') || l.includes('α╢àα╢╗α╖èα╢░')) return '#FFC107';
-  if (l.includes('market') || l.includes('ready') || l.includes('α╖âα╖ûα╢»α╖Åα╢▒α╢╕α╖è')) return '#FF9800';
-  if (l.includes('over') || l.includes('α╢àα╢░α╖Æα╢Ü')) return '#F44336';
+  if (l.includes('unripe') || l.includes('නොඉදුණු')) return '#4CAF50';
+  if (l.includes('half') || l.includes('අර්ධ')) return '#FFC107';
+  if (l.includes('market') || l.includes('ready') || l.includes('සූදානම්')) return '#FF9800';
+  if (l.includes('over') || l.includes('අධික')) return '#F44336';
   return '#9E9E9E';
 }
 
-/* ΓöÇΓöÇ Colour ratio bar ΓöÇΓöÇ */
+/* ── Colour ratio bar ── */
 function ColourRatioBar({ label, value, colour }: { label: string; value: number; colour: string }) {
   const pct = Math.round((value ?? 0) * 100);
   return (
@@ -48,7 +48,7 @@ const barStyles = StyleSheet.create({
   pct: { width: 36, fontSize: 13, color: '#333', textAlign: 'right' },
 });
 
-/* ΓöÇΓöÇ Main screen ΓöÇΓöÇ */
+/* ── Main screen ── */
 export default function CustomerResultScreen() {
   const { language, t } = useTheme();
   const params = useLocalSearchParams();
@@ -75,19 +75,19 @@ export default function CustomerResultScreen() {
     );
   }
 
-  // ΓöÇΓöÇ Handle model error (e.g. "Not a papaya") ΓöÇΓöÇ
+  // ── Handle model error (e.g. "Not a papaya") ──
   if (raw.error) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorIcon}>≡ƒÜ½</Text>
+          <Text style={styles.errorIcon}>🚫</Text>
           <Text style={styles.errorTitle}>
-            {language === 'si' ? 'α╖äα╢│α╖öα╢▒α╖Å α╢£α╖Éα╢▒α╖ôα╢╕ α╢àα╖âα╖Åα╢╗α╖èα╢«α╢Üα╢║α╖Æ' : 'Detection Failed'}
+            {language === 'si' ? 'හඳුනා ගැනීම අසාර්ථකයි' : 'Detection Failed'}
           </Text>
           <Text style={styles.errorText}>
             {raw.error === 'Not a papaya'
               ? language === 'si'
-                ? 'α╢╕α╖Öα╢║ α╢┤α╖Éα╢┤α╖£α╢╜α╖è α╢£α╖Öα╢⌐α╖Æα╢║α╢Üα╖è α╢▒α╖£α╖Çα╖Ü. α╢Üα╢╗α╖öα╢½α╖Åα╢Üα╢╗ α╢▒α╖Æα╖Çα╖Éα╢╗α╢»α╖Æ α╢╗α╖ûα╢┤α╢║α╢Üα╖è α╢ëα╢»α╖Æα╢╗α╖Æα╢┤α╢¡α╖è α╢Üα╢╗α╢▒α╖èα╢▒.'
+                ? 'මෙය පැපොල් ගෙඩියක් නොවේ. කරුණාකර නිවැරදි රූපයක් ඉදිරිපත් කරන්න.'
                 : 'This does not appear to be a papaya. Please upload a valid papaya image.'
               : raw.error}
           </Text>
@@ -100,7 +100,7 @@ export default function CustomerResultScreen() {
     );
   }
 
-  // ΓöÇΓöÇ Defensive field extraction ΓöÇΓöÇ
+  // ── Defensive field extraction ──
   const analysis = raw.analysis ?? raw;
 
   // Use Sinhala market advice if language is 'si' and backend provides it; fall back to English
@@ -159,10 +159,10 @@ export default function CustomerResultScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
 
-        {/* ΓöÇΓöÇ Ripeness Card ΓöÇΓöÇ */}
+        {/* ── Ripeness Card ── */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            ≡ƒìê {t('ripenessAnalysis')}
+            🍈 {t('ripenessAnalysis')}
           </Text>
           <View style={[styles.ripenessBadge, { backgroundColor: ripenColour + '22', borderColor: ripenColour }]}>
             <Text style={[styles.ripenessLabel, { color: ripenColour }]}>{ripenessDisplay}</Text>
@@ -176,11 +176,11 @@ export default function CustomerResultScreen() {
           <ColourRatioBar label={t('colourOrange')} value={color_ratios.orange} colour="#FF9800" />
         </View>
 
-        {/* ΓöÇΓöÇ Weather Info Card ΓöÇΓöÇ */}
+        {/* ── Weather Info Card ── */}
         {(location !== 'N/A' || month !== 'N/A' || rainfall_mm > 0) && (
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>
-              ≡ƒîª∩╕Å {t('weatherSummary')}
+              🌦️ {t('weatherSummary')}
             </Text>
             <View style={styles.weatherRow}>
               <View style={styles.weatherItem}>
@@ -199,10 +199,10 @@ export default function CustomerResultScreen() {
           </View>
         )}
 
-        {/* ΓöÇΓöÇ Price Table Card ΓöÇΓöÇ */}
+        {/* ── Price Table Card ── */}
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>
-            ≡ƒÆ░ {t('estimatedPriceLKR')}
+            💰 {t('estimatedPriceLKR')}
           </Text>
           {price_table.map((row, idx) => (
             <View key={row.variety + idx} style={styles.priceRow}>
@@ -218,11 +218,11 @@ export default function CustomerResultScreen() {
           )}
         </View>
 
-        {/* ΓöÇΓöÇ Market Advice Card ΓöÇΓöÇ */}
+        {/* ── Market Advice Card ── */}
         {final_market_advice ? (
           <View style={[styles.card, styles.adviceCard]}>
             <Text style={styles.sectionTitle}>
-              ≡ƒºá {t('marketAdviceTitle')}
+              🧠 {t('marketAdviceTitle')}
             </Text>
             <Text style={styles.adviceText}>{final_market_advice}</Text>
           </View>
