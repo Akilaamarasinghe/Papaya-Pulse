@@ -30,8 +30,7 @@ logger = logging.getLogger(__name__)
 _client = None
 _CLIENT_AVAILABLE = False
 
-_GITHUB_TOKEN   = os.environ.get("GITHUB_TOKEN", "")
-_DEFAULT_MODEL  = os.environ.get("ADVISOR_MODEL", "openai/gpt-4.1-mini")
+_DEFAULT_MODEL  = "openai/gpt-4.1-mini"   # overridden at call time by ADVISOR_MODEL env var
 _BASE_URL       = "https://models.github.ai/inference"
 
 
@@ -110,7 +109,7 @@ def generate_advice_json(
                 ],
                 response_format={"type": "json_object"},
                 temperature=0.3,
-                max_tokens=1200,
+                max_tokens=4000,
             )
 
             raw = response.choices[0].message.content or ""
