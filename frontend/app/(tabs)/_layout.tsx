@@ -119,11 +119,13 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="explore"
-        options={{
-          href: null,
-          title: t('explore'),
-        }}
+        options={{ href: null, title: t('explore') }}
       />
+      {/* Module screens — hidden from tab bar, but rendered inside the tab shell so the bar stays visible */}
+      <Tabs.Screen name="growth" options={{ href: null, title: 'Growth' }} />
+      <Tabs.Screen name="leaf" options={{ href: null, title: 'Leaf' }} />
+      <Tabs.Screen name="market" options={{ href: null, title: 'Market' }} />
+      <Tabs.Screen name="quality" options={{ href: null, title: 'Quality' }} />
     </Tabs>
   );
 }
