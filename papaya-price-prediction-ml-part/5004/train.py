@@ -20,7 +20,7 @@ os.makedirs(ARTIFACT_DIR, exist_ok=True)
 # =========================
 # LOAD DATA
 # =========================
-CSV_PATH = "customer_papaya_price.csv"
+CSV_PATH = "customer_papaya_price_final_v1.csv"
 df = pd.read_csv(CSV_PATH)
 
 print(f"Loaded {len(df)} rows from {CSV_PATH}")

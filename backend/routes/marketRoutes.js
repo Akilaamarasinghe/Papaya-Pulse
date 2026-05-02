@@ -107,6 +107,9 @@ router.post('/predict', authMiddleware, async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error('Market price prediction error:', error.message);
+    if (error.response?.data) {
+      console.error('ML service error payload:', error.response.data);
+    }
     
     // Check if it's a connection error to ML service
     if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
@@ -116,7 +119,8 @@ router.post('/predict', authMiddleware, async (req, res) => {
     }
 
     res.status(500).json({ 
-      error: error.response?.data?.error || error.message || 'Failed to predict market price' 
+      error: error.response?.data?.error || error.message || 'Failed to predict market price',
+      traceback: error.response?.data?.traceback,
     });
   }
 });

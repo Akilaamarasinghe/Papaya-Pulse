@@ -1,0 +1,1001 @@
+district,variety,month,green_ratio,yellow_ratio,orange_ratio,ripeness_stage,ripeness_label,last7_days_rainfall,price_lkr_per_kg
+Galle,Tainung,June,0.0015,0.0748,0.9237,2,Market ready,619.7,302.16
+Galle,Tainung,November,0.0026,0.0508,0.9466,2,Market ready,461.9,301.44
+Galle,Red_Lady,December,0.0108,0.0462,0.943,2,Market ready,599.3,320.4
+Galle,Red_Lady,January,0.0187,0.0472,0.9341,2,Market ready,132.9,318.75
+Galle,Tainung,February,0.0647,0.804,0.1313,1,Half ripe,410.7,251.05
+Matara,Tainung,July,0.0019,0.0372,0.9609,2,Market ready,106.9,336.1
+Matara,Tainung,March,0.0041,0.0817,0.9142,2,Market ready,20.3,310.81
+Hambantota,Red_Lady,November,0.0021,0.0747,0.9232,2,Market ready,80.3,321.08
+Galle,Tainung,August,0.0055,0.3153,0.6792,3,Overripe,637.0,92.02
+Galle,Red_Lady,August,0.7775,0.1134,0.1091,0,Unripe,136.9,138.05
+Matara,Tainung,September,0.024,0.3711,0.6049,3,Overripe,305.4,128.37
+Hambantota,Red_Lady,August,0.8604,0.045,0.0946,0,Unripe,630.6,132.59
+Matara,Tainung,April,0.0048,0.0366,0.9586,2,Market ready,373.9,333.94
+Hambantota,Red_Lady,November,0.0435,0.3124,0.6441,3,Overripe,261.5,128.49
+Matara,Tainung,March,0.0044,0.2947,0.7009,3,Overripe,396.9,90.99
+Hambantota,Tainung,February,0.0075,0.3854,0.6071,3,Overripe,337.7,120.53
+Matara,Red_Lady,March,0.0587,0.8436,0.0977,1,Half ripe,69.9,217.62
+Galle,Red_Lady,January,0.034,0.2674,0.6986,3,Overripe,623.1,135.28
+Hambantota,Tainung,August,0.0334,0.3773,0.5893,3,Overripe,220.6,107.32
+Hambantota,Red_Lady,July,0.0378,0.8414,0.1208,1,Half ripe,581.0,201.76
+Hambantota,Red_Lady,April,0.0113,0.0658,0.9229,2,Market ready,141.3,296.42
+Galle,Tainung,February,0.7781,0.0914,0.1305,0,Unripe,370.3,143.3
+Galle,Red_Lady,September,0.0348,0.8904,0.0748,1,Half ripe,208.4,243.08
+Matara,Tainung,August,0.0067,0.0262,0.9671,2,Market ready,398.7,321.56
+Matara,Tainung,March,0.808,0.112,0.08,0,Unripe,50.6,147.77
+Hambantota,Red_Lady,November,0.7969,0.0622,0.1409,0,Unripe,486.3,154.23
+Hambantota,Red_Lady,October,0.7517,0.1175,0.1308,0,Unripe,557.6,130.51
+Matara,Tainung,July,0.0286,0.3735,0.5979,3,Overripe,507.8,139.79
+Galle,Tainung,October,0.0118,0.2736,0.7146,3,Overripe,353.8,106.53
+Galle,Red_Lady,September,0.044,0.3407,0.6153,3,Overripe,515.8,133.95
+Matara,Tainung,February,0.0711,0.8203,0.1086,1,Half ripe,480.1,234.28
+Galle,Tainung,May,0.8442,0.0552,0.1006,0,Unripe,563.3,138.8
+Matara,Tainung,July,0.0119,0.0562,0.9319,2,Market ready,333.1,333.13
+Galle,Red_Lady,February,0.0595,0.8196,0.1209,1,Half ripe,463.0,229.36
+Matara,Tainung,October,0.0455,0.8327,0.1218,1,Half ripe,143.2,253.06
+Galle,Red_Lady,March,0.8155,0.0523,0.1322,0,Unripe,38.6,178.31
+Hambantota,Red_Lady,September,0.0045,0.021,0.9745,2,Market ready,292.4,308.76
+Hambantota,Red_Lady,August,0.0149,0.0751,0.91,2,Market ready,488.7,296.52
+Matara,Tainung,April,0.0005,0.4027,0.5968,3,Overripe,547.7,119.94
+Hambantota,Red_Lady,August,0.8028,0.1118,0.0854,0,Unripe,370.9,150.05
+Hambantota,Red_Lady,August,0.0118,0.9132,0.075,1,Half ripe,503.6,223.01
+Matara,Tainung,April,0.7882,0.057,0.1548,0,Unripe,158.2,133.81
+Matara,Red_Lady,April,0.0734,0.7957,0.1309,1,Half ripe,195.3,248.4
+Galle,Red_Lady,March,0.0109,0.4156,0.5735,3,Overripe,130.1,95.62
+Hambantota,Red_Lady,June,0.0254,0.8935,0.0811,1,Half ripe,395.4,253.63
+Galle,Tainung,January,0.0584,0.8029,0.1387,1,Half ripe,508.9,197.68
+Galle,Red_Lady,March,0.0334,0.3285,0.6381,3,Overripe,467.4,113.23
+Matara,Tainung,November,0.0164,0.0821,0.9015,2,Market ready,448.3,305.64
+Hambantota,Red_Lady,April,0.0749,0.8134,0.1117,1,Half ripe,364.7,249.4
+Hambantota,Tainung,September,0.0378,0.335,0.6272,3,Overripe,58.6,142.56
+Matara,Tainung,January,0.0048,0.0498,0.9454,2,Market ready,58.5,335.07
+Galle,Tainung,December,0.0255,0.2817,0.6928,3,Overripe,408.2,149.44
+Matara,Tainung,August,0.0702,0.7876,0.1422,1,Half ripe,588.3,196.91
+Matara,Red_Lady,August,0.0096,0.053,0.9374,2,Market ready,593.6,331.92
+Matara,Tainung,August,0.8385,0.0493,0.1122,0,Unripe,565.7,142.15
+Hambantota,Red_Lady,October,0.8117,0.1037,0.0846,0,Unripe,394.0,178.67
+Galle,Tainung,July,0.0158,0.0757,0.9085,2,Market ready,337.7,292.54
+Galle,Tainung,December,0.7941,0.0761,0.1298,0,Unripe,236.4,167.09
+Galle,Red_Lady,June,0.8146,0.1024,0.083,0,Unripe,634.6,141.72
+Matara,Tainung,October,0.0465,0.3221,0.6314,3,Overripe,474.2,96.78
+Hambantota,Tainung,November,0.0103,0.8848,0.1049,1,Half ripe,631.9,225.89
+Matara,Tainung,April,0.7815,0.0716,0.1469,0,Unripe,423.2,166.25
+Galle,Tainung,December,0.0151,0.033,0.9519,2,Market ready,395.0,287.57
+Matara,Tainung,September,0.746,0.1093,0.1447,0,Unripe,478.2,176.35
+Hambantota,Tainung,July,0.0016,0.0453,0.9531,2,Market ready,436.6,291.33
+Galle,Tainung,July,0.0136,0.0522,0.9342,2,Market ready,451.4,324.82
+Hambantota,Red_Lady,November,0.0047,0.0661,0.9292,2,Market ready,600.4,326.95
+Matara,Tainung,April,0.0313,0.274,0.6947,3,Overripe,647.9,148.02
+Matara,Red_Lady,April,0.7072,0.1308,0.162,0,Unripe,521.8,140.21
+Galle,Red_Lady,October,0.0133,0.0483,0.9384,2,Market ready,499.9,276.46
+Hambantota,Red_Lady,March,0.7711,0.0888,0.1401,0,Unripe,223.1,130.04
+Galle,Red_Lady,November,0.0247,0.8512,0.1241,1,Half ripe,373.1,222.13
+Matara,Red_Lady,October,0.0134,0.0565,0.9301,2,Market ready,374.3,317.68
+Matara,Red_Lady,September,0.0133,0.0675,0.9192,2,Market ready,154.5,310.98
+Hambantota,Tainung,August,0.0729,0.8273,0.0998,1,Half ripe,428.6,204.47
+Galle,Tainung,January,0.0133,0.8831,0.1036,1,Half ripe,185.1,197.86
+Matara,Red_Lady,February,0.0036,0.0231,0.9733,2,Market ready,41.3,328.85
+Hambantota,Red_Lady,July,0.8265,0.0835,0.09,0,Unripe,275.3,160.85
+Galle,Tainung,March,0.0147,0.0703,0.915,2,Market ready,465.9,287.57
+Matara,Red_Lady,January,0.0195,0.8715,0.109,1,Half ripe,637.4,241.39
+Hambantota,Tainung,May,0.0167,0.0309,0.9524,2,Market ready,106.6,288.35
+Matara,Red_Lady,June,0.8195,0.0805,0.1,0,Unripe,461.3,173.09
+Hambantota,Red_Lady,November,0.0352,0.8705,0.0943,1,Half ripe,326.9,249.82
+Matara,Tainung,December,0.7972,0.0925,0.1103,0,Unripe,489.1,154.41
+Hambantota,Tainung,November,0.0608,0.8315,0.1077,1,Half ripe,575.6,225.81
+Galle,Tainung,February,0.0033,0.0297,0.967,2,Market ready,39.8,315.46
+Galle,Red_Lady,March,0.002,0.3401,0.6579,3,Overripe,91.0,147.69
+Matara,Tainung,April,0.0087,0.0485,0.9428,2,Market ready,551.3,284.08
+Matara,Red_Lady,February,0.0365,0.3428,0.6207,3,Overripe,608.8,140.21
+Galle,Tainung,March,0.0026,0.9014,0.096,1,Half ripe,119.0,245.96
+Matara,Tainung,January,0.0402,0.891,0.0688,1,Half ripe,611.7,241.65
+Hambantota,Tainung,August,0.0446,0.8198,0.1356,1,Half ripe,633.3,248.25
+Hambantota,Tainung,June,0.0145,0.0533,0.9322,2,Market ready,254.8,339.32
+Matara,Tainung,May,0.8357,0.0463,0.118,0,Unripe,436.0,151.17
+Galle,Red_Lady,August,0.0507,0.4064,0.5429,3,Overripe,429.3,139.95
+Matara,Tainung,January,0.0187,0.8863,0.095,1,Half ripe,580.0,249.98
+Hambantota,Red_Lady,November,0.0229,0.2881,0.689,3,Overripe,504.7,142.04
+Galle,Red_Lady,February,0.8193,0.061,0.1197,0,Unripe,245.5,155.77
+Hambantota,Red_Lady,May,0.7435,0.1278,0.1287,0,Unripe,506.6,147.63
+Matara,Tainung,May,0.013,0.3625,0.6245,3,Overripe,50.4,126.75
+Matara,Tainung,November,0.0106,0.0645,0.9249,2,Market ready,483.3,312.87
+Hambantota,Tainung,May,0.0479,0.8252,0.1269,1,Half ripe,584.3,205.25
+Hambantota,Red_Lady,March,0.0261,0.381,0.5929,3,Overripe,50.1,123.64
+Hambantota,Tainung,November,0.049,0.8432,0.1078,1,Half ripe,90.4,201.0
+Matara,Tainung,October,0.0153,0.088,0.8967,2,Market ready,152.8,296.44
+Galle,Tainung,June,0.0016,0.0257,0.9727,2,Market ready,434.5,341.53
+Galle,Red_Lady,November,0.0059,0.0283,0.9658,2,Market ready,558.5,294.96
+Galle,Tainung,January,0.0394,0.4261,0.5345,3,Overripe,298.0,101.13
+Galle,Tainung,January,0.7354,0.1068,0.1578,0,Unripe,249.5,172.7
+Hambantota,Tainung,May,0.0339,0.3458,0.6203,3,Overripe,370.8,122.79
+Matara,Tainung,November,0.0051,0.0812,0.9137,2,Market ready,536.3,311.15
+Matara,Red_Lady,May,0.0436,0.3087,0.6477,3,Overripe,215.0,142.36
+Matara,Red_Lady,March,0.0241,0.349,0.6269,3,Overripe,346.9,101.84
+Galle,Tainung,October,0.0269,0.3395,0.6336,3,Overripe,580.2,129.43
+Galle,Red_Lady,May,0.7897,0.0636,0.1467,0,Unripe,142.4,146.24
+Hambantota,Red_Lady,November,0.0521,0.8483,0.0996,1,Half ripe,226.1,218.32
+Hambantota,Red_Lady,March,0.7819,0.1339,0.0842,0,Unripe,351.4,137.29
+Matara,Red_Lady,April,0.0145,0.3827,0.6028,3,Overripe,172.4,146.81
+Hambantota,Tainung,May,0.0119,0.0868,0.9013,2,Market ready,327.9,304.14
+Matara,Red_Lady,March,0.0626,0.8252,0.1122,1,Half ripe,608.5,249.58
+Matara,Red_Lady,June,0.0373,0.2907,0.672,3,Overripe,629.8,144.24
+Galle,Tainung,February,0.0508,0.8735,0.0757,1,Half ripe,411.5,234.11
+Hambantota,Tainung,May,0.006,0.0757,0.9183,2,Market ready,606.4,323.13
+Matara,Red_Lady,December,0.0353,0.8824,0.0823,1,Half ripe,122.4,235.63
+Matara,Red_Lady,May,0.818,0.066,0.116,0,Unripe,199.5,144.1
+Matara,Red_Lady,September,0.0019,0.0366,0.9615,2,Market ready,328.6,291.55
+Galle,Red_Lady,November,0.0168,0.0543,0.9289,2,Market ready,21.5,312.21
+Matara,Red_Lady,March,0.0496,0.8114,0.139,1,Half ripe,61.1,232.81
+Galle,Tainung,March,0.0243,0.276,0.6997,3,Overripe,257.7,126.01
+Matara,Tainung,August,0.0076,0.3654,0.627,3,Overripe,238.0,125.52
+Matara,Red_Lady,December,0.0143,0.0765,0.9092,2,Market ready,643.7,287.68
+Matara,Tainung,May,0.0385,0.3087,0.6528,3,Overripe,363.1,107.67
+Galle,Red_Lady,August,0.0149,0.8634,0.1217,1,Half ripe,244.3,243.32
+Hambantota,Tainung,March,0.0117,0.3158,0.6725,3,Overripe,232.9,96.89
+Hambantota,Tainung,April,0.0087,0.0309,0.9604,2,Market ready,293.6,339.46
+Hambantota,Red_Lady,November,0.8429,0.0468,0.1103,0,Unripe,649.3,130.25
+Matara,Tainung,November,0.7596,0.0808,0.1596,0,Unripe,145.0,172.01
+Galle,Tainung,July,0.8265,0.0591,0.1144,0,Unripe,109.0,130.03
+Hambantota,Tainung,February,0.7965,0.1179,0.0856,0,Unripe,348.2,148.04
+Hambantota,Tainung,December,0.8179,0.0498,0.1323,0,Unripe,89.1,179.48
+Matara,Red_Lady,April,0.7819,0.0401,0.178,0,Unripe,416.1,132.39
+Hambantota,Red_Lady,November,0.7917,0.0544,0.1539,0,Unripe,217.4,136.37
+Hambantota,Red_Lady,January,0.0119,0.0571,0.931,2,Market ready,261.1,281.93
+Galle,Red_Lady,September,0.0152,0.9175,0.0673,1,Half ripe,641.5,228.26
+Galle,Red_Lady,April,0.0487,0.3385,0.6128,3,Overripe,640.9,123.87
+Matara,Tainung,November,0.0211,0.3852,0.5937,3,Overripe,229.6,125.19
+Matara,Red_Lady,May,0.0469,0.2806,0.6725,3,Overripe,510.0,146.55
+Matara,Tainung,November,0.8492,0.0693,0.0815,0,Unripe,222.8,165.34
+Galle,Red_Lady,June,0.0094,0.387,0.6036,3,Overripe,427.9,100.15
+Galle,Red_Lady,January,0.051,0.853,0.096,1,Half ripe,472.8,210.5
+Matara,Tainung,September,0.0159,0.0621,0.922,2,Market ready,384.8,321.47
+Galle,Tainung,June,0.7909,0.0494,0.1597,0,Unripe,282.8,151.2
+Hambantota,Red_Lady,August,0.0424,0.3495,0.6081,3,Overripe,336.5,92.26
+Matara,Red_Lady,January,0.0163,0.9221,0.0616,1,Half ripe,587.0,230.61
+Hambantota,Red_Lady,March,0.0052,0.3389,0.6559,3,Overripe,499.7,91.64
+Matara,Red_Lady,January,0.0022,0.9303,0.0675,1,Half ripe,146.8,242.43
+Galle,Red_Lady,June,0.03,0.8532,0.1168,1,Half ripe,311.5,242.13
+Matara,Tainung,June,0.0009,0.0535,0.9456,2,Market ready,432.8,280.92
+Galle,Red_Lady,August,0.759,0.0932,0.1478,0,Unripe,327.3,170.28
+Galle,Tainung,August,0.0325,0.3901,0.5774,3,Overripe,311.4,122.82
+Hambantota,Tainung,December,0.0018,0.0591,0.9391,2,Market ready,558.4,307.27
+Hambantota,Tainung,December,0.035,0.3276,0.6374,3,Overripe,603.8,121.36
+Matara,Tainung,May,0.0059,0.054,0.9401,2,Market ready,602.0,282.5
+Galle,Red_Lady,April,0.0153,0.0389,0.9458,2,Market ready,533.0,305.28
+Galle,Tainung,May,0.0252,0.3534,0.6214,3,Overripe,222.0,140.74
+Matara,Tainung,March,0.0149,0.063,0.9221,2,Market ready,305.3,277.35
+Hambantota,Tainung,May,0.0595,0.8176,0.1229,1,Half ripe,285.0,247.99
+Hambantota,Red_Lady,February,0.0151,0.0465,0.9384,2,Market ready,555.7,315.87
+Matara,Red_Lady,May,0.028,0.8969,0.0751,1,Half ripe,345.4,231.13
+Matara,Red_Lady,February,0.0583,0.8237,0.118,1,Half ripe,426.6,254.54
+Hambantota,Red_Lady,September,0.0601,0.8515,0.0884,1,Half ripe,233.7,205.71
+Galle,Red_Lady,December,0.0699,0.8266,0.1035,1,Half ripe,614.3,220.25
+Galle,Tainung,November,0.7821,0.0591,0.1588,0,Unripe,228.7,161.83
+Matara,Tainung,November,0.0125,0.2778,0.7097,3,Overripe,123.3,114.15
+Galle,Red_Lady,August,0.0467,0.8838,0.0695,1,Half ripe,328.3,209.69
+Matara,Red_Lady,October,0.058,0.8741,0.0679,1,Half ripe,586.7,232.55
+Matara,Red_Lady,May,0.0719,0.7852,0.1429,1,Half ripe,115.2,205.88
+Hambantota,Tainung,April,0.0031,0.902,0.0949,1,Half ripe,405.7,253.16
+Hambantota,Tainung,March,0.0415,0.3098,0.6487,3,Overripe,499.0,95.53
+Matara,Tainung,February,0.01,0.0413,0.9487,2,Market ready,499.8,316.06
+Matara,Tainung,July,0.0638,0.8772,0.059,1,Half ripe,498.7,251.44
+Galle,Tainung,July,0.0051,0.0795,0.9154,2,Market ready,93.1,300.22
+Matara,Tainung,March,0.0211,0.8788,0.1001,1,Half ripe,250.2,229.16
+Matara,Red_Lady,March,0.0098,0.07,0.9202,2,Market ready,634.0,333.33
+Matara,Tainung,August,0.0327,0.3854,0.5819,3,Overripe,235.5,113.8
+Galle,Tainung,October,0.8289,0.0598,0.1113,0,Unripe,487.8,151.28
+Matara,Red_Lady,March,0.0208,0.8391,0.1401,1,Half ripe,181.4,202.1
+Galle,Red_Lady,June,0.0183,0.894,0.0877,1,Half ripe,578.2,200.95
+Matara,Tainung,October,0.0069,0.4152,0.5779,3,Overripe,374.2,92.96
+Matara,Tainung,April,0.013,0.045,0.942,2,Market ready,149.4,325.85
+Galle,Red_Lady,May,0.024,0.3359,0.6401,3,Overripe,605.5,115.48
+Galle,Tainung,January,0.0465,0.3154,0.6381,3,Overripe,181.2,130.42
+Galle,Tainung,February,0.0178,0.0795,0.9027,2,Market ready,521.6,315.11
+Hambantota,Red_Lady,September,0.8268,0.0826,0.0906,0,Unripe,154.4,175.59
+Matara,Tainung,April,0.7944,0.0719,0.1337,0,Unripe,222.6,134.83
+Hambantota,Tainung,December,0.0012,0.8856,0.1132,1,Half ripe,416.0,203.88
+Matara,Tainung,January,0.0076,0.8743,0.1181,1,Half ripe,169.1,230.19
+Matara,Tainung,March,0.7477,0.1155,0.1368,0,Unripe,103.3,170.63
+Hambantota,Red_Lady,March,0.0198,0.0467,0.9335,2,Market ready,606.0,314.23
+Galle,Tainung,June,0.8077,0.0725,0.1198,0,Unripe,492.5,171.23
+Galle,Red_Lady,March,0.8078,0.0448,0.1474,0,Unripe,443.6,177.31
+Matara,Tainung,June,0.0088,0.0448,0.9464,2,Market ready,606.6,285.56
+Galle,Tainung,July,0.002,0.0431,0.9549,2,Market ready,194.9,318.69
+Matara,Red_Lady,August,0.0175,0.0833,0.8992,2,Market ready,333.3,291.05
+Hambantota,Tainung,December,0.026,0.3651,0.6089,3,Overripe,349.0,145.97
+Hambantota,Red_Lady,April,0.0005,0.0331,0.9664,2,Market ready,138.1,304.95
+Matara,Red_Lady,February,0.7502,0.1161,0.1337,0,Unripe,386.9,159.84
+Galle,Tainung,December,0.0296,0.3626,0.6078,3,Overripe,213.1,136.11
+Matara,Red_Lady,June,0.0343,0.8916,0.0741,1,Half ripe,95.4,239.06
+Galle,Red_Lady,June,0.0003,0.3928,0.6069,3,Overripe,172.3,130.51
+Matara,Tainung,April,0.7308,0.1211,0.1481,0,Unripe,263.5,134.96
+Hambantota,Tainung,March,0.7128,0.1316,0.1556,0,Unripe,500.4,164.31
+Galle,Red_Lady,July,0.0394,0.3018,0.6588,3,Overripe,291.9,125.44
+Galle,Tainung,July,0.0014,0.4364,0.5622,3,Overripe,132.4,103.71
+Galle,Red_Lady,April,0.0184,0.0763,0.9053,2,Market ready,307.5,301.74
+Hambantota,Tainung,January,0.0608,0.8745,0.0647,1,Half ripe,223.3,242.33
+Hambantota,Tainung,November,0.0172,0.0556,0.9272,2,Market ready,445.2,330.44
+Matara,Red_Lady,February,0.7546,0.1052,0.1402,0,Unripe,168.8,147.48
+Matara,Tainung,December,0.0064,0.4034,0.5902,3,Overripe,67.0,93.4
+Galle,Red_Lady,January,0.0032,0.0666,0.9302,2,Market ready,417.4,276.99
+Hambantota,Red_Lady,September,0.0688,0.8493,0.0819,1,Half ripe,446.5,203.7
+Hambantota,Red_Lady,January,0.0193,0.0884,0.8923,2,Market ready,481.8,317.72
+Hambantota,Tainung,March,0.0388,0.2812,0.68,3,Overripe,240.0,98.09
+Hambantota,Tainung,July,0.8202,0.0397,0.1401,0,Unripe,371.7,138.29
+Galle,Red_Lady,August,0.0323,0.3374,0.6303,3,Overripe,314.5,100.11
+Hambantota,Red_Lady,December,0.7906,0.1054,0.104,0,Unripe,180.6,176.48
+Hambantota,Red_Lady,April,0.0144,0.061,0.9246,2,Market ready,623.0,325.55
+Matara,Red_Lady,March,0.0578,0.8077,0.1345,1,Half ripe,476.5,227.29
+Hambantota,Tainung,December,0.0437,0.3049,0.6514,3,Overripe,152.3,127.77
+Hambantota,Tainung,June,0.018,0.0532,0.9288,2,Market ready,578.3,324.48
+Hambantota,Red_Lady,September,0.0777,0.8523,0.07,1,Half ripe,43.8,243.63
+Galle,Red_Lady,August,0.0312,0.3369,0.6319,3,Overripe,390.4,124.17
+Galle,Red_Lady,November,0.0736,0.7787,0.1477,1,Half ripe,80.8,246.57
+Galle,Tainung,February,0.0144,0.0223,0.9633,2,Market ready,195.6,337.45
+Hambantota,Red_Lady,April,0.7327,0.1081,0.1592,0,Unripe,508.5,161.48
+Galle,Tainung,April,0.7083,0.1355,0.1562,0,Unripe,530.5,161.83
+Hambantota,Red_Lady,August,0.7574,0.1017,0.1409,0,Unripe,46.8,164.28
+Galle,Red_Lady,January,0.0206,0.2598,0.7196,3,Overripe,99.9,131.81
+Galle,Red_Lady,January,0.7185,0.1178,0.1637,0,Unripe,325.7,158.23
+Matara,Tainung,July,0.0464,0.8436,0.11,1,Half ripe,463.4,254.45
+Matara,Tainung,January,0.7981,0.054,0.1479,0,Unripe,141.8,176.88
+Hambantota,Tainung,June,0.7361,0.1185,0.1454,0,Unripe,469.5,165.61
+Matara,Tainung,November,0.0044,0.036,0.9596,2,Market ready,296.8,294.76
+Hambantota,Tainung,December,0.0265,0.3431,0.6304,3,Overripe,319.3,98.37
+Matara,Red_Lady,December,0.068,0.8151,0.1169,1,Half ripe,168.5,212.94
+Galle,Red_Lady,April,0.7522,0.0882,0.1596,0,Unripe,347.6,149.88
+Galle,Red_Lady,August,0.0317,0.8377,0.1306,1,Half ripe,272.2,248.97
+Matara,Tainung,June,0.7654,0.0973,0.1373,0,Unripe,363.0,176.33
+Galle,Tainung,May,0.775,0.0629,0.1621,0,Unripe,306.3,150.27
+Hambantota,Tainung,May,0.0711,0.8418,0.0871,1,Half ripe,197.1,216.6
+Galle,Red_Lady,November,0.7757,0.089,0.1353,0,Unripe,436.0,142.5
+Hambantota,Tainung,April,0.0121,0.3768,0.6111,3,Overripe,43.7,107.95
+Hambantota,Red_Lady,September,0.0264,0.3944,0.5792,3,Overripe,145.8,114.15
+Hambantota,Tainung,March,0.0079,0.363,0.6291,3,Overripe,312.2,106.63
+Hambantota,Red_Lady,February,0.0701,0.7897,0.1402,1,Half ripe,478.2,227.66
+Matara,Tainung,October,0.0286,0.883,0.0884,1,Half ripe,375.2,220.56
+Galle,Tainung,July,0.0115,0.0266,0.9619,2,Market ready,23.9,328.9
+Hambantota,Tainung,March,0.0075,0.3866,0.6059,3,Overripe,485.6,128.25
+Matara,Tainung,November,0.0094,0.3469,0.6437,3,Overripe,492.5,143.12
+Hambantota,Tainung,December,0.8574,0.0575,0.0851,0,Unripe,434.2,134.18
+Galle,Tainung,December,0.0143,0.0695,0.9162,2,Market ready,48.4,306.24
+Matara,Red_Lady,August,0.0256,0.8215,0.1529,1,Half ripe,529.0,246.21
+Matara,Tainung,May,0.7945,0.0858,0.1197,0,Unripe,380.0,136.46
+Galle,Tainung,August,0.0246,0.8708,0.1046,1,Half ripe,412.6,225.45
+Hambantota,Red_Lady,September,0.0672,0.8591,0.0737,1,Half ripe,586.0,196.55
+Galle,Red_Lady,February,0.0385,0.349,0.6125,3,Overripe,50.3,109.12
+Galle,Tainung,July,0.0429,0.3197,0.6374,3,Overripe,508.7,116.9
+Hambantota,Tainung,March,0.0599,0.8189,0.1212,1,Half ripe,451.7,216.66
+Galle,Tainung,October,0.0094,0.0449,0.9457,2,Market ready,105.9,329.14
+Galle,Tainung,May,0.0075,0.8763,0.1162,1,Half ripe,414.9,228.17
+Hambantota,Tainung,August,0.0279,0.9006,0.0715,1,Half ripe,210.5,206.0
+Galle,Red_Lady,October,0.8117,0.0441,0.1442,0,Unripe,455.3,145.17
+Galle,Tainung,October,0.0299,0.347,0.6231,3,Overripe,412.8,103.99
+Galle,Tainung,August,0.0261,0.9111,0.0628,1,Half ripe,221.7,202.31
+Hambantota,Red_Lady,July,0.0165,0.0722,0.9113,2,Market ready,570.6,327.85
+Hambantota,Red_Lady,August,0.7714,0.0606,0.168,0,Unripe,550.1,177.25
+Galle,Red_Lady,September,0.7756,0.1381,0.0863,0,Unripe,565.2,169.38
+Galle,Tainung,December,0.0001,0.0286,0.9713,2,Market ready,84.7,306.16
+Hambantota,Tainung,November,0.7542,0.0778,0.168,0,Unripe,24.0,151.82
+Hambantota,Red_Lady,August,0.0001,0.3436,0.6563,3,Overripe,324.9,136.59
+Matara,Tainung,January,0.0163,0.0796,0.9041,2,Market ready,343.3,322.88
+Hambantota,Red_Lady,February,0.0499,0.3127,0.6374,3,Overripe,349.6,148.07
+Hambantota,Red_Lady,October,0.7192,0.1191,0.1617,0,Unripe,475.4,134.49
+Matara,Red_Lady,March,0.0106,0.8941,0.0953,1,Half ripe,534.4,209.29
+Galle,Red_Lady,October,0.7662,0.1328,0.101,0,Unripe,77.6,171.23
+Galle,Red_Lady,December,0.0111,0.0684,0.9205,2,Market ready,258.6,289.59
+Galle,Red_Lady,February,0.0557,0.8207,0.1236,1,Half ripe,183.4,249.07
+Matara,Tainung,June,0.051,0.8725,0.0765,1,Half ripe,134.2,201.78
+Hambantota,Tainung,July,0.8183,0.0555,0.1262,0,Unripe,219.6,165.05
+Galle,Red_Lady,February,0.0456,0.2995,0.6549,3,Overripe,608.0,98.86
+Galle,Red_Lady,May,0.0174,0.3516,0.631,3,Overripe,403.6,122.19
+Hambantota,Red_Lady,June,0.023,0.3329,0.6441,3,Overripe,228.6,104.42
+Matara,Red_Lady,October,0.0164,0.0361,0.9475,2,Market ready,268.5,292.72
+Matara,Tainung,January,0.0481,0.8577,0.0942,1,Half ripe,90.7,251.29
+Hambantota,Tainung,February,0.078,0.8134,0.1086,1,Half ripe,261.5,230.52
+Galle,Red_Lady,May,0.0201,0.8454,0.1345,1,Half ripe,446.3,212.43
+Galle,Tainung,March,0.0214,0.3035,0.6751,3,Overripe,242.2,95.91
+Galle,Tainung,February,0.046,0.859,0.095,1,Half ripe,550.5,244.56
+Galle,Tainung,January,0.7789,0.0822,0.1389,0,Unripe,440.4,156.15
+Hambantota,Red_Lady,March,0.826,0.0677,0.1063,0,Unripe,418.6,158.16
+Hambantota,Red_Lady,June,0.0201,0.0319,0.948,2,Market ready,75.8,316.47
+Hambantota,Tainung,May,0.0173,0.839,0.1437,1,Half ripe,375.6,252.82
+Galle,Tainung,April,0.0207,0.8413,0.138,1,Half ripe,98.5,239.62
+Galle,Red_Lady,August,0.0215,0.8564,0.1221,1,Half ripe,460.8,235.22
+Matara,Tainung,September,0.0198,0.3684,0.6118,3,Overripe,263.4,111.84
+Matara,Tainung,August,0.0212,0.2805,0.6983,3,Overripe,282.1,95.21
+Matara,Red_Lady,April,0.0384,0.8421,0.1195,1,Half ripe,82.1,209.02
+Galle,Red_Lady,July,0.0086,0.0569,0.9345,2,Market ready,59.5,293.47
+Galle,Red_Lady,October,0.0141,0.4123,0.5736,3,Overripe,180.7,109.54
+Galle,Tainung,October,0.0094,0.0277,0.9629,2,Market ready,162.0,306.7
+Matara,Red_Lady,July,0.0037,0.0585,0.9378,2,Market ready,133.9,291.76
+Galle,Tainung,January,0.0033,0.0243,0.9724,2,Market ready,531.0,316.04
+Matara,Red_Lady,March,0.0167,0.0692,0.9141,2,Market ready,261.1,297.87
+Matara,Red_Lady,December,0.0063,0.0759,0.9178,2,Market ready,524.0,340.41
+Matara,Red_Lady,February,0.0592,0.874,0.0668,1,Half ripe,281.5,214.01
+Hambantota,Tainung,January,0.041,0.8263,0.1327,1,Half ripe,632.8,243.88
+Matara,Tainung,March,0.8164,0.06,0.1236,0,Unripe,640.8,155.31
+Hambantota,Red_Lady,September,0.0262,0.8907,0.0831,1,Half ripe,503.7,209.32
+Matara,Red_Lady,October,0.0175,0.0324,0.9501,2,Market ready,184.4,327.63
+Galle,Tainung,March,0.7667,0.1118,0.1215,0,Unripe,314.7,147.99
+Galle,Tainung,December,0.7357,0.122,0.1423,0,Unripe,132.6,162.67
+Matara,Tainung,November,0.7693,0.1432,0.0875,0,Unripe,123.3,164.6
+Matara,Tainung,July,0.0359,0.8849,0.0792,1,Half ripe,340.4,201.86
+Hambantota,Red_Lady,November,0.0047,0.023,0.9723,2,Market ready,472.0,337.73
+Matara,Red_Lady,June,0.0405,0.3536,0.6059,3,Overripe,622.3,102.54
+Matara,Red_Lady,May,0.0106,0.0462,0.9432,2,Market ready,320.8,321.15
+Hambantota,Tainung,January,0.0219,0.8768,0.1013,1,Half ripe,240.5,195.12
+Matara,Tainung,September,0.0678,0.8493,0.0829,1,Half ripe,596.8,207.05
+Matara,Tainung,July,0.0055,0.0794,0.9151,2,Market ready,347.7,310.73
+Hambantota,Tainung,November,0.7568,0.1178,0.1254,0,Unripe,368.1,139.34
+Hambantota,Red_Lady,May,0.015,0.0657,0.9193,2,Market ready,363.7,341.57
+Hambantota,Red_Lady,February,0.0628,0.8582,0.079,1,Half ripe,606.1,234.73
+Galle,Red_Lady,May,0.0029,0.0646,0.9325,2,Market ready,271.0,332.54
+Galle,Tainung,June,0.0084,0.0627,0.9289,2,Market ready,168.7,303.31
+Matara,Tainung,August,0.7559,0.1219,0.1222,0,Unripe,335.7,166.17
+Galle,Tainung,January,0.0448,0.8316,0.1236,1,Half ripe,137.0,226.44
+Galle,Tainung,February,0.0111,0.0217,0.9672,2,Market ready,24.6,281.18
+Galle,Red_Lady,February,0.004,0.0822,0.9138,2,Market ready,515.3,286.08
+Matara,Red_Lady,September,0.0411,0.3906,0.5683,3,Overripe,562.6,106.75
+Matara,Tainung,April,0.0198,0.0551,0.9251,2,Market ready,471.2,330.31
+Galle,Tainung,October,0.0319,0.817,0.1511,1,Half ripe,29.2,229.05
+Hambantota,Red_Lady,October,0.026,0.8651,0.1089,1,Half ripe,74.4,214.42
+Hambantota,Red_Lady,November,0.7952,0.0922,0.1126,0,Unripe,425.3,158.5
+Galle,Tainung,June,0.7959,0.0678,0.1363,0,Unripe,177.3,152.14
+Hambantota,Red_Lady,November,0.024,0.8766,0.0994,1,Half ripe,252.4,242.44
+Matara,Tainung,September,0.0534,0.8416,0.105,1,Half ripe,599.2,216.78
+Galle,Red_Lady,September,0.0169,0.0664,0.9167,2,Market ready,374.5,284.77
+Hambantota,Tainung,March,0.0476,0.2993,0.6531,3,Overripe,566.5,95.55
+Galle,Tainung,June,0.7644,0.0498,0.1858,0,Unripe,350.6,150.6
+Hambantota,Red_Lady,March,0.0391,0.3061,0.6548,3,Overripe,610.6,135.87
+Galle,Red_Lady,April,0.824,0.0547,0.1213,0,Unripe,582.0,170.54
+Matara,Red_Lady,April,0.0583,0.8446,0.0971,1,Half ripe,364.8,211.89
+Hambantota,Tainung,October,0.0215,0.3169,0.6616,3,Overripe,473.3,147.82
+Galle,Tainung,June,0.7668,0.0992,0.134,0,Unripe,81.4,133.97
+Matara,Tainung,November,0.0266,0.8554,0.118,1,Half ripe,68.4,198.12
+Hambantota,Tainung,September,0.7397,0.1275,0.1328,0,Unripe,411.9,166.11
+Matara,Red_Lady,December,0.0066,0.8886,0.1048,1,Half ripe,359.9,219.0
+Hambantota,Red_Lady,July,0.0593,0.8536,0.0871,1,Half ripe,171.3,229.37
+Matara,Tainung,December,0.0018,0.8869,0.1113,1,Half ripe,521.4,199.65
+Matara,Red_Lady,December,0.7659,0.0915,0.1426,0,Unripe,84.1,142.95
+Matara,Tainung,April,0.0517,0.815,0.1333,1,Half ripe,200.9,224.83
+Hambantota,Tainung,December,0.0027,0.0856,0.9117,2,Market ready,453.6,280.2
+Matara,Red_Lady,May,0.7285,0.0937,0.1778,0,Unripe,190.3,169.21
+Hambantota,Tainung,October,0.065,0.8554,0.0796,1,Half ripe,225.7,232.52
+Galle,Red_Lady,September,0.8089,0.1147,0.0764,0,Unripe,429.6,138.15
+Hambantota,Tainung,August,0.7197,0.1277,0.1526,0,Unripe,395.2,132.59
+Hambantota,Tainung,February,0.0098,0.2923,0.6979,3,Overripe,519.1,143.88
+Matara,Tainung,October,0.8703,0.0456,0.0841,0,Unripe,353.3,163.86
+Matara,Red_Lady,October,0.0016,0.8604,0.138,1,Half ripe,418.0,236.06
+Galle,Tainung,December,0.0153,0.2718,0.7129,3,Overripe,573.1,149.4
+Matara,Red_Lady,January,0.793,0.11,0.097,0,Unripe,411.5,146.17
+Hambantota,Red_Lady,November,0.0197,0.0318,0.9485,2,Market ready,179.2,288.56
+Galle,Tainung,December,0.8121,0.0889,0.099,0,Unripe,583.7,149.48
+Matara,Red_Lady,October,0.772,0.0564,0.1716,0,Unripe,588.9,137.35
+Hambantota,Tainung,February,0.7674,0.085,0.1476,0,Unripe,486.9,150.65
+Hambantota,Red_Lady,May,0.0132,0.0365,0.9503,2,Market ready,67.5,281.06
+Matara,Tainung,October,0.0222,0.8511,0.1267,1,Half ripe,348.5,252.03
+Galle,Tainung,October,0.7157,0.1208,0.1635,0,Unripe,176.7,133.4
+Hambantota,Red_Lady,December,0.0095,0.313,0.6775,3,Overripe,614.0,105.37
+Hambantota,Tainung,April,0.0405,0.3257,0.6338,3,Overripe,323.2,98.13
+Matara,Red_Lady,July,0.8021,0.1062,0.0917,0,Unripe,602.6,174.51
+Matara,Tainung,May,0.8344,0.0953,0.0703,0,Unripe,220.2,160.83
+Matara,Red_Lady,August,0.0424,0.357,0.6006,3,Overripe,101.0,130.74
+Hambantota,Red_Lady,July,0.7996,0.0692,0.1312,0,Unripe,251.3,172.62
+Galle,Red_Lady,February,0.8096,0.062,0.1284,0,Unripe,527.5,153.53
+Hambantota,Red_Lady,August,0.0445,0.2969,0.6586,3,Overripe,457.4,121.43
+Matara,Red_Lady,November,0.0019,0.0262,0.9719,2,Market ready,163.2,289.0
+Hambantota,Tainung,October,0.8018,0.044,0.1542,0,Unripe,519.3,148.58
+Hambantota,Red_Lady,September,0.0436,0.3883,0.5681,3,Overripe,94.9,110.22
+Galle,Tainung,March,0.0121,0.3496,0.6383,3,Overripe,212.5,148.29
+Matara,Tainung,February,0.744,0.0738,0.1822,0,Unripe,641.6,177.16
+Matara,Tainung,May,0.801,0.0647,0.1343,0,Unripe,349.9,165.86
+Matara,Red_Lady,March,0.018,0.0727,0.9093,2,Market ready,417.4,290.86
+Matara,Tainung,June,0.8224,0.0591,0.1185,0,Unripe,507.7,155.91
+Hambantota,Red_Lady,March,0.0047,0.0605,0.9348,2,Market ready,248.9,322.52
+Galle,Tainung,March,0.7269,0.0979,0.1752,0,Unripe,643.6,177.02
+Matara,Tainung,August,0.0759,0.837,0.0871,1,Half ripe,478.4,223.78
+Galle,Tainung,February,0.0682,0.8095,0.1223,1,Half ripe,469.7,225.35
+Hambantota,Red_Lady,April,0.0217,0.3529,0.6254,3,Overripe,150.6,102.13
+Hambantota,Red_Lady,January,0.0506,0.3343,0.6151,3,Overripe,458.7,118.07
+Hambantota,Tainung,September,0.8023,0.1258,0.0719,0,Unripe,593.7,143.58
+Galle,Red_Lady,August,0.059,0.8738,0.0672,1,Half ripe,458.4,223.25
+Galle,Red_Lady,November,0.018,0.0336,0.9484,2,Market ready,389.3,316.28
+Galle,Red_Lady,March,0.0175,0.058,0.9245,2,Market ready,563.7,328.59
+Matara,Red_Lady,September,0.0169,0.0437,0.9394,2,Market ready,24.7,321.64
+Hambantota,Tainung,December,0.0,0.0713,0.9287,2,Market ready,216.7,284.66
+Galle,Red_Lady,December,0.0388,0.3087,0.6525,3,Overripe,283.4,144.32
+Galle,Red_Lady,January,0.0766,0.8278,0.0956,1,Half ripe,31.5,246.55
+Matara,Red_Lady,October,0.8003,0.0856,0.1141,0,Unripe,298.2,174.95
+Matara,Tainung,April,0.0064,0.0656,0.928,2,Market ready,597.8,287.74
+Hambantota,Tainung,July,0.0057,0.0546,0.9397,2,Market ready,619.6,330.31
+Matara,Tainung,January,0.0138,0.3706,0.6156,3,Overripe,233.4,96.83
+Hambantota,Red_Lady,October,0.0421,0.3364,0.6215,3,Overripe,387.9,94.6
+Hambantota,Tainung,June,0.0441,0.8108,0.1451,1,Half ripe,98.7,228.27
+Galle,Red_Lady,June,0.0304,0.3301,0.6395,3,Overripe,347.2,138.31
+Galle,Tainung,February,0.0135,0.0664,0.9201,2,Market ready,288.2,342.3
+Hambantota,Red_Lady,February,0.0033,0.0872,0.9095,2,Market ready,567.9,312.23
+Matara,Red_Lady,November,0.0021,0.3688,0.6291,3,Overripe,35.2,119.66
+Galle,Tainung,February,0.0169,0.077,0.9061,2,Market ready,113.9,342.92
+Matara,Red_Lady,August,0.0237,0.8261,0.1502,1,Half ripe,496.4,231.17
+Hambantota,Tainung,January,0.7719,0.0974,0.1307,0,Unripe,640.2,154.38
+Hambantota,Red_Lady,September,0.015,0.0582,0.9268,2,Market ready,131.7,344.59
+Matara,Red_Lady,January,0.0412,0.8175,0.1413,1,Half ripe,80.9,239.98
+Galle,Red_Lady,July,0.0003,0.0861,0.9136,2,Market ready,608.9,298.45
+Galle,Red_Lady,April,0.0348,0.8487,0.1165,1,Half ripe,606.5,222.49
+Galle,Red_Lady,March,0.0001,0.9143,0.0856,1,Half ripe,617.3,208.82
+Galle,Tainung,November,0.7244,0.1036,0.172,0,Unripe,98.2,135.65
+Matara,Red_Lady,February,0.8108,0.1066,0.0826,0,Unripe,642.0,162.32
+Galle,Red_Lady,April,0.0145,0.0868,0.8987,2,Market ready,525.5,277.79
+Matara,Tainung,January,0.0506,0.8536,0.0958,1,Half ripe,314.2,252.36
+Matara,Tainung,December,0.0623,0.857,0.0807,1,Half ripe,27.3,228.04
+Matara,Tainung,March,0.0611,0.8587,0.0802,1,Half ripe,626.4,246.17
+Hambantota,Red_Lady,December,0.0553,0.8675,0.0772,1,Half ripe,158.0,195.26
+Hambantota,Tainung,February,0.0745,0.8005,0.125,1,Half ripe,241.3,251.43
+Hambantota,Tainung,December,0.0335,0.828,0.1385,1,Half ripe,593.9,249.12
+Hambantota,Red_Lady,November,0.7506,0.1222,0.1272,0,Unripe,611.6,139.86
+Galle,Tainung,February,0.7705,0.0597,0.1698,0,Unripe,611.1,147.01
+Hambantota,Tainung,February,0.0351,0.8476,0.1173,1,Half ripe,56.4,234.94
+Galle,Tainung,May,0.0271,0.2872,0.6857,3,Overripe,168.3,107.13
+Hambantota,Tainung,November,0.0003,0.0395,0.9602,2,Market ready,353.8,313.79
+Galle,Red_Lady,January,0.7783,0.0846,0.1371,0,Unripe,154.3,138.5
+Galle,Red_Lady,August,0.0112,0.0628,0.926,2,Market ready,525.1,329.3
+Hambantota,Tainung,December,0.0366,0.3183,0.6451,3,Overripe,249.8,144.02
+Matara,Tainung,January,0.0158,0.0693,0.9149,2,Market ready,515.8,292.81
+Matara,Red_Lady,November,0.0107,0.0845,0.9048,2,Market ready,547.8,319.48
+Galle,Red_Lady,November,0.0025,0.0705,0.927,2,Market ready,223.3,282.8
+Matara,Red_Lady,August,0.0152,0.0602,0.9246,2,Market ready,336.7,301.11
+Galle,Tainung,September,0.7611,0.1024,0.1365,0,Unripe,205.7,164.8
+Matara,Red_Lady,December,0.0159,0.0405,0.9436,2,Market ready,252.9,319.64
+Galle,Tainung,October,0.0128,0.0712,0.916,2,Market ready,75.8,278.48
+Matara,Red_Lady,November,0.0069,0.0583,0.9348,2,Market ready,594.8,344.81
+Matara,Red_Lady,November,0.0312,0.3471,0.6217,3,Overripe,562.2,122.48
+Galle,Tainung,March,0.0574,0.8034,0.1392,1,Half ripe,164.9,240.3
+Hambantota,Red_Lady,August,0.8454,0.0593,0.0953,0,Unripe,601.8,148.57
+Galle,Red_Lady,December,0.7206,0.1105,0.1689,0,Unripe,641.2,155.55
+Galle,Red_Lady,January,0.0088,0.082,0.9092,2,Market ready,369.2,277.47
+Galle,Red_Lady,December,0.0349,0.3419,0.6232,3,Overripe,216.0,124.36
+Galle,Tainung,May,0.0004,0.0745,0.9251,2,Market ready,500.3,311.66
+Matara,Tainung,March,0.0368,0.8152,0.148,1,Half ripe,250.8,217.68
+Galle,Tainung,April,0.0088,0.8601,0.1311,1,Half ripe,578.9,235.9
+Galle,Red_Lady,September,0.7828,0.091,0.1262,0,Unripe,219.8,151.14
+Matara,Tainung,October,0.8237,0.0664,0.1099,0,Unripe,575.7,166.49
+Matara,Tainung,June,0.0108,0.0642,0.925,2,Market ready,307.8,329.22
+Hambantota,Tainung,July,0.0118,0.2746,0.7136,3,Overripe,531.8,98.41
+Matara,Red_Lady,March,0.0227,0.8505,0.1268,1,Half ripe,460.4,202.37
+Matara,Red_Lady,May,0.8284,0.0875,0.0841,0,Unripe,629.6,145.07
+Matara,Tainung,April,0.7301,0.1134,0.1565,0,Unripe,536.0,144.55
+Galle,Tainung,April,0.0508,0.8555,0.0937,1,Half ripe,424.9,238.4
+Galle,Red_Lady,October,0.0068,0.0372,0.956,2,Market ready,155.0,321.48
+Galle,Tainung,February,0.0655,0.8204,0.1141,1,Half ripe,393.4,213.52
+Hambantota,Tainung,May,0.0713,0.8182,0.1105,1,Half ripe,121.0,225.59
+Galle,Red_Lady,October,0.7697,0.0769,0.1534,0,Unripe,189.9,137.78
+Hambantota,Red_Lady,June,0.0366,0.3597,0.6037,3,Overripe,137.9,125.21
+Hambantota,Tainung,September,0.7846,0.0663,0.1491,0,Unripe,181.5,177.39
+Galle,Red_Lady,August,0.0572,0.8012,0.1416,1,Half ripe,185.5,204.76
+Matara,Tainung,August,0.0386,0.3692,0.5922,3,Overripe,399.4,125.17
+Hambantota,Tainung,September,0.0149,0.3465,0.6386,3,Overripe,630.3,103.97
+Matara,Red_Lady,June,0.0043,0.3079,0.6878,3,Overripe,171.5,124.5
+Hambantota,Tainung,September,0.0009,0.0544,0.9447,2,Market ready,527.5,291.2
+Matara,Red_Lady,September,0.017,0.0881,0.8949,2,Market ready,223.3,309.99
+Galle,Red_Lady,January,0.0112,0.0335,0.9553,2,Market ready,638.2,320.26
+Galle,Tainung,November,0.8708,0.0488,0.0804,0,Unripe,235.3,176.62
+Galle,Red_Lady,July,0.8293,0.0756,0.0951,0,Unripe,309.4,150.75
+Hambantota,Tainung,October,0.0083,0.8864,0.1053,1,Half ripe,388.0,203.91
+Galle,Red_Lady,February,0.0114,0.067,0.9216,2,Market ready,102.8,335.44
+Matara,Red_Lady,July,0.7231,0.1027,0.1742,0,Unripe,611.0,178.18
+Hambantota,Red_Lady,January,0.8427,0.0581,0.0992,0,Unripe,144.0,138.06
+Matara,Tainung,February,0.006,0.8548,0.1392,1,Half ripe,49.0,231.85
+Matara,Tainung,January,0.8273,0.0497,0.123,0,Unripe,197.2,146.79
+Matara,Tainung,June,0.0588,0.8037,0.1375,1,Half ripe,338.2,228.99
+Hambantota,Tainung,August,0.0482,0.3489,0.6029,3,Overripe,507.8,112.46
+Hambantota,Red_Lady,November,0.0184,0.0465,0.9351,2,Market ready,68.6,315.0
+Galle,Red_Lady,August,0.0375,0.3057,0.6568,3,Overripe,293.1,127.42
+Matara,Red_Lady,April,0.7323,0.1091,0.1586,0,Unripe,165.0,172.48
+Matara,Tainung,December,0.0157,0.9165,0.0678,1,Half ripe,107.4,219.76
+Galle,Red_Lady,October,0.8523,0.0727,0.075,0,Unripe,394.3,158.9
+Matara,Red_Lady,August,0.0764,0.8604,0.0632,1,Half ripe,191.9,207.48
+Matara,Tainung,June,0.0671,0.7893,0.1436,1,Half ripe,254.3,233.1
+Galle,Tainung,February,0.0427,0.326,0.6313,3,Overripe,542.7,146.85
+Galle,Red_Lady,February,0.0272,0.3341,0.6387,3,Overripe,217.4,115.55
+Hambantota,Tainung,November,0.0092,0.083,0.9078,2,Market ready,296.5,309.17
+Hambantota,Tainung,November,0.8311,0.0654,0.1035,0,Unripe,459.6,139.57
+Galle,Tainung,May,0.0378,0.893,0.0692,1,Half ripe,508.6,228.02
+Galle,Red_Lady,May,0.0369,0.2954,0.6677,3,Overripe,630.7,108.55
+Galle,Red_Lady,June,0.0208,0.4045,0.5747,3,Overripe,117.4,93.74
+Galle,Tainung,August,0.0413,0.3645,0.5942,3,Overripe,266.8,108.1
+Galle,Tainung,November,0.0136,0.0717,0.9147,2,Market ready,112.6,333.15
+Hambantota,Red_Lady,February,0.0631,0.8143,0.1226,1,Half ripe,484.7,254.51
+Galle,Tainung,September,0.0175,0.2781,0.7044,3,Overripe,180.2,117.23
+Galle,Red_Lady,May,0.027,0.3559,0.6171,3,Overripe,256.2,144.23
+Matara,Tainung,January,0.0195,0.8996,0.0809,1,Half ripe,294.2,221.91
+Hambantota,Red_Lady,August,0.0022,0.0766,0.9212,2,Market ready,330.7,323.9
+Matara,Tainung,November,0.0687,0.8012,0.1301,1,Half ripe,253.0,247.12
+Hambantota,Red_Lady,October,0.7499,0.1195,0.1306,0,Unripe,154.1,138.92
+Matara,Red_Lady,September,0.0393,0.8279,0.1328,1,Half ripe,197.2,199.33
+Hambantota,Red_Lady,May,0.0094,0.3069,0.6837,3,Overripe,112.4,109.13
+Matara,Tainung,June,0.7751,0.0917,0.1332,0,Unripe,71.6,157.37
+Matara,Tainung,September,0.7938,0.061,0.1452,0,Unripe,560.2,153.92
+Galle,Tainung,December,0.0402,0.3504,0.6094,3,Overripe,483.7,103.02
+Galle,Red_Lady,September,0.7943,0.1045,0.1012,0,Unripe,635.0,130.59
+Hambantota,Tainung,March,0.0004,0.9069,0.0927,1,Half ripe,198.2,219.55
+Hambantota,Tainung,July,0.0026,0.0366,0.9608,2,Market ready,27.2,329.61
+Galle,Red_Lady,March,0.027,0.3367,0.6363,3,Overripe,291.7,107.99
+Hambantota,Tainung,October,0.075,0.7934,0.1316,1,Half ripe,436.8,209.82
+Matara,Tainung,December,0.0818,0.8392,0.079,1,Half ripe,618.3,248.57
+Galle,Red_Lady,December,0.0063,0.0409,0.9528,2,Market ready,60.2,307.0
+Galle,Tainung,July,0.0468,0.3653,0.5879,3,Overripe,195.0,106.72
+Hambantota,Red_Lady,January,0.7927,0.0913,0.116,0,Unripe,289.7,133.54
+Matara,Red_Lady,October,0.0078,0.0455,0.9467,2,Market ready,375.1,339.79
+Matara,Red_Lady,September,0.7637,0.1185,0.1178,0,Unripe,54.4,179.03
+Galle,Red_Lady,November,0.0124,0.039,0.9486,2,Market ready,222.9,289.77
+Matara,Tainung,February,0.7868,0.0716,0.1416,0,Unripe,167.4,160.72
+Galle,Red_Lady,July,0.0148,0.0329,0.9523,2,Market ready,630.4,277.19
+Hambantota,Tainung,June,0.0036,0.8495,0.1469,1,Half ripe,524.7,198.09
+Hambantota,Tainung,February,0.0232,0.2853,0.6915,3,Overripe,239.6,116.29
+Matara,Tainung,July,0.034,0.8479,0.1181,1,Half ripe,406.0,242.1
+Hambantota,Tainung,September,0.7816,0.1082,0.1102,0,Unripe,440.8,175.83
+Galle,Red_Lady,May,0.7162,0.1256,0.1582,0,Unripe,286.1,159.22
+Galle,Tainung,June,0.001,0.0505,0.9485,2,Market ready,585.4,307.74
+Galle,Red_Lady,November,0.0092,0.8429,0.1479,1,Half ripe,430.3,201.86
+Hambantota,Tainung,May,0.7529,0.1263,0.1208,0,Unripe,625.0,139.84
+Hambantota,Red_Lady,March,0.0035,0.8713,0.1252,1,Half ripe,329.0,238.01
+Hambantota,Red_Lady,January,0.8294,0.0892,0.0814,0,Unripe,409.0,161.21
+Hambantota,Tainung,February,0.0248,0.8815,0.0937,1,Half ripe,315.9,249.62
+Matara,Red_Lady,December,0.7384,0.1211,0.1405,0,Unripe,383.6,179.36
+Matara,Red_Lady,November,0.0198,0.3921,0.5881,3,Overripe,247.2,101.98
+Galle,Red_Lady,August,0.007,0.0469,0.9461,2,Market ready,430.4,327.09
+Matara,Red_Lady,February,0.0231,0.3364,0.6405,3,Overripe,58.1,121.03
+Galle,Red_Lady,August,0.0008,0.0262,0.973,2,Market ready,395.8,288.6
+Hambantota,Tainung,June,0.7402,0.1291,0.1307,0,Unripe,159.1,162.26
+Hambantota,Tainung,September,0.7949,0.1119,0.0932,0,Unripe,48.8,134.15
+Matara,Tainung,June,0.0524,0.8471,0.1005,1,Half ripe,646.9,249.84
+Matara,Red_Lady,January,0.005,0.0232,0.9718,2,Market ready,293.4,327.62
+Hambantota,Red_Lady,November,0.7732,0.0856,0.1412,0,Unripe,230.5,151.19
+Hambantota,Tainung,November,0.0353,0.3458,0.6189,3,Overripe,442.7,99.91
+Galle,Tainung,March,0.0309,0.3689,0.6002,3,Overripe,356.9,148.59
+Galle,Tainung,June,0.0339,0.8232,0.1429,1,Half ripe,457.3,246.2
+Hambantota,Red_Lady,June,0.0371,0.8241,0.1388,1,Half ripe,462.2,248.67
+Hambantota,Red_Lady,November,0.8295,0.0521,0.1184,0,Unripe,169.8,146.99
+Matara,Red_Lady,November,0.016,0.9019,0.0821,1,Half ripe,411.2,218.86
+Galle,Tainung,December,0.7535,0.0803,0.1662,0,Unripe,123.7,130.34
+Galle,Tainung,May,0.0106,0.3216,0.6678,3,Overripe,357.1,102.92
+Matara,Red_Lady,May,0.0442,0.3329,0.6229,3,Overripe,155.3,103.64
+Matara,Tainung,January,0.0013,0.063,0.9357,2,Market ready,246.8,317.4
+Matara,Red_Lady,April,0.0312,0.8524,0.1164,1,Half ripe,322.9,250.01
+Galle,Tainung,October,0.0585,0.8592,0.0823,1,Half ripe,534.4,224.33
+Hambantota,Red_Lady,December,0.0076,0.0796,0.9128,2,Market ready,282.3,311.19
+Matara,Tainung,July,0.019,0.8411,0.1399,1,Half ripe,454.6,236.63
+Galle,Red_Lady,April,0.0091,0.8855,0.1054,1,Half ripe,375.1,212.66
+Matara,Tainung,November,0.0132,0.3476,0.6392,3,Overripe,276.0,141.54
+Hambantota,Red_Lady,September,0.8297,0.0888,0.0815,0,Unripe,94.0,169.13
+Matara,Red_Lady,September,0.7485,0.094,0.1575,0,Unripe,96.9,141.52
+Hambantota,Red_Lady,June,0.016,0.3588,0.6252,3,Overripe,376.6,111.75
+Galle,Red_Lady,July,0.7378,0.1162,0.146,0,Unripe,550.8,142.72
+Matara,Red_Lady,January,0.0256,0.8321,0.1423,1,Half ripe,53.3,237.19
+Hambantota,Red_Lady,May,0.0008,0.3166,0.6826,3,Overripe,508.4,123.12
+Matara,Red_Lady,March,0.7933,0.0665,0.1402,0,Unripe,561.9,143.78
+Matara,Red_Lady,May,0.0276,0.8515,0.1209,1,Half ripe,182.3,218.67
+Hambantota,Red_Lady,December,0.0677,0.8565,0.0758,1,Half ripe,471.4,203.43
+Galle,Tainung,September,0.0082,0.0294,0.9624,2,Market ready,576.6,329.02
+Hambantota,Red_Lady,August,0.0069,0.9039,0.0892,1,Half ripe,302.1,229.18
+Hambantota,Red_Lady,November,0.7487,0.0948,0.1565,0,Unripe,438.9,178.13
+Matara,Red_Lady,April,0.0281,0.3542,0.6177,3,Overripe,298.7,125.72
+Hambantota,Tainung,August,0.0347,0.3832,0.5821,3,Overripe,23.0,141.5
+Galle,Tainung,December,0.0215,0.3334,0.6451,3,Overripe,58.9,118.78
+Galle,Tainung,May,0.0723,0.8382,0.0895,1,Half ripe,533.1,217.11
+Matara,Tainung,April,0.0089,0.0264,0.9647,2,Market ready,68.1,293.52
+Matara,Tainung,September,0.015,0.038,0.947,2,Market ready,516.7,278.75
+Hambantota,Tainung,October,0.7646,0.119,0.1164,0,Unripe,413.2,148.07
+Hambantota,Red_Lady,March,0.8135,0.0794,0.1071,0,Unripe,46.5,140.37
+Matara,Red_Lady,July,0.8217,0.0387,0.1396,0,Unripe,488.7,174.26
+Hambantota,Tainung,August,0.0362,0.3044,0.6594,3,Overripe,569.4,104.34
+Hambantota,Tainung,November,0.0204,0.0284,0.9512,2,Market ready,206.0,278.88
+Matara,Red_Lady,February,0.0063,0.2958,0.6979,3,Overripe,71.5,121.1
+Galle,Red_Lady,June,0.019,0.3572,0.6238,3,Overripe,66.4,107.67
+Galle,Red_Lady,March,0.7919,0.0739,0.1342,0,Unripe,334.8,142.34
+Hambantota,Tainung,February,0.0724,0.8457,0.0819,1,Half ripe,259.9,245.35
+Hambantota,Red_Lady,February,0.0124,0.0198,0.9678,2,Market ready,477.8,298.65
+Matara,Tainung,March,0.0081,0.0257,0.9662,2,Market ready,128.7,337.9
+Hambantota,Tainung,August,0.019,0.0728,0.9082,2,Market ready,290.3,295.1
+Galle,Red_Lady,March,0.7909,0.0667,0.1424,0,Unripe,327.5,138.48
+Galle,Tainung,December,0.7612,0.0785,0.1603,0,Unripe,94.1,165.06
+Matara,Red_Lady,February,0.0739,0.7833,0.1428,1,Half ripe,355.3,241.6
+Matara,Tainung,April,0.0092,0.895,0.0958,1,Half ripe,582.5,236.93
+Galle,Tainung,September,0.0157,0.0577,0.9266,2,Market ready,468.3,332.7
+Hambantota,Tainung,December,0.0235,0.3535,0.623,3,Overripe,369.4,112.5
+Galle,Tainung,November,0.7413,0.0938,0.1649,0,Unripe,27.3,142.85
+Galle,Tainung,May,0.7595,0.1081,0.1324,0,Unripe,575.5,135.12
+Hambantota,Red_Lady,February,0.0164,0.0525,0.9311,2,Market ready,222.6,277.67
+Matara,Tainung,February,0.0013,0.0277,0.971,2,Market ready,614.3,295.91
+Matara,Red_Lady,March,0.7409,0.1047,0.1544,0,Unripe,607.6,168.74
+Hambantota,Red_Lady,July,0.0539,0.8336,0.1125,1,Half ripe,575.0,200.23
+Galle,Red_Lady,November,0.0158,0.3207,0.6635,3,Overripe,252.8,115.43
+Matara,Red_Lady,April,0.003,0.0769,0.9201,2,Market ready,454.4,280.93
+Matara,Red_Lady,August,0.0073,0.0366,0.9561,2,Market ready,199.6,291.22
+Hambantota,Red_Lady,August,0.0133,0.0287,0.958,2,Market ready,186.8,284.73
+Matara,Red_Lady,August,0.0068,0.3223,0.6709,3,Overripe,425.8,103.9
+Galle,Red_Lady,January,0.0167,0.0751,0.9082,2,Market ready,128.6,291.11
+Matara,Tainung,August,0.023,0.3223,0.6547,3,Overripe,374.6,106.59
+Galle,Tainung,April,0.8052,0.0852,0.1096,0,Unripe,458.5,173.52
+Matara,Tainung,March,0.0241,0.3548,0.6211,3,Overripe,600.6,97.22
+Hambantota,Red_Lady,January,0.7981,0.0573,0.1446,0,Unripe,592.9,137.66
+Galle,Red_Lady,September,0.0152,0.3557,0.6291,3,Overripe,39.2,104.43
+Hambantota,Red_Lady,July,0.779,0.0543,0.1667,0,Unripe,172.7,131.09
+Hambantota,Red_Lady,June,0.7967,0.076,0.1273,0,Unripe,435.3,139.3
+Matara,Red_Lady,March,0.0005,0.0558,0.9437,2,Market ready,172.9,289.7
+Hambantota,Tainung,January,0.782,0.0651,0.1529,0,Unripe,52.7,156.22
+Galle,Tainung,February,0.0271,0.3305,0.6424,3,Overripe,154.7,133.99
+Hambantota,Red_Lady,October,0.0074,0.3691,0.6235,3,Overripe,494.8,146.62
+Matara,Red_Lady,March,0.0159,0.0567,0.9274,2,Market ready,609.2,279.96
+Matara,Red_Lady,February,0.0321,0.3573,0.6106,3,Overripe,615.3,119.73
+Hambantota,Tainung,August,0.0554,0.8238,0.1208,1,Half ripe,345.5,203.89
+Matara,Red_Lady,March,0.0183,0.8617,0.12,1,Half ripe,326.3,219.31
+Hambantota,Red_Lady,December,0.0092,0.0693,0.9215,2,Market ready,284.3,283.21
+Galle,Red_Lady,October,0.0299,0.3253,0.6448,3,Overripe,347.9,96.89
+Matara,Red_Lady,September,0.7895,0.0688,0.1417,0,Unripe,63.5,146.93
+Matara,Red_Lady,December,0.7822,0.0701,0.1477,0,Unripe,267.6,138.01
+Hambantota,Tainung,July,0.0091,0.398,0.5929,3,Overripe,226.7,127.34
+Matara,Red_Lady,July,0.0366,0.8489,0.1145,1,Half ripe,324.7,199.48
+Hambantota,Red_Lady,February,0.0299,0.3807,0.5894,3,Overripe,188.5,110.15
+Hambantota,Tainung,September,0.0095,0.9192,0.0713,1,Half ripe,426.6,218.73
+Hambantota,Red_Lady,January,0.7505,0.1257,0.1238,0,Unripe,646.6,135.04
+Galle,Red_Lady,March,0.759,0.0876,0.1534,0,Unripe,92.9,159.91
+Hambantota,Red_Lady,June,0.0197,0.3462,0.6341,3,Overripe,236.9,104.62
+Galle,Tainung,December,0.0303,0.8527,0.117,1,Half ripe,624.7,207.15
+Galle,Tainung,February,0.0261,0.8749,0.099,1,Half ripe,218.9,226.88
+Galle,Tainung,June,0.0351,0.3387,0.6262,3,Overripe,481.9,129.95
+Matara,Red_Lady,September,0.0474,0.4013,0.5513,3,Overripe,272.9,143.59
+Galle,Tainung,January,0.0088,0.0765,0.9147,2,Market ready,208.2,300.39
+Matara,Red_Lady,September,0.0288,0.4082,0.563,3,Overripe,375.3,115.08
+Hambantota,Red_Lady,January,0.8053,0.0566,0.1381,0,Unripe,98.4,141.92
+Hambantota,Red_Lady,September,0.0477,0.3447,0.6076,3,Overripe,373.6,130.7
+Matara,Red_Lady,November,0.0057,0.3321,0.6622,3,Overripe,24.2,105.93
+Galle,Red_Lady,March,0.0106,0.0746,0.9148,2,Market ready,97.5,303.13
+Matara,Red_Lady,December,0.0155,0.3265,0.658,3,Overripe,505.9,133.78
+Galle,Red_Lady,January,0.023,0.301,0.676,3,Overripe,408.9,93.85
+Matara,Tainung,February,0.0198,0.0336,0.9466,2,Market ready,394.0,282.54
+Galle,Red_Lady,April,0.0243,0.2959,0.6798,3,Overripe,196.6,128.3
+Hambantota,Tainung,July,0.8382,0.0827,0.0791,0,Unripe,177.4,130.98
+Hambantota,Red_Lady,July,0.0368,0.2931,0.6701,3,Overripe,80.1,125.25
+Hambantota,Red_Lady,December,0.7857,0.0576,0.1567,0,Unripe,415.0,153.57
+Matara,Red_Lady,November,0.0206,0.2635,0.7159,3,Overripe,449.9,138.61
+Matara,Tainung,September,0.0113,0.3562,0.6325,3,Overripe,275.5,102.36
+Hambantota,Tainung,October,0.0048,0.2964,0.6988,3,Overripe,23.3,105.93
+Galle,Red_Lady,January,0.7837,0.0611,0.1552,0,Unripe,535.8,145.28
+Hambantota,Red_Lady,February,0.7991,0.129,0.0719,0,Unripe,633.4,158.53
+Galle,Tainung,February,0.0055,0.0701,0.9244,2,Market ready,591.3,286.37
+Matara,Tainung,June,0.7884,0.1211,0.0905,0,Unripe,264.4,146.19
+Galle,Red_Lady,August,0.0004,0.9086,0.091,1,Half ripe,254.6,241.76
+Hambantota,Red_Lady,May,0.0461,0.8116,0.1423,1,Half ripe,328.3,254.0
+Matara,Red_Lady,September,0.0436,0.3615,0.5949,3,Overripe,600.9,126.63
+Galle,Red_Lady,July,0.0177,0.0686,0.9137,2,Market ready,473.7,283.26
+Matara,Tainung,November,0.0198,0.3157,0.6645,3,Overripe,445.5,100.99
+Hambantota,Red_Lady,October,0.0151,0.0654,0.9195,2,Market ready,542.0,325.9
+Matara,Red_Lady,October,0.7901,0.0484,0.1615,0,Unripe,477.8,162.07
+Hambantota,Red_Lady,February,0.7463,0.0975,0.1562,0,Unripe,282.2,142.81
+Matara,Tainung,November,0.731,0.097,0.172,0,Unripe,459.8,137.22
+Hambantota,Tainung,January,0.0452,0.8108,0.144,1,Half ripe,555.0,225.87
+Galle,Tainung,July,0.0283,0.321,0.6507,3,Overripe,238.7,125.57
+Galle,Red_Lady,July,0.7354,0.1035,0.1611,0,Unripe,446.0,134.08
+Matara,Tainung,March,0.0059,0.0452,0.9489,2,Market ready,282.3,315.43
+Galle,Tainung,June,0.0011,0.3588,0.6401,3,Overripe,536.3,101.4
+Galle,Red_Lady,October,0.0311,0.3126,0.6563,3,Overripe,501.3,109.68
+Matara,Tainung,December,0.7489,0.1126,0.1385,0,Unripe,214.6,166.83
+Matara,Tainung,January,0.0038,0.411,0.5852,3,Overripe,278.9,140.92
+Galle,Red_Lady,March,0.8402,0.0594,0.1004,0,Unripe,42.2,157.36
+Hambantota,Red_Lady,May,0.041,0.8544,0.1046,1,Half ripe,470.6,217.96
+Galle,Red_Lady,November,0.0011,0.0631,0.9358,2,Market ready,570.3,286.19
+Hambantota,Tainung,June,0.067,0.8442,0.0888,1,Half ripe,279.5,195.2
+Hambantota,Red_Lady,November,0.0156,0.9118,0.0726,1,Half ripe,392.7,240.43
+Galle,Red_Lady,March,0.0152,0.0854,0.8994,2,Market ready,523.2,335.96
+Galle,Red_Lady,May,0.0012,0.0554,0.9434,2,Market ready,520.1,335.88
+Galle,Tainung,August,0.0046,0.0225,0.9729,2,Market ready,32.9,296.98
+Matara,Red_Lady,May,0.0113,0.0329,0.9558,2,Market ready,282.2,297.67
+Hambantota,Red_Lady,August,0.0228,0.2715,0.7057,3,Overripe,82.1,113.22
+Galle,Tainung,November,0.0459,0.8271,0.127,1,Half ripe,612.6,218.73
+Galle,Red_Lady,August,0.0194,0.0627,0.9179,2,Market ready,164.1,310.03
+Galle,Tainung,June,0.0443,0.8062,0.1495,1,Half ripe,559.7,235.91
+Hambantota,Red_Lady,September,0.0395,0.8713,0.0892,1,Half ripe,235.2,238.79
+Galle,Tainung,September,0.7402,0.0894,0.1704,0,Unripe,382.1,173.03
+Matara,Red_Lady,August,0.0289,0.3221,0.649,3,Overripe,250.3,104.3
+Galle,Red_Lady,March,0.0168,0.0654,0.9178,2,Market ready,39.1,304.62
+Matara,Red_Lady,April,0.0561,0.3303,0.6136,3,Overripe,641.1,109.84
+Hambantota,Tainung,January,0.0175,0.0658,0.9167,2,Market ready,171.3,308.07
+Galle,Tainung,July,0.0093,0.3771,0.6136,3,Overripe,471.8,142.71
+Hambantota,Red_Lady,September,0.0033,0.9093,0.0874,1,Half ripe,325.3,246.15
+Hambantota,Red_Lady,October,0.8708,0.0445,0.0847,0,Unripe,416.4,156.31
+Hambantota,Red_Lady,April,0.8381,0.0664,0.0955,0,Unripe,395.9,145.6
+Galle,Red_Lady,August,0.0043,0.0773,0.9184,2,Market ready,413.3,285.17
+Galle,Tainung,July,0.0313,0.3684,0.6003,3,Overripe,604.8,147.97
+Matara,Red_Lady,August,0.0186,0.0871,0.8943,2,Market ready,319.5,324.66
+Hambantota,Red_Lady,December,0.0079,0.0327,0.9594,2,Market ready,606.3,309.71
+Galle,Red_Lady,January,0.061,0.798,0.141,1,Half ripe,633.7,202.37
+Galle,Red_Lady,July,0.0755,0.8595,0.065,1,Half ripe,214.5,231.85
+Galle,Tainung,April,0.0408,0.8709,0.0883,1,Half ripe,351.7,216.8
+Matara,Tainung,March,0.8395,0.0668,0.0937,0,Unripe,481.9,149.75
+Hambantota,Red_Lady,February,0.7588,0.1326,0.1086,0,Unripe,420.3,176.92
+Galle,Red_Lady,December,0.031,0.3855,0.5835,3,Overripe,174.3,142.08
+Matara,Tainung,January,0.0076,0.0263,0.9661,2,Market ready,268.9,307.61
+Hambantota,Tainung,July,0.8424,0.0614,0.0962,0,Unripe,565.3,133.21
+Matara,Tainung,March,0.0496,0.358,0.5924,3,Overripe,21.4,114.45
+Matara,Red_Lady,September,0.8412,0.0611,0.0977,0,Unripe,548.2,157.83
+Matara,Red_Lady,April,0.0043,0.0737,0.922,2,Market ready,81.5,282.71
+Matara,Red_Lady,December,0.0391,0.8926,0.0683,1,Half ripe,179.3,234.7
+Galle,Red_Lady,June,0.0447,0.83,0.1253,1,Half ripe,543.4,235.47
+Galle,Red_Lady,January,0.0639,0.8603,0.0758,1,Half ripe,124.2,228.43
+Galle,Red_Lady,January,0.7861,0.1105,0.1034,0,Unripe,161.6,153.61
+Hambantota,Tainung,December,0.8225,0.0463,0.1312,0,Unripe,223.2,159.38
+Matara,Red_Lady,February,0.7471,0.11,0.1429,0,Unripe,586.4,133.52
+Galle,Red_Lady,December,0.0731,0.8106,0.1163,1,Half ripe,508.3,240.49
+Hambantota,Tainung,May,0.7545,0.1115,0.134,0,Unripe,145.1,134.76
+Hambantota,Red_Lady,November,0.0589,0.8005,0.1406,1,Half ripe,68.8,227.67
+Hambantota,Tainung,January,0.0006,0.4007,0.5987,3,Overripe,296.1,123.89
+Hambantota,Red_Lady,November,0.0149,0.3102,0.6749,3,Overripe,352.1,149.32
+Matara,Red_Lady,April,0.0145,0.2701,0.7154,3,Overripe,152.2,114.02
+Hambantota,Red_Lady,May,0.0231,0.3234,0.6535,3,Overripe,98.5,100.44
+Hambantota,Red_Lady,September,0.0184,0.381,0.6006,3,Overripe,337.2,98.68
+Galle,Red_Lady,June,0.8413,0.06,0.0987,0,Unripe,228.9,155.38
+Matara,Tainung,November,0.0024,0.0792,0.9184,2,Market ready,365.8,285.16
+Hambantota,Red_Lady,September,0.0248,0.8772,0.098,1,Half ripe,280.5,246.91
+Galle,Red_Lady,September,0.0246,0.3409,0.6345,3,Overripe,124.0,125.4
+Hambantota,Tainung,September,0.0384,0.2678,0.6938,3,Overripe,421.5,115.31
+Matara,Tainung,May,0.0083,0.0403,0.9514,2,Market ready,85.4,286.28
+Matara,Tainung,August,0.0147,0.3169,0.6684,3,Overripe,127.3,135.09
+Matara,Red_Lady,April,0.844,0.0747,0.0813,0,Unripe,76.3,136.31
+Hambantota,Tainung,November,0.0102,0.0809,0.9089,2,Market ready,280.9,296.33
+Galle,Red_Lady,April,0.0448,0.2848,0.6704,3,Overripe,174.8,129.77
+Hambantota,Red_Lady,March,0.0406,0.381,0.5784,3,Overripe,504.9,101.3
+Galle,Red_Lady,October,0.0435,0.3639,0.5926,3,Overripe,171.2,119.81
+Hambantota,Red_Lady,October,0.0204,0.3407,0.6389,3,Overripe,438.8,104.45
+Hambantota,Tainung,April,0.0101,0.0372,0.9527,2,Market ready,97.3,323.79
+Galle,Red_Lady,December,0.0392,0.3694,0.5914,3,Overripe,124.9,142.22
+Hambantota,Red_Lady,January,0.0029,0.3036,0.6935,3,Overripe,223.5,110.89
+Matara,Red_Lady,March,0.0704,0.8423,0.0873,1,Half ripe,144.7,211.78
+Matara,Tainung,June,0.053,0.3117,0.6353,3,Overripe,101.8,149.49
+Galle,Red_Lady,February,0.0157,0.055,0.9293,2,Market ready,113.4,296.29
+Hambantota,Red_Lady,November,0.0382,0.8842,0.0776,1,Half ripe,197.7,201.3
+Hambantota,Tainung,December,0.0473,0.3599,0.5928,3,Overripe,543.9,105.69
+Matara,Tainung,August,0.035,0.8415,0.1235,1,Half ripe,55.1,249.41
+Galle,Tainung,June,0.0295,0.8495,0.121,1,Half ripe,387.9,201.53
+Matara,Tainung,January,0.8003,0.0724,0.1273,0,Unripe,571.6,165.93
+Matara,Red_Lady,July,0.0155,0.0577,0.9268,2,Market ready,162.9,302.62
+Galle,Red_Lady,August,0.7458,0.1017,0.1525,0,Unripe,476.2,136.44
+Hambantota,Red_Lady,October,0.0196,0.317,0.6634,3,Overripe,156.8,139.06
+Hambantota,Tainung,August,0.0048,0.0347,0.9605,2,Market ready,505.3,310.34
+Galle,Tainung,June,0.0158,0.0876,0.8966,2,Market ready,256.6,297.46
+Galle,Tainung,November,0.0468,0.8137,0.1395,1,Half ripe,564.5,229.91
+Hambantota,Red_Lady,November,0.0485,0.3929,0.5586,3,Overripe,397.2,149.53
+Matara,Red_Lady,July,0.0333,0.2919,0.6748,3,Overripe,128.2,144.56
+Galle,Red_Lady,April,0.8402,0.058,0.1018,0,Unripe,110.2,148.07
+Matara,Tainung,March,0.0392,0.3019,0.6589,3,Overripe,461.4,142.2
+Galle,Red_Lady,April,0.008,0.0893,0.9027,2,Market ready,74.3,285.56
+Galle,Tainung,August,0.0649,0.7895,0.1456,1,Half ripe,104.6,230.88
+Matara,Red_Lady,July,0.0155,0.0828,0.9017,2,Market ready,64.3,319.22
+Galle,Tainung,December,0.004,0.8787,0.1173,1,Half ripe,21.8,224.91
+Hambantota,Red_Lady,December,0.0094,0.3856,0.605,3,Overripe,574.1,124.62
+Matara,Tainung,October,0.0064,0.0807,0.9129,2,Market ready,129.6,296.05
+Matara,Tainung,May,0.0605,0.8374,0.1021,1,Half ripe,456.0,240.55
+Hambantota,Tainung,September,0.0174,0.8986,0.084,1,Half ripe,320.6,251.48
+Hambantota,Tainung,June,0.0042,0.0432,0.9526,2,Market ready,547.9,305.72
+Hambantota,Tainung,January,0.0118,0.0403,0.9479,2,Market ready,332.6,328.61
+Matara,Tainung,May,0.0116,0.0625,0.9259,2,Market ready,207.2,316.28
+Matara,Tainung,August,0.0617,0.8333,0.105,1,Half ripe,565.4,241.13
+Hambantota,Tainung,March,0.0502,0.802,0.1478,1,Half ripe,347.8,239.92
+Hambantota,Tainung,April,0.0676,0.7794,0.153,1,Half ripe,212.8,237.24
+Hambantota,Red_Lady,August,0.7897,0.0658,0.1445,0,Unripe,340.6,136.24
+Matara,Tainung,March,0.047,0.3732,0.5798,3,Overripe,170.4,142.34
+Galle,Tainung,December,0.0443,0.4068,0.5489,3,Overripe,483.6,104.51
+Hambantota,Tainung,February,0.0608,0.8467,0.0925,1,Half ripe,371.3,243.6
+Galle,Red_Lady,December,0.0525,0.8123,0.1352,1,Half ripe,515.8,210.98
+Galle,Red_Lady,February,0.0072,0.0424,0.9504,2,Market ready,454.4,292.68
+Galle,Red_Lady,February,0.0106,0.0688,0.9206,2,Market ready,249.0,299.26
+Hambantota,Red_Lady,July,0.0282,0.2785,0.6933,3,Overripe,355.2,123.86
+Galle,Red_Lady,May,0.0444,0.4101,0.5455,3,Overripe,65.1,91.19
+Galle,Red_Lady,October,0.0122,0.3221,0.6657,3,Overripe,426.2,102.06
+Hambantota,Tainung,January,0.0115,0.0234,0.9651,2,Market ready,162.4,285.64
+Galle,Red_Lady,March,0.0336,0.3984,0.568,3,Overripe,588.8,141.64
+Matara,Tainung,November,0.0254,0.3994,0.5752,3,Overripe,276.7,108.66
+Galle,Red_Lady,October,0.017,0.0831,0.8999,2,Market ready,285.3,278.15
+Hambantota,Tainung,August,0.0312,0.3442,0.6246,3,Overripe,74.5,129.67
+Galle,Red_Lady,December,0.0057,0.0764,0.9179,2,Market ready,35.9,321.5
+Hambantota,Tainung,February,0.0332,0.3022,0.6646,3,Overripe,588.5,95.17
+Matara,Red_Lady,January,0.0157,0.0514,0.9329,2,Market ready,442.7,278.0
+Hambantota,Tainung,June,0.0083,0.3651,0.6266,3,Overripe,304.6,137.7
+Galle,Red_Lady,July,0.7485,0.0965,0.155,0,Unripe,544.4,170.33
+Matara,Red_Lady,November,0.7865,0.0577,0.1558,0,Unripe,476.6,145.53
+Galle,Tainung,March,0.0105,0.0296,0.9599,2,Market ready,370.6,342.95
+Galle,Tainung,October,0.7617,0.0767,0.1616,0,Unripe,119.1,156.7
+Hambantota,Tainung,February,0.0198,0.0509,0.9293,2,Market ready,113.2,290.87
+Galle,Tainung,January,0.8021,0.1116,0.0863,0,Unripe,191.0,134.63
+Hambantota,Red_Lady,November,0.0024,0.06,0.9376,2,Market ready,320.6,294.26
+Galle,Red_Lady,December,0.7399,0.1007,0.1594,0,Unripe,283.0,175.68
+Hambantota,Red_Lady,March,0.011,0.0555,0.9335,2,Market ready,220.1,276.7
+Hambantota,Red_Lady,July,0.0129,0.2668,0.7203,3,Overripe,39.9,145.84
+Matara,Red_Lady,February,0.0246,0.2775,0.6979,3,Overripe,47.4,144.96
+Galle,Red_Lady,May,0.0429,0.2769,0.6802,3,Overripe,27.7,137.85
+Matara,Red_Lady,August,0.0437,0.3486,0.6077,3,Overripe,32.6,107.9
+Matara,Tainung,December,0.0037,0.0358,0.9605,2,Market ready,251.3,278.25
+Matara,Tainung,September,0.8076,0.0975,0.0949,0,Unripe,645.2,152.45
+Galle,Red_Lady,May,0.0198,0.074,0.9062,2,Market ready,131.3,337.01
+Hambantota,Tainung,February,0.7488,0.0958,0.1554,0,Unripe,261.0,177.77
+Galle,Red_Lady,March,0.005,0.035,0.96,2,Market ready,89.7,284.9
+Hambantota,Tainung,March,0.0005,0.0734,0.9261,2,Market ready,302.8,322.13
+Hambantota,Tainung,December,0.0046,0.0417,0.9537,2,Market ready,29.2,283.64
+Matara,Tainung,January,0.0651,0.8215,0.1134,1,Half ripe,645.2,212.85
+Hambantota,Tainung,October,0.0155,0.0694,0.9151,2,Market ready,193.2,293.51
+Galle,Tainung,November,0.0164,0.3758,0.6078,3,Overripe,208.7,148.75
+Hambantota,Tainung,October,0.7985,0.0795,0.122,0,Unripe,367.4,133.68
+Galle,Red_Lady,August,0.0445,0.8406,0.1149,1,Half ripe,57.8,196.08
+Hambantota,Tainung,July,0.0141,0.3961,0.5898,3,Overripe,270.6,139.89
+Galle,Tainung,December,0.0355,0.8267,0.1378,1,Half ripe,237.9,222.11
+Hambantota,Tainung,October,0.0166,0.4199,0.5635,3,Overripe,428.2,132.24
+Hambantota,Red_Lady,February,0.0465,0.3257,0.6278,3,Overripe,359.3,141.64
+Galle,Tainung,December,0.8029,0.1082,0.0889,0,Unripe,263.1,158.29
+Galle,Tainung,April,0.765,0.0919,0.1431,0,Unripe,301.3,177.56
+Hambantota,Red_Lady,June,0.0208,0.3242,0.655,3,Overripe,160.0,95.71
+Hambantota,Red_Lady,May,0.0087,0.0522,0.9391,2,Market ready,248.2,309.09
+Galle,Tainung,November,0.026,0.384,0.59,3,Overripe,52.1,116.12
+Galle,Tainung,September,0.0133,0.0726,0.9141,2,Market ready,595.3,325.71
+Hambantota,Tainung,March,0.0072,0.0286,0.9642,2,Market ready,418.5,278.67
+Galle,Red_Lady,September,0.012,0.0203,0.9677,2,Market ready,338.4,285.28
+Hambantota,Tainung,June,0.0016,0.0324,0.966,2,Market ready,596.3,299.89
+Matara,Red_Lady,December,0.0079,0.0524,0.9397,2,Market ready,319.3,285.86
+Galle,Tainung,February,0.7462,0.0941,0.1597,0,Unripe,282.9,173.96
+Galle,Tainung,March,0.038,0.4133,0.5487,3,Overripe,429.6,102.49
+Matara,Red_Lady,December,0.0076,0.0305,0.9619,2,Market ready,280.9,335.39
+Galle,Tainung,December,0.0161,0.0639,0.92,2,Market ready,642.4,315.42
+Hambantota,Tainung,September,0.0756,0.839,0.0854,1,Half ripe,202.7,253.84
+Matara,Tainung,September,0.0014,0.0574,0.9412,2,Market ready,617.5,279.65
+Matara,Red_Lady,April,0.7789,0.0736,0.1475,0,Unripe,153.6,139.79
+Hambantota,Red_Lady,December,0.7877,0.0569,0.1554,0,Unripe,300.2,152.48
+Galle,Red_Lady,June,0.0366,0.3377,0.6257,3,Overripe,485.4,137.65
+Matara,Red_Lady,December,0.0223,0.3473,0.6304,3,Overripe,245.1,127.61
+Matara,Tainung,July,0.7729,0.0603,0.1668,0,Unripe,294.7,141.67
+Matara,Red_Lady,May,0.8039,0.1067,0.0894,0,Unripe,171.0,149.87
+Matara,Red_Lady,August,0.7893,0.1259,0.0848,0,Unripe,541.0,153.8
+Galle,Red_Lady,August,0.009,0.3501,0.6409,3,Overripe,465.3,120.27
+Galle,Tainung,October,0.811,0.0805,0.1085,0,Unripe,341.0,139.96
+Galle,Red_Lady,June,0.0606,0.8705,0.0689,1,Half ripe,128.1,227.1
+Galle,Tainung,February,0.0106,0.3913,0.5981,3,Overripe,295.2,100.38
+Hambantota,Red_Lady,June,0.0735,0.7852,0.1413,1,Half ripe,617.7,254.58
+Galle,Tainung,January,0.0656,0.8471,0.0873,1,Half ripe,120.0,200.28
+Hambantota,Tainung,February,0.0413,0.8302,0.1285,1,Half ripe,181.5,244.68
+Galle,Tainung,April,0.0079,0.0852,0.9069,2,Market ready,86.8,341.03
+Galle,Red_Lady,November,0.0221,0.8615,0.1164,1,Half ripe,648.8,199.83
+Hambantota,Tainung,August,0.0183,0.0257,0.956,2,Market ready,377.2,305.12
+Matara,Red_Lady,December,0.0224,0.8337,0.1439,1,Half ripe,537.6,217.67
+Hambantota,Tainung,June,0.7981,0.0605,0.1414,0,Unripe,224.1,175.98
+Galle,Red_Lady,July,0.8553,0.0622,0.0825,0,Unripe,222.0,165.12
+Hambantota,Tainung,July,0.0332,0.8261,0.1407,1,Half ripe,204.5,223.63
+Hambantota,Red_Lady,June,0.0027,0.0406,0.9567,2,Market ready,319.4,290.06
+Matara,Red_Lady,December,0.7494,0.1288,0.1218,0,Unripe,439.5,140.68
+Hambantota,Tainung,March,0.0308,0.39,0.5792,3,Overripe,449.1,123.95
+Galle,Tainung,May,0.0085,0.0798,0.9117,2,Market ready,174.0,298.07
+Matara,Red_Lady,November,0.0272,0.3061,0.6667,3,Overripe,358.3,125.68
+Matara,Red_Lady,March,0.0135,0.3596,0.6269,3,Overripe,528.7,145.61
+Hambantota,Red_Lady,October,0.8341,0.08,0.0859,0,Unripe,160.9,171.4
+Galle,Tainung,July,0.0374,0.4039,0.5587,3,Overripe,320.3,95.33
+Hambantota,Red_Lady,December,0.8398,0.0481,0.1121,0,Unripe,484.8,170.64
+Hambantota,Red_Lady,November,0.8384,0.0518,0.1098,0,Unripe,159.1,164.67
+Hambantota,Red_Lady,December,0.7571,0.071,0.1719,0,Unripe,280.6,138.25
+Matara,Red_Lady,November,0.0668,0.8567,0.0765,1,Half ripe,333.1,215.58
+Galle,Tainung,August,0.0652,0.8136,0.1212,1,Half ripe,295.4,220.23
+Hambantota,Red_Lady,August,0.7963,0.1256,0.0781,0,Unripe,74.6,132.58
+Matara,Red_Lady,January,0.0388,0.3608,0.6004,3,Overripe,180.0,132.62
+Matara,Tainung,February,0.7824,0.1224,0.0952,0,Unripe,454.6,177.77
+Matara,Tainung,December,0.0294,0.317,0.6536,3,Overripe,53.5,97.11
+Hambantota,Red_Lady,August,0.7433,0.138,0.1187,0,Unripe,482.4,158.42
+Hambantota,Red_Lady,February,0.0303,0.3899,0.5798,3,Overripe,339.2,126.02
+Galle,Red_Lady,February,0.0582,0.8144,0.1274,1,Half ripe,133.8,228.42
+Hambantota,Tainung,November,0.0032,0.03,0.9668,2,Market ready,585.0,315.38
+Matara,Red_Lady,February,0.0016,0.0473,0.9511,2,Market ready,48.4,310.32
+Hambantota,Red_Lady,September,0.0184,0.047,0.9346,2,Market ready,502.3,337.05
+Matara,Tainung,October,0.0683,0.7901,0.1416,1,Half ripe,126.9,241.56
+Hambantota,Tainung,March,0.0029,0.0575,0.9396,2,Market ready,443.5,332.76
+Matara,Red_Lady,July,0.0473,0.8205,0.1322,1,Half ripe,601.2,241.07
+Galle,Red_Lady,September,0.0189,0.0222,0.9589,2,Market ready,235.8,326.76
+Hambantota,Red_Lady,February,0.0328,0.8474,0.1198,1,Half ripe,221.5,216.51
+Hambantota,Red_Lady,December,0.0181,0.8881,0.0938,1,Half ripe,56.7,216.17
+Galle,Tainung,October,0.0535,0.3169,0.6296,3,Overripe,313.8,92.59
+Hambantota,Tainung,January,0.0403,0.3772,0.5825,3,Overripe,218.4,97.63
+Matara,Tainung,February,0.0208,0.287,0.6922,3,Overripe,595.6,90.11
+Matara,Tainung,May,0.0736,0.8345,0.0919,1,Half ripe,262.1,230.86
+Hambantota,Tainung,February,0.8106,0.1118,0.0776,0,Unripe,620.9,152.95
+Galle,Tainung,June,0.755,0.0716,0.1734,0,Unripe,115.2,177.35
+Galle,Tainung,September,0.0177,0.0357,0.9466,2,Market ready,576.9,328.75
+Galle,Red_Lady,November,0.0098,0.0357,0.9545,2,Market ready,89.0,328.03
+Galle,Red_Lady,September,0.0327,0.8278,0.1395,1,Half ripe,557.6,197.45
+Matara,Red_Lady,January,0.0076,0.0405,0.9519,2,Market ready,182.6,318.03
+Galle,Red_Lady,November,0.04,0.8277,0.1323,1,Half ripe,35.8,235.2
+Matara,Tainung,August,0.0433,0.3835,0.5732,3,Overripe,282.2,108.85
+Hambantota,Red_Lady,October,0.0425,0.2792,0.6783,3,Overripe,275.2,109.19
+Matara,Red_Lady,January,0.8263,0.0669,0.1068,0,Unripe,610.4,152.57
+Hambantota,Tainung,December,0.0031,0.0718,0.9251,2,Market ready,127.5,303.93
+Hambantota,Tainung,November,0.0745,0.8385,0.087,1,Half ripe,179.2,204.22
+Matara,Red_Lady,December,0.7921,0.0724,0.1355,0,Unripe,444.8,163.96
+Galle,Red_Lady,May,0.0351,0.3281,0.6368,3,Overripe,468.0,103.15
+Matara,Tainung,May,0.0452,0.3358,0.619,3,Overripe,505.5,149.33
+Hambantota,Red_Lady,July,0.013,0.0754,0.9116,2,Market ready,49.5,299.56
+Galle,Tainung,October,0.8036,0.1226,0.0738,0,Unripe,89.1,168.71
+Hambantota,Tainung,December,0.8167,0.1031,0.0802,0,Unripe,43.5,142.64
+Galle,Red_Lady,December,0.8063,0.0705,0.1232,0,Unripe,641.0,145.75
+Hambantota,Tainung,July,0.0408,0.4136,0.5456,3,Overripe,20.2,97.02
+Matara,Tainung,October,0.016,0.0716,0.9124,2,Market ready,213.9,290.16
+Galle,Red_Lady,July,0.026,0.8777,0.0963,1,Half ripe,604.8,230.88
+Hambantota,Tainung,January,0.0195,0.9102,0.0703,1,Half ripe,521.9,219.16
+Hambantota,Tainung,April,0.0311,0.8593,0.1096,1,Half ripe,134.0,223.67
+Hambantota,Tainung,December,0.8065,0.1121,0.0814,0,Unripe,544.1,143.99
+Galle,Tainung,February,0.0429,0.8216,0.1355,1,Half ripe,388.9,225.49
+Galle,Tainung,June,0.0026,0.2939,0.7035,3,Overripe,621.5,129.63
+Matara,Tainung,August,0.0065,0.0563,0.9372,2,Market ready,224.5,339.58
+Galle,Red_Lady,November,0.0326,0.8907,0.0767,1,Half ripe,560.1,238.84
+Matara,Red_Lady,September,0.0195,0.3756,0.6049,3,Overripe,548.7,106.5
+Matara,Red_Lady,April,0.8295,0.0636,0.1069,0,Unripe,324.1,137.2
+Hambantota,Tainung,August,0.761,0.1337,0.1053,0,Unripe,112.7,153.79
+Matara,Tainung,May,0.0126,0.9151,0.0723,1,Half ripe,337.2,213.21
+Galle,Tainung,February,0.0088,0.0864,0.9048,2,Market ready,266.1,306.69
+Galle,Red_Lady,December,0.0548,0.8206,0.1246,1,Half ripe,556.2,230.95
+Matara,Red_Lady,June,0.047,0.8859,0.0671,1,Half ripe,277.6,206.55
+Galle,Tainung,November,0.743,0.0988,0.1582,0,Unripe,497.4,156.84
+Galle,Tainung,November,0.0389,0.3769,0.5842,3,Overripe,169.8,124.68
+Galle,Red_Lady,September,0.0177,0.3993,0.583,3,Overripe,158.9,96.23
+Galle,Red_Lady,May,0.0183,0.0409,0.9408,2,Market ready,472.3,312.94
+Matara,Red_Lady,September,0.0308,0.2573,0.7119,3,Overripe,547.3,131.95
+Matara,Tainung,March,0.0429,0.8734,0.0837,1,Half ripe,92.5,203.28
+Galle,Tainung,December,0.0129,0.2829,0.7042,3,Overripe,360.5,129.21
+Galle,Red_Lady,March,0.0083,0.0617,0.93,2,Market ready,285.5,279.23
+Galle,Red_Lady,August,0.0376,0.2542,0.7082,3,Overripe,348.0,133.61
+Hambantota,Tainung,February,0.8229,0.0873,0.0898,0,Unripe,388.9,179.34
+Matara,Tainung,December,0.0005,0.0858,0.9137,2,Market ready,537.4,338.07
+Galle,Red_Lady,March,0.0481,0.3014,0.6505,3,Overripe,329.6,131.44
+Matara,Tainung,August,0.0093,0.0214,0.9693,2,Market ready,615.0,342.8
+Hambantota,Red_Lady,June,0.0167,0.0422,0.9411,2,Market ready,297.9,326.98
+Matara,Tainung,August,0.7803,0.0862,0.1335,0,Unripe,63.4,136.26
+Galle,Tainung,August,0.0019,0.3019,0.6962,3,Overripe,629.6,108.94
+Hambantota,Tainung,February,0.0037,0.0226,0.9737,2,Market ready,406.2,312.78
+Galle,Red_Lady,December,0.04,0.814,0.146,1,Half ripe,175.1,244.76
+Matara,Red_Lady,December,0.0178,0.0601,0.9221,2,Market ready,69.0,328.87
+Matara,Tainung,August,0.006,0.0549,0.9391,2,Market ready,425.4,318.27
+Matara,Tainung,June,0.8325,0.04,0.1275,0,Unripe,641.1,131.14
+Hambantota,Red_Lady,March,0.0507,0.8046,0.1447,1,Half ripe,442.0,232.74
+Galle,Tainung,August,0.0147,0.0633,0.922,2,Market ready,174.5,338.21
+Matara,Red_Lady,July,0.0256,0.3696,0.6048,3,Overripe,328.8,106.2
+Galle,Tainung,July,0.0157,0.0743,0.91,2,Market ready,154.5,336.83
+Galle,Tainung,June,0.0473,0.8471,0.1056,1,Half ripe,22.9,203.42
+Matara,Red_Lady,October,0.7583,0.0934,0.1483,0,Unripe,226.4,161.83
+Galle,Red_Lady,June,0.053,0.8371,0.1099,1,Half ripe,602.6,203.21
+Hambantota,Tainung,June,0.0154,0.8619,0.1227,1,Half ripe,148.9,231.22
+Hambantota,Tainung,October,0.772,0.0877,0.1403,0,Unripe,381.5,171.42
+Galle,Tainung,July,0.0646,0.8503,0.0851,1,Half ripe,526.9,211.76
+Matara,Red_Lady,May,0.0178,0.3407,0.6415,3,Overripe,173.8,104.53
+Hambantota,Red_Lady,May,0.7783,0.0597,0.162,0,Unripe,647.8,146.25
+Matara,Red_Lady,April,0.0172,0.8981,0.0847,1,Half ripe,350.7,222.03
+Matara,Red_Lady,September,0.02,0.2701,0.7099,3,Overripe,68.7,145.7
+Galle,Tainung,July,0.054,0.8512,0.0948,1,Half ripe,63.2,246.38
+Matara,Tainung,August,0.051,0.8253,0.1237,1,Half ripe,264.3,232.94
+Matara,Red_Lady,June,0.0598,0.8277,0.1125,1,Half ripe,90.9,241.32
+Galle,Tainung,September,0.0151,0.342,0.6429,3,Overripe,429.1,131.15
+Hambantota,Tainung,March,0.0643,0.8664,0.0693,1,Half ripe,532.1,219.86
+Galle,Tainung,November,0.0061,0.0767,0.9172,2,Market ready,39.5,296.5
+Galle,Red_Lady,November,0.8465,0.0664,0.0871,0,Unripe,389.7,142.91
+Galle,Tainung,February,0.0037,0.0424,0.9539,2,Market ready,638.8,284.33
+Galle,Red_Lady,April,0.0489,0.3583,0.5928,3,Overripe,233.0,95.01
+Galle,Red_Lady,October,0.7934,0.0836,0.123,0,Unripe,41.6,167.83
+Galle,Red_Lady,February,0.0405,0.8553,0.1042,1,Half ripe,649.7,233.35
+Hambantota,Red_Lady,May,0.7267,0.107,0.1663,0,Unripe,294.3,137.61
+Matara,Red_Lady,May,0.0723,0.7921,0.1356,1,Half ripe,584.2,254.25
+Galle,Tainung,January,0.0101,0.8378,0.1521,1,Half ripe,118.0,217.13
+Galle,Red_Lady,April,0.7752,0.1396,0.0852,0,Unripe,70.4,153.76
+Hambantota,Red_Lady,July,0.0186,0.8724,0.109,1,Half ripe,437.4,202.05
+Hambantota,Tainung,October,0.8227,0.0639,0.1134,0,Unripe,588.9,173.58
+Galle,Tainung,July,0.0136,0.0797,0.9067,2,Market ready,146.6,314.97
+Matara,Red_Lady,April,0.8212,0.0927,0.0861,0,Unripe,352.9,131.78
+Hambantota,Red_Lady,April,0.0151,0.0312,0.9537,2,Market ready,400.7,344.35
+Hambantota,Red_Lady,March,0.7837,0.0484,0.1679,0,Unripe,344.7,172.53
+Matara,Red_Lady,April,0.7973,0.1195,0.0832,0,Unripe,433.6,156.62
+Galle,Red_Lady,November,0.0054,0.9051,0.0895,1,Half ripe,571.8,228.35
+Galle,Red_Lady,November,0.009,0.3474,0.6436,3,Overripe,252.2,97.44
+Hambantota,Tainung,June,0.0389,0.8894,0.0717,1,Half ripe,345.7,219.06
+Galle,Tainung,July,0.7944,0.0524,0.1532,0,Unripe,233.9,144.27
