@@ -12,7 +12,7 @@ import { District, HarvestPredictionRequest, HarvestPredictionResponse } from '.
 
 export default function HarvestFormScreen() {
   const { user } = useAuth();
-  const { t } = useTheme();
+  const { t, language } = useTheme();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     trees_count: '',
@@ -20,7 +20,7 @@ export default function HarvestFormScreen() {
     watering_method: 'drip' as 'drip' | 'sprinkler' | 'manual',
     watering_frequency: '2',
     soil_type: 'laterite_soil' as 'laterite_soil' | 'sandy_loam' | 'loam',
-    district: (user?.district?.toLowerCase() || 'hambanthota') as string,
+    district: (user?.district?.toLowerCase() || 'hambantota') as string,
   });
 
   const monthOptions = [
@@ -51,7 +51,7 @@ export default function HarvestFormScreen() {
   ];
 
   const districtOptions = [
-    { label: 'Hambanthota', value: 'hambanthota' as const },
+    { label: 'Hambantota', value: 'hambantota' as const },
     { label: 'Matara', value: 'matara' as const },
     { label: 'Galle', value: 'galle' as const },
   ];
@@ -77,6 +77,7 @@ export default function HarvestFormScreen() {
         watering_frequency: parseInt(formData.watering_frequency),
         trees_count: treesCount,
         plant_month: formData.plant_month,
+        language,
       };
 
       console.log('Sending harvest prediction request:', requestData);
@@ -97,7 +98,12 @@ export default function HarvestFormScreen() {
       });
     } catch (error: any) {
       console.error('Harvest prediction error:', error);
-      Alert.alert('Error', 'Failed to calculate harvest prediction. Please try again.');
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to calculate harvest prediction. Please try again.';
+      Alert.alert('Error', msg);
     } finally {
       setLoading(false);
     }

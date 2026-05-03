@@ -208,6 +208,39 @@ router.post('/predict', authMiddleware, upload.single('file'), async (req, res) 
   }
 });
 
+// POST /api/leaf/recommend - Get fertilizer + AI advice recommendation
+const SUPPORTED_LEAF_DISTRICTS = ['galle', 'matara', 'hambantota'];
+
+router.post('/recommend', authMiddleware, async (req, res) => {
+  try {
+    const { disease, severity, growth_stage, soil_type, district, include_ai_advice } = req.body;
+
+    if (!disease || !severity || !growth_stage) {
+      return res.status(400).json({ error: 'disease, severity, and growth_stage are required' });
+    }
+
+    // ML service only supports Southern Province – fall back to galle for other districts
+    const normalizedDistrict = (district || '').toLowerCase().trim();
+    const safeDistrict = SUPPORTED_LEAF_DISTRICTS.includes(normalizedDistrict)
+      ? normalizedDistrict
+      : 'galle';
+
+    const mlResponse = await axios.post(
+      `${LEAF_ML_SERVICE_URL}/recommend`,
+      { disease, severity, growth_stage, soil_type: soil_type || 'sandy_loam', district: safeDistrict, include_ai_advice: include_ai_advice !== false },
+      { timeout: LEAF_ML_TIMEOUT }
+    );
+
+    res.json(mlResponse.data);
+  } catch (error) {
+    console.error('Leaf recommend error:', error.response?.data || error.message);
+    if (error.response) {
+      return res.status(error.response.status).json(error.response.data);
+    }
+    res.status(500).json({ error: 'Failed to get leaf disease recommendation' });
+  }
+});
+
 // GET /api/leaf/history - Get leaf disease prediction history
 router.get('/history', authMiddleware, async (req, res) => {
   try {

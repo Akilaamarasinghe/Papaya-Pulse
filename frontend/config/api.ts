@@ -69,14 +69,41 @@ const api = axios.create({
   timeout: 60000, // Increased to 60 seconds for slow networks
 });
 
-// Add auth token to requests
+// ── Token management ──────────────────────────────────
+// Stores a getter so the interceptor can always fetch a fresh token
+let _getToken: (() => Promise<string | null>) | null = null;
+
+export const setTokenGetter = (getter: (() => Promise<string | null>) | null) => {
+  _getToken = getter;
+};
+
+// Keep backward-compatible static setter (used during sign-in/sign-up)
 export const setAuthToken = (token: string | null) => {
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
     delete api.defaults.headers.common['Authorization'];
+    _getToken = null;
   }
 };
+
+// ── Request interceptor: always attach a fresh Firebase token ──
+api.interceptors.request.use(
+  async (config) => {
+    try {
+      if (_getToken) {
+        const freshToken = await _getToken();
+        if (freshToken) {
+          config.headers['Authorization'] = `Bearer ${freshToken}`;
+        }
+      }
+    } catch (e) {
+      console.warn('Token refresh failed in interceptor:', e);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Log the API URL for debugging
 console.log('📡 API Base URL:', API_BASE_URL);

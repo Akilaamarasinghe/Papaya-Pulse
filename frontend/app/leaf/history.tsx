@@ -1,330 +1,221 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  View, Text, StyleSheet, FlatList, Image,
+  TouchableOpacity, Alert,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../context/ThemeContext';
-import { PrimaryButton } from '../../components/shared/PrimaryButton';
-import { LeafPredictionHistory, SeverityLevel } from '../../types';
+import { Ionicons } from '@expo/vector-icons';
+import { LeafPredictionHistory } from '../../types';
 
 const HISTORY_KEY = 'leaf_disease_history';
 
-const formatPercent = (value?: number) => {
-  if (typeof value !== 'number' || Number.isNaN(value)) {
-    return '—';
-  }
-  return `${(value * 100).toFixed(1)}%`;
+const pct = (v?: number) =>
+  typeof v === 'number' && !Number.isNaN(v) ? `${(v * 100).toFixed(1)}%` : '—';
+
+const fmtStage = (s?: string | null) =>
+  s ? s.replace(/[_-]/g, ' ').trim().replace(/\b\w/g, (c) => c.toUpperCase()) : null;
+
+const fmtDate = (ts: string) => {
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    + ' · '
+    + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-const formatStageLabel = (label?: string | null) => {
-  if (!label) {
-    return null;
-  }
-  return label
-    .replace(/[_-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+const SEV_COLOR: Record<string, string> = {
+  mild: '#388E3C', moderate: '#F57C00', severe: '#D32F2F', unknown: '#9E9E9E',
 };
 
 export default function LeafHistoryScreen() {
-  const { t, language } = useTheme();
   const [history, setHistory] = useState<LeafPredictionHistory[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]  = useState(true);
 
-  useEffect(() => {
-    loadHistory();
-  }, []);
+  useEffect(() => { loadHistory(); }, []);
 
   const loadHistory = async () => {
     try {
-      const data = await AsyncStorage.getItem(HISTORY_KEY);
-      if (data) {
-        setHistory(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error('Error loading history:', error);
-    } finally {
-      setLoading(false);
-    }
+      const raw = await AsyncStorage.getItem(HISTORY_KEY);
+      setHistory(raw ? JSON.parse(raw) : []);
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
   };
 
-  const clearHistory = async () => {
-    try {
-      await AsyncStorage.removeItem(HISTORY_KEY);
-      setHistory([]);
-    } catch (error) {
-      console.error('Error clearing history:', error);
-    }
-  };
+  const confirmClear = () =>
+    Alert.alert('Clear History', 'Delete all scan history?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete All', style: 'destructive',
+        onPress: async () => {
+          await AsyncStorage.removeItem(HISTORY_KEY);
+          setHistory([]);
+        },
+      },
+    ]);
 
-  const getSeverityColor = (severity: SeverityLevel) => {
-    switch (severity) {
-      case 'mild': return '#4CAF50';
-      case 'moderate': return '#FF9800';
-      case 'severe': return '#F44336';
-      default: return '#999';
-    }
-  };
-
-  const getDiseaseColor = (disease: string) => {
-    if (disease === 'Healthy') return '#4CAF50';
-    if (disease === 'NotPapaya') return '#999';
-    return '#F44336';
-  };
-
-  const formatDate = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
-
-  const renderHistoryItem = ({ item }: { item: LeafPredictionHistory }) => {
-    const stageLabel = formatStageLabel(item.stage_label);
+  const renderItem = ({ item }: { item: LeafPredictionHistory }) => {
     const isNotLeaf = item.is_leaf === false || item.disease === 'NotPapaya';
+    const isHealthy = item.disease === 'Healthy';
+    const stage     = fmtStage(item.stage_label);
+
+    const tagColor  = isNotLeaf ? '#607D8B' : isHealthy ? '#388E3C' : '#D32F2F';
+    const tagBg     = isNotLeaf ? '#ECEFF1' : isHealthy ? '#E8F5E9' : '#FFEBEE';
+    const tagLabel  = isNotLeaf ? 'Not Leaf' : isHealthy ? 'Healthy' : item.disease;
 
     return (
-      <TouchableOpacity 
-        style={styles.historyItem}
-        onPress={() => {
+      <TouchableOpacity
+        style={s.card}
+        activeOpacity={0.82}
+        onPress={() =>
           router.push({
             pathname: '/leaf/result' as any,
-            params: {
-              data: JSON.stringify(item),
-            },
-          });
-        }}
+            params: { data: JSON.stringify(item) },
+          })
+        }
       >
-        {item.imageUri && (
-          <Image source={{ uri: item.imageUri }} style={styles.thumbnail} />
-        )}
-        <View style={styles.itemContent}>
-          <View style={styles.headerRow}>
-            <Text style={[styles.diseaseText, { color: getDiseaseColor(item.disease) }]}>
-              {isNotLeaf ? 'Not Papaya Leaf' : item.disease}
-            </Text>
-            <View style={[styles.statusBadge, isNotLeaf ? styles.errorBadge : styles.successBadge]}>
-              <Text style={styles.badgeText}>{isNotLeaf ? 'Retake' : 'Valid'}</Text>
-            </View>
+        {item.imageUri ? (
+          <Image source={{ uri: item.imageUri }} style={s.thumb} />
+        ) : (
+          <View style={s.thumbPlaceholder}>
+            <Ionicons name="leaf-outline" size={28} color="#A5D6A7" />
           </View>
-          <Text style={styles.confidenceText}>
-            Model confidence: {formatPercent(item.disease_confidence)}
+        )}
+
+        <View style={s.cardBody}>
+          {/* Top row */}
+          <View style={s.cardTop}>
+            <View style={[s.tag, { backgroundColor: tagBg }]}>
+              <Text style={[s.tagText, { color: tagColor }]}>{tagLabel}</Text>
+            </View>
+            {!isNotLeaf && !isHealthy && item.severity !== 'unknown' && (
+              <View style={[s.sevTag, { borderColor: SEV_COLOR[item.severity] }]}>
+                <Text style={[s.sevTagText, { color: SEV_COLOR[item.severity] }]}>
+                  {item.severity.toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {/* Confidence */}
+          <Text style={s.conf}>
+            Confidence: <Text style={s.confVal}>{pct(item.disease_confidence)}</Text>
           </Text>
-          {!isNotLeaf && item.disease !== 'Healthy' && (
-            <Text style={[styles.severityText, { color: getSeverityColor(item.severity) }]}>
-              Severity: {item.severity} ({formatPercent(item.severity_confidence)})
-            </Text>
+
+          {/* Stage */}
+          {stage && !isNotLeaf && (
+            <Text style={s.stage}>Stage: {stage}</Text>
           )}
-          {stageLabel && !isNotLeaf && (
-            <Text style={styles.stageText}>Stage: {stageLabel}</Text>
-          )}
-          <Text style={styles.leafConfidenceText}>
-            Leaf check: {formatPercent(item.leaf_confidence)} / Not leaf: {formatPercent(item.not_leaf_confidence)}
-          </Text>
-          <Text style={styles.dateText}>{formatDate(item.timestamp)}</Text>
+
+          {/* Date */}
+          <Text style={s.date}>{fmtDate(item.timestamp)}</Text>
         </View>
+
+        <Ionicons name="chevron-forward" size={18} color="#BDBDBD" style={{ alignSelf: 'center' }} />
       </TouchableOpacity>
     );
   };
 
+  // ── Loading ──
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centerContainer}>
-          <Text>{t('loading')}</Text>
+      <SafeAreaView style={s.safe}>
+        <View style={s.center}>
+          <Text style={s.loadText}>Loading history…</Text>
         </View>
       </SafeAreaView>
     );
   }
 
+  // ── Empty ──
   if (history.length === 0) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyTitle}>{t('noScanHistory')}</Text>
-          <Text style={styles.emptyText}>
-            {t('startByScanning')}
+      <SafeAreaView style={s.safe} edges={['bottom']}>
+        <View style={s.center}>
+          <View style={s.emptyIcon}>
+            <Ionicons name="leaf-outline" size={48} color="#A5D6A7" />
+          </View>
+          <Text style={s.emptyTitle}>No Scans Yet</Text>
+          <Text style={s.emptyDesc}>
+            Your scan history will appear here after you analyze your first papaya leaf.
           </Text>
-          <PrimaryButton
-            title={t('scanLeaf')}
-            onPress={() => router.push('/leaf/scan' as any)}
-            style={styles.button}
-          />
-          <PrimaryButton
-            title={t('goBack')}
-            onPress={() => router.back()}
-            variant="outline"
-          />
+          <TouchableOpacity style={s.scanBtn} onPress={() => router.push('/leaf/scan' as any)}>
+            <Ionicons name="camera" size={20} color="#fff" />
+            <Text style={s.scanBtnText}>Scan a Leaf</Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
+  // ── List ──
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{t('scanHistory')}</Text>
-          <Text style={styles.headerSubtitle}>{history.length} {t(history.length !== 1 ? 'scans' : 'scan')}</Text>
-        </View>
-
-        <FlatList
-          data={history}
-          renderItem={renderHistoryItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-        />
-
-        <View style={styles.footer}>
-          <PrimaryButton
-            title={t('clearHistory')}
-            onPress={clearHistory}
-            variant="outline"
-            style={styles.clearButton}
-          />
-        </View>
-      </View>
+    <SafeAreaView style={s.safe} edges={['bottom']}>
+      <FlatList
+        data={history}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={s.list}
+        ListHeaderComponent={
+          <View style={s.listHeader}>
+            <Text style={s.listHeaderText}>{history.length} scan{history.length !== 1 ? 's' : ''} recorded</Text>
+            <TouchableOpacity onPress={confirmClear} style={s.clearBtn}>
+              <Ionicons name="trash-outline" size={16} color="#D32F2F" />
+              <Text style={s.clearText}>Clear All</Text>
+            </TouchableOpacity>
+          </View>
+        }
+        showsVerticalScrollIndicator={false}
+      />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
+const s = StyleSheet.create({
+  safe:  { flex: 1, backgroundColor: '#F0F7F2' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32, gap: 16 },
+
+  loadText: { fontSize: 16, color: '#666' },
+
+  emptyIcon:  { width: 80, height: 80, borderRadius: 40, backgroundColor: '#E8F5E9', justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
+  emptyTitle: { fontSize: 22, fontWeight: '700', color: '#1A2E1A' },
+  emptyDesc:  { fontSize: 15, color: '#666', textAlign: 'center', lineHeight: 22 },
+  scanBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#2D7A4F', borderRadius: 14, paddingHorizontal: 24, paddingVertical: 14,
+    marginTop: 8,
   },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  scanBtnText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+
+  /* List */
+  list:       { padding: 16, paddingBottom: 30 },
+  listHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
+  listHeaderText: { fontSize: 14, color: '#666', fontWeight: '500' },
+  clearBtn:   { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  clearText:  { fontSize: 14, color: '#D32F2F', fontWeight: '600' },
+
+  /* Card */
+  card: {
+    flexDirection: 'row', backgroundColor: '#fff', borderRadius: 18,
+    padding: 14, marginBottom: 12, gap: 12,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07, shadowRadius: 8, elevation: 3,
   },
-  content: {
-    flex: 1,
+  thumb: { width: 76, height: 76, borderRadius: 12, resizeMode: 'cover' },
+  thumbPlaceholder: {
+    width: 76, height: 76, borderRadius: 12, backgroundColor: '#E8F5E9',
+    justifyContent: 'center', alignItems: 'center',
   },
-  header: {
-    padding: 20,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  listContent: {
-    padding: 16,
-  },
-  historyItem: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  thumbnail: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  itemContent: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  diseaseText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 999,
-  },
-  successBadge: {
-    backgroundColor: '#E0F7EC',
-  },
-  errorBadge: {
-    backgroundColor: '#FFE9E6',
-  },
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#333',
-  },
-  confidenceText: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 2,
-  },
-  severityText: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  stageText: {
-    fontSize: 13,
-    color: '#444',
-    marginBottom: 2,
-  },
-  leafConfidenceText: {
-    fontSize: 12,
-    color: '#777',
-    marginBottom: 4,
-  },
-  dateText: {
-    fontSize: 12,
-    color: '#999',
-    marginTop: 4,
-  },
-  footer: {
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
-  },
-  clearButton: {
-    marginBottom: 0,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 24,
-  },
-  button: {
-    marginBottom: 16,
-    minWidth: 200,
-  },
+  cardBody: { flex: 1, justifyContent: 'center', gap: 5 },
+  cardTop:  { flexDirection: 'row', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 2 },
+
+  tag:     { borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
+  tagText: { fontSize: 13, fontWeight: '700' },
+  sevTag:  { borderRadius: 8, borderWidth: 1.5, paddingHorizontal: 8, paddingVertical: 3 },
+  sevTagText: { fontSize: 11, fontWeight: '700' },
+
+  conf:    { fontSize: 13, color: '#555' },
+  confVal: { fontWeight: '700', color: '#2D7A4F' },
+  stage:   { fontSize: 13, color: '#444' },
+  date:    { fontSize: 12, color: '#999', marginTop: 2 },
 });

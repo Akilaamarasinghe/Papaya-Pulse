@@ -6,6 +6,8 @@ export default function MarketLayout() {
       <Stack.Screen name="index" options={{ title: 'Market Price Predictor' }} />
       <Stack.Screen name="predict-form" options={{ title: 'Price Prediction Form' }} />
       <Stack.Screen name="result" options={{ title: 'Price Prediction' }} />
+      <Stack.Screen name="customer-predict" options={{ title: 'Scan Papaya' }} />
+      <Stack.Screen name="customer-result" options={{ title: 'Market Analysis' }} />
     </Stack>
   );
 }

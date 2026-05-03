@@ -1,6 +1,6 @@
 // User & Auth Types
 export type UserRole = 'farmer' | 'customer';
-export type District = 'Hambanthota' | 'Matara' | 'Galle';
+export type District = 'Hambantota' | 'Matara' | 'Galle';
 
 export interface User {
   uid: string;
@@ -32,6 +32,69 @@ export interface GrowthStageResponse {
   advice: string[];
 }
 
+// Image Processing ML response types
+export interface GrowthStagePapayaValidation {
+  predicted_class: string;
+  confidence: number;
+  threshold_required: number;
+  passed_threshold: boolean;
+  probabilities: { [key: string]: number };
+}
+
+export interface GrowthStageCurrentStage {
+  code: string;
+  name: string;
+  name_si?: string;
+  height: string;
+  height_si?: string;
+  duration: string;
+  duration_si?: string;
+  characteristics: string;
+  characteristics_si?: string;
+}
+
+export interface GrowthStageCareInstructions {
+  watering: string;
+  watering_si?: string;
+  fertilizer: string;
+  fertilizer_si?: string;
+  soil: string;
+  soil_si?: string;
+  spacing: string;
+  spacing_si?: string;
+  protection: string;
+  protection_si?: string;
+}
+
+export interface GrowthStageTransitionGuide {
+  next_stage: string;
+  next_stage_si?: string;
+  signs_to_watch: string;
+  signs_to_watch_si?: string;
+  transition_focus: string;
+  transition_focus_si?: string;
+}
+
+export interface GrowthStageGuidance {
+  current_stage: GrowthStageCurrentStage;
+  care_instructions: GrowthStageCareInstructions;
+  transition_guide: GrowthStageTransitionGuide;
+  expert_guidance: string;
+}
+
+export interface GrowthStageGradeDetails {
+  grade: string;
+  confidence: number;
+  probabilities: { [key: string]: number };
+}
+
+export interface GrowthStageMLResponse {
+  is_papaya: boolean;
+  papaya_validation: GrowthStagePapayaValidation;
+  grade_prediction: GrowthStageGradeDetails | null;
+  growth_guidance: GrowthStageGuidance | null;
+}
+
 export interface HarvestPredictionRequest {
   district: District;
   soil_type: 'laterite soils' | 'sandy loam';
@@ -43,6 +106,7 @@ export interface HarvestPredictionRequest {
 
 export interface HarvestPredictionResponse {
   farmer_explanation: string[];
+  farmer_explanation_si?: string[];
   predictions: {
     harvest_days_remaining: number;
     harvest_days_total: number;
@@ -91,7 +155,7 @@ export interface FarmerQualityResponse {
 }
 
 export interface CustomerQualityRequest {
-  weight: number;
+  city?: string;
 }
 
 export interface CustomerQualityResponse {
@@ -100,6 +164,22 @@ export interface CustomerQualityResponse {
   ripen_days: number;
   grade: QualityGrade;
   average_temperature: number;
+  city?: string;
+  ripeness_stage?: string;
+  taste?: string;
+  buying_recommendation?: string;
+  weather_last_7_days?: {
+    avg_temp?: number;
+    max_temp?: number;
+    min_temp?: number;
+  };
+  color_ratios?: {
+    green?: number;
+    yellow?: number;
+    orange?: number;
+  };
+  final_suggestion?: string;
+  papaya_probability?: string;
 }
 
 // Market Price Types
@@ -122,8 +202,42 @@ export interface MarketPriceResponse {
   explanation: string[];
 }
 
+// ── Customer Market Prediction Types (5004 service) ───────────────────────────
+export interface CustomerMarketPriceDriver {
+  feature: string;
+  impact: number;
+}
+
+export interface CustomerMarketPriceRow {
+  variety: string;
+  price_lkr_per_kg: number;
+  price_drivers: CustomerMarketPriceDriver[];
+}
+
+export interface CustomerMarketAnalysis {
+  location: string;
+  month: number;
+  rainfall_mm: number;
+  ripeness: string;
+  confidence_percent: number;
+  color_ratios: {
+    green: number;
+    yellow: number;
+    orange: number;
+  };
+  ripeness_drivers: CustomerMarketPriceDriver[];
+  price_table: CustomerMarketPriceRow[];
+  seller_price: number | null;
+}
+
+export interface CustomerMarketResponse {
+  analysis: CustomerMarketAnalysis;
+  final_market_advice: string;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // Leaf Disease Types
-export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' |  'NotPapaya';
+export type DiseaseType = 'Anthracnose' | 'Curl' | 'Mite disease' | 'Mosaic virus' | 'Healthy' | 'NotPapaya';
 export type SeverityLevel = 'mild' | 'moderate' | 'severe' | 'unknown';
 
 export interface LeafDiseaseResponse {
@@ -148,4 +262,120 @@ export interface LeafPredictionHistory extends LeafDiseaseResponse {
   id: string;
   timestamp: string;
   imageUri?: string;
+}
+
+// Leaf Disease Recommendation Types
+export type GrowthStage = 'vegetative' | 'flowering' | 'fruiting';
+
+export interface LeafFertilizerRecommendation {
+  action: string;
+  confidence?: number;
+  advice_en?: string;
+  advice_si?: string;
+  treatment?: string;
+  nitrogen_adjustment?: string;
+  phosphorus_adjustment?: string;
+  potassium_adjustment?: string;
+  notes?: string;
+}
+
+export interface DayRisk {
+  date: string;
+  tmean: number;
+  rain_mm: number;
+  humidity_est: number;
+  day_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+}
+
+export interface WeatherSummary {
+  tmean_7d_avg_c: number;
+  total_rain_7d_mm: number;
+  tmax_c: number;
+  tmin_c: number;
+  humidity_est_pct: number;
+}
+
+export interface LeafWeatherRisk {
+  risk_level: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  risk_level_si?: string;
+  risk_score?: number;
+  alert_color?: 'GREEN' | 'YELLOW' | 'ORANGE' | 'RED';
+  action?: string;
+  action_si?: string;
+  urgency_en?: string;
+  urgency_si?: string;
+  frequency?: string;
+  frequency_si?: string;
+  weather_summary?: WeatherSummary;
+  daily_risk?: DayRisk[];
+  disease_explanation?: string;
+  disease_explanation_si?: string;
+  future_outlook_en?: string;
+  future_outlook_si?: string;
+  why_this_risk_en?: string;
+  why_this_risk_si?: string;
+  model_used?: string;
+}
+
+export interface LeafAIAdvice {
+  ai_enriched: boolean;
+  advice_en: string;
+  advice_si: string;
+  outlook_en?: string;
+  outlook_si?: string;
+  urgent_action_en?: string;
+  urgent_action_si?: string;
+  confidence?: number;
+}
+
+// ---------------------------------------------------------------------------
+// Prevention step — maps to PREV_META + AI per-step guide from backend
+// ---------------------------------------------------------------------------
+export interface PreventionStep {
+  step: number;
+  code: string;
+  name_en: string | null;
+  description_en: string;
+  description_si: string;
+  // classification
+  type: 'chemical_inorganic' | 'chemical_organic' | 'biological' | 'cultural';
+  type_label_en: string;
+  type_label_si: string;
+  category: string;
+  category_label_en: string;
+  category_label_si: string;
+  organic: boolean;
+  // dosage / scheduling
+  dosage: string | null;
+  frequency: string | null;
+  phi_days: number | null;
+  timing: string | null;
+  // static how-to
+  how_to_mix: string | null;
+  how_to_apply: string | null;
+  safety: string | null;
+  // AI-generated guides (may be null if AI unavailable)
+  ai_how_to_en: string | null;
+  ai_how_to_si: string | null;
+  ai_warning_en: string | null;
+  ai_warning_si: string | null;
+  doa_approved: boolean;
+}
+
+export interface LeafRecommendResponse {
+  disease: string;
+  severity: string;
+  growth_stage: string;
+  soil_type?: string;
+  district?: string;
+  fertilizer: LeafFertilizerRecommendation;
+  prevention?: {
+    pack: string[];
+    steps_en: string[];
+    steps_si: string[];
+    steps_detail: PreventionStep[];
+    
+  };
+  weather_risk?: LeafWeatherRisk;
+  ai_advice?: LeafAIAdvice;
 }

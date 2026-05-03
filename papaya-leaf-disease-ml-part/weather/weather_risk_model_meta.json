@@ -1,0 +1,25 @@
+{
+  "features": [
+    "disease",
+    "severity",
+    "tmean_c",
+    "rain_7d_mm",
+    "humidity_pct"
+  ],
+  "target": "risk_level",
+  "model_type": "RandomForest",
+  "accuracy": 0.9633333333333334,
+  "cv_mean": 0.9644999999999999,
+  "classes": [
+    "CRITICAL",
+    "HIGH",
+    "LOW",
+    "MEDIUM"
+  ],
+  "risk_order": [
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL"
+  ]
+}
