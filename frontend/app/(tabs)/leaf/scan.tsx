@@ -31,7 +31,8 @@ export default function LeafScanScreen() {
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: 'images', allowsEditing: true, aspect: [4, 3], quality: 0.8,
+      mediaTypes: 'images', allowsEditing: false, //aspect: [4, 3], 
+      quality: 0.8,
     });
     if (!result.canceled) setImageUri(result.assets[0].uri);
   };
@@ -43,7 +44,8 @@ export default function LeafScanScreen() {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [4, 3], quality: 0.8,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: false, //aspect: [4, 3], 
+      quality: 0.8,
     });
     if (!result.canceled) setImageUri(result.assets[0].uri);
   };

@@ -39,7 +39,7 @@ export default function CustomerPredictScreen() {
     if (Platform.OS === 'web') {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: 'images',
-        allowsEditing: true,
+        allowsEditing: false,
         aspect: [4, 3],
         quality: 0.8,
       });
@@ -58,8 +58,8 @@ export default function CustomerPredictScreen() {
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'images',
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      //aspect: [4, 3],
       quality: 0.8,
     });
     if (!result.canceled) setImageUri(result.assets[0].uri);
@@ -71,8 +71,8 @@ export default function CustomerPredictScreen() {
       // Web: launchCameraAsync opens the device camera via browser
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: 'images',
-        allowsEditing: true,
-        aspect: [4, 3],
+        allowsEditing: false,
+        //aspect: [4, 3],
         quality: 0.8,
       });
       if (!result.canceled) setImageUri(result.assets[0].uri);
@@ -101,8 +101,8 @@ export default function CustomerPredictScreen() {
           onPress: async () => {
             const result = await ImagePicker.launchCameraAsync({
               mediaTypes: 'images',
-              allowsEditing: true,
-              aspect: [4, 3],
+              allowsEditing: false,
+              //aspect: [4, 3],
               quality: 0.8,
             });
             if (!result.canceled) setImageUri(result.assets[0].uri);

@@ -8,7 +8,7 @@ import shap
 import numpy as np
 
 from check_papaya import predict_pipeline
-from getColor import get_dominant_color, hex_to_rgb
+from getColor import get_dominant_color, hex_to_rgb, _hsv_ratios
 from suggestion_maker import generate_market_suggestion
 from utils_weather import geocode_district, get_last7_days_rainfall
 
@@ -44,6 +44,7 @@ RIPENESS_LABELS_SI = {
 
 # ---------------- UTIL FUNCTIONS ----------------
 def rgb_to_ratios(rgb):
+    # KEPT for backward compat but no longer used for model input
     r, g, b = rgb
     total = r + g + b + 1e-6
     return {
@@ -54,28 +55,15 @@ def rgb_to_ratios(rgb):
 
 
 def shap_explain(model, X_transformed, feature_names):
-    """
-    Fully robust SHAP explainer.
-    Handles:
-    - Multiclass GradientBoostingClassifier (KernelExplainer)
-    - Tree models (TreeExplainer)
-    - Scalar OR vector SHAP values per feature
-    """
-
     model_name = model.__class__.__name__
 
-    # ---------- MULTICLASS GRADIENT BOOSTING ----------
     if model_name == "GradientBoostingClassifier":
         def predict_fn(x):
             return model.predict_proba(x)
 
         background = np.mean(X_transformed, axis=0, keepdims=True)
         explainer = shap.KernelExplainer(predict_fn, background)
-
-        shap_values = explainer.shap_values(
-            X_transformed,
-            nsamples=50
-        )
+        shap_values = explainer.shap_values(X_transformed, nsamples=50)
 
         if isinstance(shap_values, list):
             pred_class = int(model.predict(X_transformed)[0])
@@ -83,7 +71,6 @@ def shap_explain(model, X_transformed, feature_names):
         else:
             shap_vals = shap_values[0]
 
-    # ---------- TREE MODELS ----------
     else:
         explainer = shap.TreeExplainer(model)
         shap_values = explainer.shap_values(X_transformed)
@@ -96,8 +83,6 @@ def shap_explain(model, X_transformed, feature_names):
     impacts = []
     for i, name in enumerate(feature_names):
         val = shap_vals[i]
-
-        # 🔥 THIS IS THE CRITICAL FIX
         if isinstance(val, (list, np.ndarray)):
             impact = float(np.mean(np.abs(val)))
         else:
@@ -110,7 +95,6 @@ def shap_explain(model, X_transformed, feature_names):
 
     impacts.sort(key=lambda x: abs(x["impact"]), reverse=True)
     return impacts[:5]
-
 
 
 # ---------------- API ENDPOINT ----------------
@@ -135,17 +119,21 @@ def predict():
     # ---------- PAPAYA CHECK ----------
     papaya_check = predict_pipeline(image)
     if not papaya_check["is_papaya"]:
-        # Return 200 so the frontend navigates to the result screen and shows
-        # the "Detection Failed" UI instead of crashing with an AxiosError.
         return jsonify({"error": "Not a papaya"}), 200
 
-    # ---------- COLOR ----------
-    # Reset the stream position before re-reading for colour extraction
-    # (PIL.Image.open() leaves the stream pointer at the end).
+    # ---------- COLOR (HSV-based — fixes market-ready vs overripe confusion) ----------
     file.stream.seek(0)
-    hex_color = get_dominant_color(file.stream)
-    rgb = hex_to_rgb(hex_color)
-    ratios = rgb_to_ratios(rgb)
+    hex_color = get_dominant_color(file.stream)   # kept for reference / debugging
+
+    file.stream.seek(0)
+    green_ratio, yellow_ratio, orange_ratio = _hsv_ratios(file.stream)
+
+    # Build ratios dict in same shape the rest of the code expects
+    ratios = {
+        "green":  green_ratio,
+        "yellow": yellow_ratio,
+        "orange": orange_ratio,
+    }
 
     # ---------- WEATHER ----------
     lat, lon = geocode_district(city)
@@ -174,12 +162,7 @@ def predict():
         else list(X1.columns)
     )
 
-
-    ripeness_shap = shap_explain(
-        ripeness_model,
-        X1_t,
-        ripeness_features
-    )
+    ripeness_shap = shap_explain(ripeness_model, X1_t, ripeness_features)
 
     # ---------- PRICE ----------
     price_rows = []
@@ -193,7 +176,6 @@ def predict():
             "yellow_ratio": ratios["yellow"],
             "orange_ratio": ratios["orange"],
             "ripeness_stage": ripeness_pred,
-            
             "last7_days_rainfall": rainfall
         }])
 
@@ -206,17 +188,15 @@ def predict():
             else list(X2.columns)
         )
 
-        price_shap = shap_explain(
-            price_model,
-            X2_t,
-            price_features
-        )
+        price_shap = shap_explain(price_model, X2_t, price_features)
 
         price_rows.append({
             "variety": variety,
             "price_lkr_per_kg": round(price, 2),
             "price_drivers": price_shap
         })
+
+    print(f"Ripeness Label: {ripeness_label}")
 
     # ---------- PAYLOAD FOR GEMINI ----------
     payload = {
@@ -227,12 +207,15 @@ def predict():
         "ripeness_si": ripeness_label_si,
         "confidence_percent": confidence,
         "color_ratios": ratios,
-        "ripeness_drivers": ripeness_shap, 
+        "ripeness_drivers": ripeness_shap,
         "price_table": price_rows,
         "seller_price": seller_price
     }
-
-    final_suggestion = generate_market_suggestion(payload, language=language)
+    try:
+        print("\n=== PREDICTION PAYLOAD ===")
+        final_suggestion = generate_market_suggestion(payload, language=language)
+    except Exception as e:
+        final_suggestion = "discuss with the seller to explore options within your budget range"
 
     # ---------- RESPONSE ----------
     return jsonify({

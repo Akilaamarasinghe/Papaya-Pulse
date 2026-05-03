@@ -31,8 +31,8 @@ export default function CustomerInputScreen() {
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: 'images',
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
+      //aspect: [4, 3],
       quality: 0.8,
     });
     if (!result.canceled) {
@@ -49,7 +49,7 @@ export default function CustomerInputScreen() {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: 'images',
       allowsEditing: true,
-      aspect: [4, 3],
+      //aspect: [4, 3],
       quality: 0.8,
     });
     if (!result.canceled) {
@@ -62,7 +62,7 @@ export default function CustomerInputScreen() {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: 'images',
         allowsEditing: true,
-        aspect: [4, 3],
+        //aspect: [4, 3],
         quality: 0.8,
       });
       if (!result.canceled) {

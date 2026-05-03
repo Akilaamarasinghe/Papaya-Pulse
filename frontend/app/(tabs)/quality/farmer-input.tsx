@@ -51,7 +51,7 @@ export default function FarmerInputScreen() {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: 'images',
         allowsEditing: true,
-        aspect: [4, 3],
+        //aspect: [4, 3],
         quality: 0.8,
       });
       
