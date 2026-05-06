@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../context/ThemeContext';
+import { Colors } from '../../constants/theme';
 
 interface DropdownProps<T> {
   label: string;
@@ -20,22 +22,33 @@ export function Dropdown<T extends string | number>({
   error,
 }: DropdownProps<T>) {
   const [visible, setVisible] = useState(false);
+  const { currentTheme } = useTheme();
+  const colors = Colors[currentTheme];
 
   const selectedLabel = options.find(opt => opt.value === value)?.label || placeholder;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, { color: visible ? colors.primary : colors.subtext }]}>
+        {label.toUpperCase()}
+      </Text>
       <TouchableOpacity
-        style={[styles.selector, error && styles.selectorError]}
+        style={[
+          styles.selector,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: error ? colors.error : visible ? colors.primary : colors.inputBorder,
+          },
+        ]}
         onPress={() => setVisible(true)}
+        activeOpacity={0.75}
       >
-        <Text style={[styles.selectedText, !value && styles.placeholder]}>
+        <Text style={[styles.selectedText, { color: value ? colors.text : colors.placeholder }]}>
           {selectedLabel}
         </Text>
-        <Ionicons name="chevron-down" size={20} color="#666" />
+        <Ionicons name={visible ? 'chevron-up' : 'chevron-down'} size={18} color={colors.subtext} />
       </TouchableOpacity>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={[styles.error, { color: colors.error }]}>{error}</Text>}
 
       <Modal visible={visible} transparent animationType="fade">
         <TouchableOpacity
@@ -43,11 +56,11 @@ export function Dropdown<T extends string | number>({
           activeOpacity={1}
           onPress={() => setVisible(false)}
         >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{label}</Text>
+          <View style={[styles.modalContent, { backgroundColor: colors.card }]}>
+            <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>{label}</Text>
               <TouchableOpacity onPress={() => setVisible(false)}>
-                <Ionicons name="close" size={24} color="#333" />
+                <Ionicons name="close" size={22} color={colors.subtext} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.optionsList}>
@@ -56,7 +69,8 @@ export function Dropdown<T extends string | number>({
                   key={index}
                   style={[
                     styles.option,
-                    option.value === value && styles.selectedOption,
+                    { borderBottomColor: colors.border },
+                    option.value === value && { backgroundColor: `${colors.primary}15` },
                   ]}
                   onPress={() => {
                     onChange(option.value);
@@ -66,13 +80,14 @@ export function Dropdown<T extends string | number>({
                   <Text
                     style={[
                       styles.optionText,
-                      option.value === value && styles.selectedOptionText,
+                      { color: option.value === value ? colors.primary : colors.text },
+                      option.value === value && { fontWeight: '700' },
                     ]}
                   >
                     {option.label}
                   </Text>
                   {option.value === value && (
-                    <Ionicons name="checkmark" size={24} color="#FF6B35" />
+                    <Ionicons name="checkmark-circle" size={20} color={colors.primary} />
                   )}
                 </TouchableOpacity>
               ))}
@@ -86,48 +101,41 @@ export function Dropdown<T extends string | number>({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    marginBottom: 7,
   },
   selector: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'transparent',
-  },
-  selectorError: {
-    borderColor: '#FF3B30',
+    borderWidth: 1.5,
   },
   selectedText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  placeholder: {
-    color: '#999',
+    fontSize: 15,
+    fontWeight: '500',
   },
   error: {
-    color: '#FF3B30',
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 5,
+    marginLeft: 4,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
     justifyContent: 'center',
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 22,
     maxHeight: '80%',
     overflow: 'hidden',
   },
@@ -135,35 +143,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 17,
+    fontWeight: '700',
   },
   optionsList: {
     maxHeight: 400,
   },
   option: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  selectedOption: {
-    backgroundColor: '#FFF0EC',
   },
   optionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  selectedOptionText: {
-    color: '#FF6B35',
-    fontWeight: '600',
+    fontSize: 15,
   },
 });

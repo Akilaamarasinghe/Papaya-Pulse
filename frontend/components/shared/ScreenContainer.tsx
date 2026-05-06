@@ -1,5 +1,6 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, ViewStyle, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../../context/ThemeContext';
 import { Colors } from '../../constants/theme';
 
@@ -11,22 +12,46 @@ interface ScreenContainerProps {
 export const ScreenContainer: React.FC<ScreenContainerProps> = ({ children, style }) => {
   const { currentTheme } = useTheme();
   const colors = Colors[currentTheme];
+  const insets = useSafeAreaInsets();
+
+  const scrollView = (
+    <ScrollView
+      style={[styles.scroll, style]}
+      contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 20 }]}
+      showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="always"
+      keyboardDismissMode="none"
+      automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+    >
+      {children}
+    </ScrollView>
+  );
 
   return (
-    <SafeAreaView style={[styles.safe, { backgroundColor: colors.background }]}>
-      <ScrollView 
-        style={[styles.scroll, style]}
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        {children}
-      </ScrollView>
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
+      style={[styles.safe, { backgroundColor: colors.background }]}
+    >
+      {Platform.OS === 'android' ? (
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoid}
+          behavior="height"
+          keyboardVerticalOffset={20}
+        >
+          {scrollView}
+        </KeyboardAvoidingView>
+      ) : (
+        scrollView
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   safe: {
+    flex: 1,
+  },
+  keyboardAvoid: {
     flex: 1,
   },
   scroll: {

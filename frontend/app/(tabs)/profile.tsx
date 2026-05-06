@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { Colors } from '../../constants/theme';
@@ -43,21 +44,28 @@ export default function ProfileScreen() {
     setLoading(true);
     try {
       const formData = new FormData();
-      
-      // React Native FormData requires specific format
-      formData.append('profilePhoto', {
-        uri: uri,
-        type: 'image/jpeg',
-        name: 'profile.jpg',
-      } as any);
+
+      if (Platform.OS === 'web') {
+        // On web, fetch the image as a Blob so the browser sends a real file
+        const fetchResponse = await fetch(uri);
+        const blob = await fetchResponse.blob();
+        formData.append('profilePhoto', blob, 'profile.jpg');
+      } else {
+        // On mobile (iOS / Android), React Native FormData accepts this object format
+        formData.append('profilePhoto', {
+          uri: uri,
+          type: 'image/jpeg',
+          name: 'profile.jpg',
+        } as any);
+      }
 
       console.log('Uploading profile photo...');
-      
+
       const response = await api.post('/users/upload-profile-photo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        transformRequest: (data) => data, // Don't let axios transform FormData
+        transformRequest: (data) => data, // Prevent axios from serialising FormData
       });
 
       console.log('Upload response:', response.data);
@@ -103,36 +111,50 @@ export default function ProfileScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: colors.text }]}>{t('profile')}</Text>
-      </View>
+      {/* ── Gradient Profile Header ── */}
+      <LinearGradient
+        colors={
+          currentTheme === 'dark'
+            ? ['#1E2D45', '#0F172A']
+            : ['#FF6B35', '#FF9A70']
+        }
+        style={styles.heroHeader}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.heroDecor1} />
+        <View style={styles.heroDecor2} />
 
-      <View style={styles.profileSection}>
         <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
           {profileImage ? (
-            <Image source={{ uri: profileImage }} style={[styles.profileImage, { borderColor: colors.primary }]} />
+            <Image
+              source={{ uri: profileImage }}
+              style={styles.profileImage}
+            />
           ) : (
-            <View style={[styles.placeholderImage, { backgroundColor: colors.card, borderColor: colors.primary }]}>
-              <Ionicons name="person" size={60} color={colors.icon} />
+            <View style={styles.placeholderImage}>
+              <Ionicons name="person" size={52} color="rgba(255,255,255,0.8)" />
             </View>
           )}
-          <View style={[styles.cameraIcon, { backgroundColor: colors.primary, borderColor: colors.background }]}>
-            <Ionicons name="camera" size={20} color="#fff" />
+          <View style={styles.cameraIcon}>
+            <Ionicons name="camera" size={16} color="#fff" />
           </View>
         </TouchableOpacity>
 
-        <Text style={[styles.userName, { color: colors.text }]}>{user.name}</Text>
-        <Text style={[styles.userEmail, { color: colors.placeholder }]}>{user.email}</Text>
-        <View style={[styles.badge, { backgroundColor: currentTheme === 'dark' ? '#1A3A1A' : '#E8F5E9' }]}>
-          <Text style={[styles.badgeText, { color: currentTheme === 'dark' ? '#66BB6A' : '#2E7D32' }]}>
+        <Text style={styles.heroName}>{user.name}</Text>
+        <Text style={styles.heroEmail}>{user.email}</Text>
+        <View style={styles.heroBadge}>
+          <Text style={styles.heroBadgeText}>
             {user.role === 'farmer' ? '🌾 Farmer' : '🛒 Customer'}
           </Text>
         </View>
-      </View>
+      </LinearGradient>
 
       <View style={styles.infoSection}>
         <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Ionicons name="location" size={24} color={colors.primary} />
+          <View style={[styles.infoIconBox, { backgroundColor: 'rgba(255,107,53,0.12)' }]}>
+            <Ionicons name="location" size={20} color={colors.primary} />
+          </View>
           <View style={styles.infoContent}>
             <Text style={[styles.infoLabel, { color: colors.placeholder }]}>{t('district')}</Text>
             <Text style={[styles.infoValue, { color: colors.text }]}>{user.district}</Text>
@@ -140,7 +162,9 @@ export default function ProfileScreen() {
         </View>
 
         <View style={[styles.infoCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <Ionicons name="calendar" size={24} color={colors.primary} />
+          <View style={[styles.infoIconBox, { backgroundColor: 'rgba(59,130,246,0.12)' }]}>
+            <Ionicons name="calendar" size={20} color={colors.info} />
+          </View>
           <View style={styles.infoContent}>
             <Text style={[styles.infoLabel, { color: colors.placeholder }]}>{t('memberSince')}</Text>
             <Text style={[styles.infoValue, { color: colors.text }]}>
@@ -196,64 +220,91 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  profileSection: {
+  /* Hero header */
+  heroHeader: {
+    borderRadius: 28,
+    padding: 28,
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 24,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  heroDecor1: {
+    position: 'absolute',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    top: -50,
+    right: -40,
+  },
+  heroDecor2: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    bottom: -30,
+    left: -20,
   },
   imageContainer: {
     position: 'relative',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.6)',
   },
   placeholderImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.18)',
     borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.4)',
   },
   cameraIcon: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    bottom: 2,
+    right: 2,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
     borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
-  userName: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  heroName: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
     marginBottom: 4,
+    letterSpacing: 0.2,
   },
-  userEmail: {
-    fontSize: 16,
-    marginBottom: 12,
+  heroEmail: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.75)',
+    marginBottom: 10,
   },
-  badge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  heroBadge: {
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 20,
   },
-  badgeText: {
-    fontSize: 14,
-    fontWeight: '600',
+  heroBadgeText: {
+    color: 'rgba(255,255,255,0.95)',
+    fontSize: 13,
+    fontWeight: '700',
   },
+  /* Info section */
   infoSection: {
     marginBottom: 24,
   },
@@ -261,27 +312,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 12,
     borderWidth: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  infoIconBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
   },
   infoContent: {
-    marginLeft: 16,
     flex: 1,
   },
   infoLabel: {
-    fontSize: 14,
-    marginBottom: 4,
+    fontSize: 12,
+    marginBottom: 3,
+    fontWeight: '500',
   },
   infoValue: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '700',
   },
+  /* Edit section */
   editSection: {
     marginBottom: 24,
   },

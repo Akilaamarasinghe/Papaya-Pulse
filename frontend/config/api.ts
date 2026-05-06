@@ -10,17 +10,18 @@ import Constants from 'expo-constants';
 
 const getBaseURL = () => {
   try {
-    // Check if API URL is set in app.json
+    // Web browsers always talk to localhost — the mobile IP in app.json
+    // would cause a cross-origin request that fails CORS preflight.
+    if (Platform.OS === 'web') {
+      return 'http://localhost:3000/api';
+    }
+
+    // For mobile: check if API URL is set in app.json
     const configuredApiUrl = Constants.expoConfig?.extra?.apiUrl;
     
     if (configuredApiUrl && typeof configuredApiUrl === 'string') {
       console.log('Using configured API URL:', configuredApiUrl);
       return configuredApiUrl;
-    }
-    
-    // If running on web browser
-    if (Platform.OS === 'web') {
-      return 'http://localhost:3000/api';
     }
     
     // For mobile devices, try to use the manifest debugger host

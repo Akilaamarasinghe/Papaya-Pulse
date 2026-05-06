@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, initializeAuth } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, initializeAuth, browserLocalPersistence } from 'firebase/auth';
 import { Platform } from 'react-native';
 
 // Your web app's Firebase configuration
@@ -18,8 +17,11 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase Auth
-const auth = getAuth(app);
+// On web, explicitly use browserLocalPersistence so auth state survives page refreshes.
+// On native (iOS/Android), fall back to getAuth which uses the platform default.
+const auth = Platform.OS === 'web'
+  ? initializeAuth(app, { persistence: browserLocalPersistence })
+  : getAuth(app);
 
 export { auth };
 export default app;

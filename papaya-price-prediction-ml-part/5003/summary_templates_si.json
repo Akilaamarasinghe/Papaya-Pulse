@@ -1,0 +1,31 @@
+[
+  "{positive_reasons_si} නිසා වෙළඳපල මිල හොඳ ලෙස ක්‍රියාත්මක වේ. {negative_clause_si}{crop} හි දැනට මිල LKR {price:.2f} per kg ලෙස ඇත. {time_phrase_si} විකිණීම ලාභදායී ලෙස අපේක්ෂා කෙරේ.",
+
+  "වෙළඳපල සංඥා {positive_reasons_si} මිල සහාය කරන බව පෙන්නුම් කරයි. {negative_clause_si}{crop} kg එකකට LKR {price:.2f} ක් ලෙස ඇති අතර {time_phrase_si} විකිණීම නිර්දේශ කෙරේ.",
+
+  "{positive_reasons_si} වෙළඳපලේ ශක්තිමත් මිලකට දායක වේ. {negative_clause_si}දැනට {crop} kg 1ක් ආසන්න LKR {price:.2f} ක් ලෙස විකිනේ. {time_phrase_si} විකිණීමෙන් හොඳ ප්‍රතිඵල ලැබේ.",
+
+  "දැනට ඇති තත්ත්ව {positive_reasons_si} නිසා හිතකර මිලක් දක්නට ලැබේ. {negative_clause_si}{crop} හි අපේක්ෂිත මිල kg 1ට LKR {price:.2f} ක් ලෙස ඇත. {time_phrase_si} විකිණීම වඩාත් ලාභදායී වනු ඇත.",
+
+  "මිල ප්‍රවණතාව {positive_reasons_si} නිසා ධනාත්මකය. {negative_clause_si}දැනට {crop} kg 1 ආසන්න LKR {price:.2f} ක් ලෙස ලැබේ. {time_phrase_si} විකිණීම නිර්දේශ කෙරේ.",
+
+  "වෙළඳ විශ්ලේෂණය අනුව, {positive_reasons_si} මිල ඉහළ නංවමින් ඇත. {negative_clause_si}{crop} kg 1 සඳහා LKR {price:.2f} ක් ලෙස අපේක්ෂා කෙරේ. {time_phrase_si} විකිණීමෙන් ලාභ ලැබේ.",
+
+  "මිල ගමන {positive_reasons_si} නිසා ප්‍රධාන ලෙස බලපෑමට ලක්ව ඇත. {negative_clause_si}{crop} kg 1 ආසන්නයෙන් LKR {price:.2f} ක් ලෙස අගය කෙරේ. {time_phrase_si} විකිණීම ප්‍රයෝජනවත් විය හැකිය.",
+
+  "{positive_reasons_si} වැනි හිතකර සාධක මිල ඉහළ නැංවීමට දායක වේ. {negative_clause_si}{crop} හි වෙළඳපල මිල kg 1ට LKR {price:.2f} ක් ලෙස ඇත. {time_phrase_si} විකිණීම වාසිදායක ලෙස අපේක්ෂා කෙරේ.",
+
+  "වෙළඳපල හැසිරීම {positive_reasons_si} නිසා ශක්තිමත් ලෙස දිස්වේ. {negative_clause_si}දැනට {crop} kg 1 LKR {price:.2f} ක් ආසන්නයෙන් ඇත. {time_phrase_si} විකිණීමෙන් ලාභදායිත්වය ශ්‍රේෂ්ඨ වේ.",
+
+  "දත්ත අනුව, {positive_reasons_si} මිල ශක්‍යතාව ඉහළ නංවමින් ඇත. {negative_clause_si}{crop} හි ඇස්තමේන්තු මිල kg 1ට LKR {price:.2f} ක් ලෙස ඇත. {time_phrase_si} විකිණීම නිර්දේශ කෙරේ.",
+
+  "{positive_reasons_si} වෙළඳ වටිනාකමට ධනාත්මකව බලපෑම් කරයි. {negative_clause_si}{crop} ආසන්නයෙන් kg 1 LKR {price:.2f} ක් ලෙස ගණ කෙරේ. {time_phrase_si} විකිණීම ඉපයීම් වැඩි කිරීමට ප්‍රයෝජනකරය.",
+
+  "වෙළඳ ඉදිරිදර්ශනය {positive_reasons_si} නිසා සහය ලැබේ. {negative_clause_si}දැනට {crop} kg 1 LKR {price:.2f} ක් ලෙස ඇත. {time_phrase_si} විකිණීම ශ්‍රේෂ්ඨ ලෙස ඇස්තමේන්තු කෙරේ.",
+
+  "මිල ප්‍රවණතා {positive_reasons_si} නිසා හිතකරය. {negative_clause_si}{crop} හි ඇස්තමේන්තු මිල kg 1ට LKR {price:.2f} ලෙස ඇත. {time_phrase_si} විකිණීම නිර්දේශ කෙරේ.",
+
+  "{positive_reasons_si} නිසා වෙළඳපලේ මිල ශක්තිමත්ව ඇත. {negative_clause_si}{crop} ආසන්නයෙන් kg 1 LKR {price:.2f} ක් ලෙස අගය කෙරේ. {time_phrase_si} විකිණීමෙන් ශ්‍රේෂ්ඨ ප්‍රතිඵල ලැබේ.",
+
+  "විශ්ලේෂණය සුచිත කරනු ලබන්නේ {positive_reasons_si} මිල මට්ටමට සහාය ලබා දෙන බවකි. {negative_clause_si}{crop} සඳහා අපේක්ෂිත මිල kg 1ට LKR {price:.2f} ලෙස ඇත. {time_phrase_si} විකිණීම ශ්‍රේෂ්ඨය."
+]
